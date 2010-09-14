@@ -1,4 +1,5 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :myarticles, :newbooks
   map.resources :mybooks,:mybookpdfs, :mybookfolders
 
   map.resources :tempfolders
@@ -28,6 +29,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :subcategories, :categories
   map.resources :categories, :has_many => :subcategories
   map.resources :notices
+  
   map.resources :freeboards, :users
   map.resources :users, :has_many => :freeboards
   map.resources :faqs
