@@ -9,7 +9,6 @@ class BookarticlesController < ApplicationController
     
     if !book_id.nil?
       @book_basic = Book_basic.get(book_id.to_i)
-      puts_message @book_basic.title
     else
       
     end
@@ -115,20 +114,30 @@ class BookarticlesController < ApplicationController
   # PUT /articles/1
   # PUT /articles/1.xml
   def update
-    @article = Article.get(params[:id])
-
-    respond_to do |format|
-      if @article.update(params[:article])
-        flash[:notice] = 'Article was successfully updated.'
-        format.html { redirect_to(@article) }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @article.errors, :status => :unprocessable_entity }
-      end
+    @article = Book_article.get(params[:id].to_i)
+    
+    @article.title = params[:title]
+    @article.content = params[:content]
+    
+    puts_message @article.title 
+    puts_message @article.content 
+    
+    if @article.save
+      render :partial => "result"    
     end
   end
 
+  def left_list_delete
+    @book_basic = Book_basic.get(params[:book_id].to_i)
+    @book_articles = Book_article.all(:book_basic_id => params[:id].to_i)
+    
+    if @book_basic.destroy and @book_articles.destroy
+      @book_list = Book_basic.all(:user_id => current_user.id)
+      render :partial => "new_book_list", :object => @book_list
+    else
+      puts_message "error occured!"
+    end
+  end
   # DELETE /articles/1
   # DELETE /articles/1.xml
   def destroy
@@ -149,131 +158,4 @@ class BookarticlesController < ApplicationController
     end
   end
   
-def test
-
-  basic = params[:basic]
-
-  level1 = params[:level1]
-  level2 = params[:level2]
-  level3 = params[:level3]    
-  level4 = params[:level4]    
-
-  level1_up = params[:level1_up]  
-  level2_up = params[:level2_up]  
-  level3_up = params[:level3_up]      
-  level4_up = params[:level4_up]      
-
-  level1_self = params[:level1_self]  
-  level2_self = params[:level2_self]  
-  level3_self = params[:level3_self]      
-  level4_self = params[:level4_self]      
-
-  book_title = basic[0]
-  book_inner_cover = basic[1]
-  book_index = basic[2]
-  book_prologue = basic[3]
-  
-  @new_book = Book_basic.new()
-  @new_book.title = book_title
-  @new_book.inner_cover = book_inner_cover
-  @new_book.index_title = book_index
-  @new_book.prologue_title = book_prologue
-  @new_book.user_id = current_user.id
-
-  if @new_book.save
-      book_basic_id = @new_book.id
-  end
-  
-  puts_message book_basic_id.to_s
-  
-  basic.each do |b|
-    puts b
-  end
-  
-  if !level1.nil?
-  
-    if level1.length ==  0
-      puts "it's nil!!!!"
-    else
-      i = 0
-      while (i < level1.length) # level1 Loop ===============================================================
-        j = 0        
-        new_article = Book_article.new()
-        new_article.book_basic_id = @new_book.id
-        new_article.user_id = current_user.id
-        new_article.title = level1[i].to_s
-        new_article.upper_level = 0
-        new_article.self_level = 1
-        new_article.order = i + 1
-        new_article.save
-        level1_id = new_article.id
-
-        if !level2.nil?
-          while (j < level2.length) # level2 Loop ==========================================================
-            k = 0
-            if level1_self[i]  == level2_up[j]
-              new_article = Book_article.new()
-              new_article.book_basic_id = @new_book.id   
-              new_article.user_id = current_user.id                         
-              new_article.title = level2[i].to_s
-              new_article.upper_level = level1_id
-              new_article.self_level = 2
-              new_article.order = j + 1
-              new_article.save
-              level2_id = new_article.id
-              
-              if !level3.nil?
-                while (k < level3.length) # level3 Loop ====================================================
-                  if level2_self[j] == level3_up[k]
-                    new_article = Book_article.new()
-                    new_article.user_id = current_user.id                    
-                    new_article.book_basic_id = @new_book.id                    
-                    new_article.title = level3[i].to_s
-                    new_article.upper_level = level2_id
-                    new_article.self_level = 3
-                    new_article.order = k + 1
-                    new_article.save
-                    level3_id = new_article.id
-
-                    if !level4.nil?
-                      l = 0
-                      while (l < level4.length) # level4 Loop =============================================
-                        if level3_self[k] == level4_up[l]
-                          new_article = Book_article.new()
-                          new_article.user_id = current_user.id                          
-                          new_article.book_basic_id = @new_book.id                          
-                          new_article.title = level4[i].to_s
-                          new_article.upper_level = level3_id
-                          new_article.self_level = 4
-                          new_article.order = l + 1
-                          new_article.save
-                        end
-                        l += 1
-                      end # level4 Loop ====================================================================
-                    end
-                    
-                  end
-                  k += 1
-                end # level3 Loop ==========================================================================
-              end
-            end
-            j += 1
-          end # level2 Loop ================================================================================
-        end
-        
-        i += 1
-      end # level1 Loop ====================================================================================   
-    end
-  end
-  
-  @book_list = Book_basic.all(:user_id => current_user.id)
-  render :partial => "result"
-
- # render :update do |page|
- #   page.replace_html 'result', "result"
- # end
-  
-end
-
-
 end

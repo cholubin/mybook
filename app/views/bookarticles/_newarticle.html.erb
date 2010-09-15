@@ -52,6 +52,79 @@ if !@book_basic.nil?
 
 <%= @book_basic.title %>
 <%end %>
+
+<%
+@level1_list = Book_article.all(:user_id => current_user.id, :book_basic_id => book_id.to_i, :self_level => 1)
+
+@level1_list.each do |l1|
+	%>
+	<div id="<%= l1.id %>" style="width:600px; background-color:yellow;">
+		<% form_remote_tag :url => {:action => 'update'} do %>
+		<input type="hidden" name="id" value="<%= l1.id.to_s %>">
+		<input type="text" style="width:500" name="title" value="<%= l1.title %>">
+		<input type="submit" value="저장"><br>
+		<textarea name="content" style='width: 500px; height: 50px;' onkeyup='this.style.height =this.scrollHeight'><%= l1.content %></textarea>
+		<% end %>
+		<%
+		@level2_list  = Book_article.all(:user_id => current_user.id, :book_basic_id => book_id.to_i, :self_level => 2, :upper_level => l1.id.to_i)
+		if !@level2_list.nil?
+			@level2_list.each do |l2|
+			%>
+			<br>
+			<div id="<%= l2.id %>" style="width:600px; background-color:blue;padding-left:5px;margin-left:5px">
+				<% form_remote_tag :url => {:action => 'update'} do %>
+				<input type="hidden" name="id" value="<%= l2.id.to_s %>">
+				<input type="text" style="width:500" name="title" value="<%= l2.title %>">
+				<input type="submit" value="저장"><br>
+				<textarea name="content" style='width: 500px; height: 50px;' onkeyup='this.style.height =this.scrollHeight'><%= l2.content %></textarea>
+				<% end %>
+				<%
+				@level3_list  = Book_article.all(:user_id => current_user.id, :book_basic_id => book_id.to_i, :self_level => 3, :upper_level => l2.id.to_i)
+				if !@level3_list.nil?
+					@level3_list.each do |l3|
+					%>
+					<br>
+					<div id="<%= l3.id %>" style="width:600px; background-color:green;padding-left:5px;margin-left:5px">
+						<% form_remote_tag :url => {:action => 'update'} do %>
+						<input type="hidden" name="id" value="<%= l3.id.to_s %>">
+						<input type="text" style="width:500" name="title" value="<%= l3.title %>">
+						<input type="submit" value="저장"><br>
+						<textarea name="content" style='width: 500px; height: 50px;' onkeyup='this.style.height =this.scrollHeight'><%= l3.content %></textarea>
+						<% end %>
+						<%
+						@level4_list  = Book_article.all(:user_id => current_user.id, :book_basic_id => book_id.to_i, :self_level => 4, :upper_level => l3.id.to_i)
+						if !@level4_list.nil?
+							@level4_list.each do |l4|
+							%>
+							<br>
+							<div id="<%= l4.id %>" style="width:600px; background-color:purple;padding-left:5px;margin-left:5px">
+								<% form_remote_tag :url => {:action => 'update'} do %>
+								<input type="hidden" name="id" value="<%= l4.id.to_s %>">
+								<input type="text" style="width:500" name="title" value="<%= l4.title %>">
+								<input type="submit" value="저장"><br>
+								<textarea name="content" style='width: 500px; height: 50px;' onkeyup='this.style.height =this.scrollHeight'><%= l4.content %></textarea>
+								<% end %>
+							</div>			
+							<%
+							end
+						end
+						%>
+						
+					</div>			
+					<%
+					end
+				end
+				%>
+			</div>			
+			<%
+			end
+		end
+		%>
+	</div><br>
+	<%
+end
+%>
+<div id="result"></div>
 </body>
 </html>
 

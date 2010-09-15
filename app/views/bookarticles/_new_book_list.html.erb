@@ -1,13 +1,3 @@
-<p>
-<a href="/newbooks">새책만들기</a>
-</p>
-
-
-<p>
-<a href="/bookarticles">북리스트</a>
-</p>
-<% @book_list = Book_basic.all(:user_id => current_user.id)   %>
-<div id="new_book_list">
 <% 
 @book_list.each do |list|
 	%>
@@ -20,5 +10,3 @@
 end
 
 %>
-</div>
-	
