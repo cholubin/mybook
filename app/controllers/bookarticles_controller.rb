@@ -1,13 +1,19 @@
 # encoding: utf-8
 
-class NewbooksController < ApplicationController
+class BookarticlesController < ApplicationController
   before_filter :authenticate_user!
 
   def index
     @menu = "myarticles"
-    @structures = Book_basic.all()
-
-    render 'newbook'  
+    book_id = params[:book_id]
+    
+    if !book_id.nil?
+      @book_basic = Book_basic.get(book_id.to_i)
+      puts_message @book_basic.title
+    else
+      
+    end
+    render 'bookarticle'  
   end
   
   

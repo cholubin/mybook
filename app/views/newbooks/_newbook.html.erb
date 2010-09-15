@@ -44,32 +44,35 @@ function hide_progress() {
 </script>
 
 <script type="text/javascript">
+var object_id = 0;
 var count = [0,0,0,0];         
 var count_for_name = new Array(3);
 count_for_name[0] = new Array();
 count_for_name[1] = new Array();
 count_for_name[2] = new Array();
 
- function addForm(level,form_id){
-	if (level == 1){
-		var addedFormDiv = document.getElementById(form_id);		
-	}else{
-		var addedFormDiv = document.getElementById(form_id);		
-	}
+ function addForm(up_level_id, level, form_id){
 
-	replace_string_add = "addForm("+ (level+1) +",'addedFormDiv"+(level+1)+"-"+ (count[level -1]+1) +"')" ;
+	var addedFormDiv = document.getElementById(form_id);		
+	var self_id = "level" + (level-1) + "_" + object_id++;
+	var upper_level_id = up_level_id;
+//	alert("self_id :: " + self_id);
+//	alert("upper_level_id :: " + upper_level_id);
+		
+	replace_string_add = "addForm('"+self_id+"',"+ (level+1) +",'addedFormDiv"+(level+1)+"-"+ (count[level -1]+1) +"')" ;
 	replace_string_del = "delForm("+ (level+1) +",'addedFormDiv"+(level+1)+"-"+ (count[level -1]+1) +"')" ;
 
 	
 	var space = "";
-	
 	for (var i=1; i<(level); i++){space += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";}
 	
 	var str = "";
 	
 	if (level == 1){
 		input_name = "level1[]";		
+		input_name_up = "level1_up[]";
 		input_value = "level1-" + (count[(level-1)]);
+		input_value_up = form_id;
 	}else{
 		r_str = "addedFormDiv" + level + "-"
 		temp2 = form_id.replace(r_str,'');
@@ -84,16 +87,21 @@ count_for_name[2] = new Array();
 		temp = form_id.replace('addedFormDiv','');
 		input_name = "level" + level +"[]";
 		input_value = "level" + level + "-"+ count_for_name[level-2][temp2-1];				
-		
-	}
 
+	}
+	
+	input_name_self = "level" + level + "_self" +"[]";				
+	input_name_up = "level" + level + "_up" +"[]";
+	input_value_up = upper_level_id;
+	input_value_self = self_id;
 
 	var addedDiv = document.createElement("div"); // 폼 생성
 	addedDiv.id = "added"+level+"_"+count[(level -1)]; // 폼 Div에 ID 부 여 (삭제를 위해)
 	// replace_string_del_self = "selfDel("+ (level+1) +",'addedFormDiv"+(level+1)+"-"+ (count[level -1]+1) +"', '"+addedDiv.id+"')" ;
 	replace_string_del_self = "selfDel("+ level +",'"+form_id+"','"+addedDiv.id+"')" ;	
+
 	
-	str+="<br>"+space+"<input type='text' name='"+ input_name +"' value='"+input_value+"'><input type='Button' value='하위레벨 추가' onclick="+ replace_string_add +"><input type='Button' value='하위레벨 삭제' onclick="+ replace_string_del +"><input type='Button' value='-' onclick="+ replace_string_del_self +"><div id='addedFormDiv" + (level+1) + "-" + (count[level -1] +1)+"'></div>";
+	str+="<br>"+ space + "<input type='hidden' name='"+ input_name_self +"' value='"+ input_value_self +"'>" + "<input type='hidden' name='"+ input_name_up +"' value='"+ input_value_up +"'>" +"<input type='text' name='"+ input_name +"' value='"+input_value+"'><input type='Button' value='하위레벨 추가' onclick="+ replace_string_add +"><input type='Button' value='-' onclick="+ replace_string_del_self +"><div id='addedFormDiv" + (level+1) + "-" + (count[level -1] +1)+"'></div>";
 	
 
 	// 추가할 폼(에 들어갈 HTML)
@@ -106,29 +114,6 @@ count_for_name[2] = new Array();
 
  }
 
-
-
-function delForm(level,form_id){
-	var addedFormDiv = document.getElementById(form_id);
-
-	r_str = "addedFormDiv" + level + "-"
-	temp2 = form_id.replace(r_str,'');		
-
-	if(count[level-1] > 0){ // 현재 폼이 두개 이상이면
-		//이부분 문제있음!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!		
-		var addedDiv = document.getElementById("added"+level+"_"+ (--count[(level -1)] -1));
-		//이부분 문제있음!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		// 마지막으로 생성된 폼의 ID를 통해 Div객체를 가져옴
-		addedFormDiv.removeChild(addedDiv); // 폼 삭제 
-		count_for_name[level-2][temp2-1] --;
-	}
-	
-	if(count[level-1] == 0){
-		count[level] = 0;
-		count_for_name[level-2][temp2-1] = 0;		
-	}
-
-}
 
 function selfDel(level,form_id, del_id){
 	
@@ -143,6 +128,7 @@ function selfDel(level,form_id, del_id){
 		//이부분 문제있음!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		// 마지막으로 생성된 폼의 ID를 통해 Div객체를 가져옴
 		addedFormDiv.removeChild(addedDiv); // 폼 삭제 
+		count[(level -1)] --;
 		count_for_name[level-2][temp2-1] --;
 	}
 	
@@ -159,17 +145,15 @@ function selfDel(level,form_id, del_id){
 <% form_remote_tag :url => {:action => 'test'}, :update => "result" do %>	
 <center>
 	<div id="basic">
-		<input type="text" name="basic" value="책제목"><br>
-		<input type="text" name="basic" value="속표지"><br>
-		<input type="text" name="basic" value="차례"><br>					
-		<input type="text" name="basic" value="머릿말"><br>			
+		<input type="text" name="basic[]" value="책제목"><br>
+		<input type="text" name="basic[]" value="속표지"><br>
+		<input type="text" name="basic[]" value="차례"><br>					
+		<input type="text" name="basic[]" value="머릿말"><br>			
 	<div>
 
    <input type="hidden" name="count" value="0">
 	<br><br>
-   <input type="Button" value="최상위 레벨 추가" onclick="addForm(1,'addedFormDiv1');">
-   <input type="Button" value="최상위 레벨 삭제" onclick="delForm(1,'addedFormDiv1');">
-   <input type="Button" value="완료" onClick="test();">
+   <input type="Button" value="최상위 레벨 추가" onclick="addForm('level0_0', 1, 'level0');">
 
 <%= javascript_include_tag :defaults %>	
 <%= javascript_include_tag "basic_tools" %>
@@ -180,7 +164,7 @@ function selfDel(level,form_id, del_id){
 	:onclick => "if (window.confirm('아래의 모든 PDF파일들을 순서대로 합치시겠습니까?')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'newbooks', :action => :test },
 	:with => "'level1=' + result() +'&mybook_id=' + ")
 	%>
-   <div id="addedFormDiv1"></div> <!-- 폼을 삽입할 DIV -->
+   <div id="level0"></div> <!-- 폼을 삽입할 DIV -->
 
 </center>
 

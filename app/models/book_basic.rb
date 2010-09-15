@@ -7,21 +7,22 @@ require 'dm-pager'
 
 $:.unshift File.dirname(__FILE__) + '/../lib'
 
-class Article_level2
+class Book_basic
   
   # Class Configurations ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   include DataMapper::Resource
-  attr_accessor :password
-  
   # Attributes ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   property :id,                 Serial
-  
-  property :book_structure_id,  Integer
-  property :level1_id,          Integer
   property :title,              String
-  property :order,              Integer
+  property :cover,              String
+  property :inner_cover,        String
+  property :prologue_title,     String
+  property :prologue_content,   Text  
+  property :index_title,        String
+  property :index_content,      Text  
+  property :user_id,            Integer        
   timestamps :at
-    
+
 end
 
 DataMapper.auto_upgrade!

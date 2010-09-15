@@ -2,7 +2,19 @@
 <a href="/newbooks">새책만들기</a>
 </p>
 
+
 <p>
-북리스트	
+<a href="/bookarticles">북리스트</a>
 </p>
+<div id="new_book_list">
+<% 
+@book_list = Book_basic.all(:user_id => current_user.id) 
+@book_list.each do |list|
+	%>
+	<a href="/bookarticles?book_id=<%= list.id.to_s %>"><%= list.title %></a><br>
+	<%
+end
+
+%>
+</div>
 	

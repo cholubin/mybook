@@ -1,5 +1,5 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :myarticles, :newbooks
+  map.resources :myarticles, :newbooks, :bookarticle
   map.resources :mybooks,:mybookpdfs, :mybookfolders
 
   map.resources :tempfolders
