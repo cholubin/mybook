@@ -6,20 +6,17 @@
 <p>
 <a href="/bookarticles">북리스트</a>
 </p>
-<div id="new_book_list">
 <% @book_list = Book_basic.all(:user_id => current_user.id)   %>
-
 <% 
 @book_list.each do |list|
 	%>
-	
 	<% form_remote_tag :url => {:action => 'left_list_delete'}, :update => "new_book_list" do %>	
-	<a href="/bookarticles?book_id=<%= list.id.to_s %>"><font color="white"><%= list.title %></font></a>&nbsp;<input type="submit" value="-"><br>
+	<a href="/bookarticles?book_id=<%= list.id.to_s %>"><font color="white"><%= list.title %></font></a>&nbsp;<input type="submit" onClick="return confirm('정말 삭제하시겠습니까?');" value="-"><br>
 	<input type="hidden" name="book_id" value="<%= list.id.to_s %>">
 	<% end %>
 	<%
 end
 
 %>
-</div>
+
 	

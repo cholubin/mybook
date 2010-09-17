@@ -260,8 +260,9 @@ def test
     end
   end
   
+  @book_id = book_basic_id
   @book_list = Book_basic.all(:user_id => current_user.id)
-  render :partial => "result"
+  render :partial => "result", :object => @book_id
 
  # render :update do |page|
  #   page.replace_html 'result', "result"
@@ -269,5 +270,34 @@ def test
   
 end
 
+def left_list_delete
+  book_id = params[:book_id].to_i
+
+  @book_basic = Book_basic.first(:id => book_id, :user_id => current_user.id)
+  @book_articles = Book_article.all(:book_basic_id => book_id, :user_id => current_user.id)
+  
+  if params[:need_reload] == "true"
+    @need_reload = true
+  else
+    @need_reload = false
+  end
+  
+  if @book_basic.destroy 
+    if @book_articles.destroy
+      @book_list = Book_basic.all(:user_id => current_user.id)
+
+      tmp_msg = "on deleting "+@book_basic.title+"'s articles: total "+@book_articles.count.to_s+" articles ..."    
+      puts_message tmp_msg
+      
+    else
+      puts_message "error occured on progress of deleting Book_articles table..."        
+    end
+
+    render :partial => "new_book_list", :object => @book_list, :object => @need_reload
+    # render 'bookarticle'
+  else
+    puts_message "error occured on progress of deleting Book_basic table..."
+  end
+end
 
 end

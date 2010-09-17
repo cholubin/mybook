@@ -1,4 +1,5 @@
 <script>
 	hide_progress();
-	alert("완료!");
+	alert("책의 기본구조가 완성되었습니다!\n 책리스트로 이동합니다.!");
+	document.location.replace("/bookarticles?book_id=<%= @book_id %>");
 </script>

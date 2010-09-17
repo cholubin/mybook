@@ -1,9 +1,14 @@
-<%
-if @need_reload == true %>
-	<script>
-		document.location.replace("/bookarticles");
-	</script>
-<%end %>
+<p>
+<a href="/newbooks">새책만들기</a>
+</p>
+
+
+<p>
+<a href="/bookarticles">북리스트</a>
+</p>
+<div id="new_book_list">
+<% @book_list = Book_basic.all(:user_id => current_user.id)   %>
+
 <% 
 @book_list.each do |list|
 	%>
@@ -12,8 +17,10 @@ if @need_reload == true %>
 	<%= ">" if !@book_id.nil? and @book_id == list.id.to_s %><a href="/bookarticles?book_id=<%= list.id.to_s %>"><font color="white"><%= list.title %></font></a>
 	&nbsp;<input type="submit" value="-" onClick="return confirm('정말 삭제하시겠습니까?');" style="cursor:hand;"><br>
 	<input type="hidden" name="book_id" value="<%= list.id.to_s %>">
-	<input type="hidden" name="need_reload" value="<%= "true" if !@book_id.nil? and @book_id == list.id.to_s %>">
+	<input type="hidden" name="need_reload" value="<%= "true" if !@book_id.nil? and @book_id == list.id.to_s %>">	
 	<% end 
 end
 
 %>
+</div>
+	

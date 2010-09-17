@@ -5,111 +5,17 @@ class BookarticlesController < ApplicationController
 
   def index
     @menu = "myarticles"
-    book_id = params[:book_id]
+    @book_id = params[:book_id]
     
-    if !book_id.nil?
-      @book_basic = Book_basic.get(book_id.to_i)
+    if !@book_id.nil?
+      @book_basic = Book_basic.get(@book_id.to_i)
     else
       
     end
     render 'bookarticle'  
   end
   
-  
-  # GET /articles/1
-  # GET /articles/1.xml
-  def show
-    @article = Article.get(params[:id])
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @article }
-    end
-  end
-
-  # GET /articles/faq_new
-  # GET /articles/faq_new.xml
-  def new
-    @article = Article.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @article }
-    end
-  end
-  
-  # GET /articles/faq_new
-  # GET /articles/faq_new.xml
-  def faq_new
-    @article = Article.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @article }
-    end
-  end
-  
-  def store_dir   
-    dir = "#{RAILS_ROOT}/public/user_files/images/"
-    FileUtils.mkdir_p dir if not File.exist?(dir)
-    FileUtils.chmod 0777, dir
-    return dir 
-    # "#{RAILS_ROOT}/public/user_files/images/"
-  end
-  
-  # GET /articles/1/edit
-  def edit
-    @article = Article.get(params[:id])
-  end
-
-  # POST /articles
-  # POST /articles.xml
-  def create
-    
-    @article = Article.new(params[:article])
-    
-    # 이미지 업로드 처리 ===============================================================================
-    if params[:article][:image_file] != nil
-       
-      @article.image_file = params[:article][:image_file]      
-      @temp_filename = sanitize_filename(params[:article][:image_file].original_filename)
-      
-      # 중복파일명 처리 ===============================================================================
-      while File.exist?(IMAGE_PATH + @temp_filename) 
-        @temp_filename = @temp_filename.gsub(File.extname(@temp_filename),"") + "_1" + File.extname(@temp_filename)
-        @article.image_filename = @temp_filename
-        # puts @article.image_filename
-      end 
-      @article.image_filename = @temp_filename
-       # 중복파일명 처리 ===============================================================================
-      
-      @article.image_filename_encoded = @article.image_file.filename
-    
-    end 
-          
-  respond_to do |format|
-      if @article.save  
-        
-        # image filename renaming ======================================================================
-        file_name = @article.image_filename_encoded
-
-        if file_name
-         if  File.exist?(IMAGE_PATH + file_name)
-          	File.rename IMAGE_PATH + file_name, IMAGE_PATH  + @article.image_filename #original file
-          	File.rename IMAGE_PATH + "t_" + file_name, IMAGE_PATH + "t_" + @article.image_filename #thumbnail file
-          end
-        end      
-        # image filename renaming ======================================================================
-        
-        flash[:notice] = 'Article was successfully created.'
-        format.html { redirect_to(@article) }
-        format.xml  { render :xml => @article, :status => :created, :location => @article }
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @article.errors, :status => :unprocessable_entity }
-      end
-    end
-  end
 
   # PUT /articles/1
   # PUT /articles/1.xml
@@ -128,16 +34,36 @@ class BookarticlesController < ApplicationController
   end
 
   def left_list_delete
-    @book_basic = Book_basic.get(params[:book_id].to_i)
-    @book_articles = Book_article.all(:book_basic_id => params[:id].to_i)
     
-    if @book_basic.destroy and @book_articles.destroy
-      @book_list = Book_basic.all(:user_id => current_user.id)
-      render :partial => "new_book_list", :object => @book_list
+    book_id = params[:book_id].to_i
+
+    @book_basic = Book_basic.first(:id => book_id, :user_id => current_user.id)
+    @book_articles = Book_article.all(:book_basic_id => book_id, :user_id => current_user.id)
+    
+    if params[:need_reload] == "true"
+      @need_reload = true
     else
-      puts_message "error occured!"
+      @need_reload = false
+    end
+    
+
+    tmp_msg = "on deleting "+@book_basic.title+"'s articles: total "+@book_articles.count.to_s+" articles ..."    
+    puts_message tmp_msg
+
+    if @book_basic.destroy 
+      if @book_articles.destroy
+        @book_list = Book_basic.all(:user_id => current_user.id)
+      else
+        puts_message "error occured on progress of deleting Book_articles table..."        
+      end
+
+      render :partial => "new_book_list", :object => @book_list, :object => @need_reload
+      # render 'bookarticle'
+    else
+      puts_message "error occured on progress of deleting Book_basic table..."
     end
   end
+
   # DELETE /articles/1
   # DELETE /articles/1.xml
   def destroy

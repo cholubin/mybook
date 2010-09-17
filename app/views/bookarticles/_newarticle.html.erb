@@ -59,7 +59,7 @@ if !@book_basic.nil?
 @level1_list.each do |l1|
 	%>
 	<div id="<%= l1.id %>" style="width:600px; background-color:yellow;">
-		<% form_remote_tag :url => {:action => 'update'} do %>
+		<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 		<input type="hidden" name="id" value="<%= l1.id.to_s %>">
 		<input type="text" style="width:500" name="title" value="<%= l1.title %>">
 		<input type="submit" value="저장"><br>
@@ -72,7 +72,7 @@ if !@book_basic.nil?
 			%>
 			<br>
 			<div id="<%= l2.id %>" style="width:600px; background-color:blue;padding-left:5px;margin-left:5px">
-				<% form_remote_tag :url => {:action => 'update'} do %>
+				<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 				<input type="hidden" name="id" value="<%= l2.id.to_s %>">
 				<input type="text" style="width:500" name="title" value="<%= l2.title %>">
 				<input type="submit" value="저장"><br>
@@ -85,7 +85,7 @@ if !@book_basic.nil?
 					%>
 					<br>
 					<div id="<%= l3.id %>" style="width:600px; background-color:green;padding-left:5px;margin-left:5px">
-						<% form_remote_tag :url => {:action => 'update'} do %>
+						<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 						<input type="hidden" name="id" value="<%= l3.id.to_s %>">
 						<input type="text" style="width:500" name="title" value="<%= l3.title %>">
 						<input type="submit" value="저장"><br>
@@ -98,7 +98,7 @@ if !@book_basic.nil?
 							%>
 							<br>
 							<div id="<%= l4.id %>" style="width:600px; background-color:purple;padding-left:5px;margin-left:5px">
-								<% form_remote_tag :url => {:action => 'update'} do %>
+								<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 								<input type="hidden" name="id" value="<%= l4.id.to_s %>">
 								<input type="text" style="width:500" name="title" value="<%= l4.title %>">
 								<input type="submit" value="저장"><br>

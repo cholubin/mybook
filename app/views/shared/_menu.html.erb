@@ -12,7 +12,7 @@
 			<li><a <%= "Class=\"on\"" if @menu == "tutorial" %> href="/pages/tutorial">tutorial</a></li>
 <!--			<li><a <%= "Class=\"on\"" if @menu == "contact" %>href="/pages/contact">contact</a></li> -->
 			<% if signed_in? %>
-			<li id="myspace" title="자신의 원고를 정리하는 곳입니다."><a <%= "Class=\"on\"" if @menu == "myarticles" %> href="/myarticles">내원고함</a></li>						
+			<li id="myspace" title="자신의 원고를 정리하는 곳입니다."><a <%= "Class=\"on\"" if @menu == "myarticles" %> href="/bookarticles">내원고함</a></li>						
 			
 			<li id="myspace" title="TEMPLATE 페이지에서 복사한 자신의 템플릿을 편집하고 관리하는 영역입니다."><a <%= "Class=\"on\"" if @menu == "mytemplate" %> href="/mytemplates">My Space</a></li>						
 				<% if @menu == "mlayout" %>
