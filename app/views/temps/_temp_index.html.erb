@@ -158,10 +158,10 @@ end%>
 			<div class="pager">
 				<%
 				if params[:category_name] != nil
-					@category_name = params[:category_name]
+					@category_name = Category.get(params[:category_name].to_i).name
 				end
 				if params[:subcategory_name] != nil
-			    	@subcategory_name = params[:subcategory_name]
+			    	@subcategory_name = Subcategory.get(params[:subcategory_name].to_i).name
 				end
 
       			if signed_in?
