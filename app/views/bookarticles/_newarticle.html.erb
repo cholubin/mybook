@@ -12,6 +12,7 @@
 
 
 <script language="javascript">
+
 function folder_view() {
 	var t = document.getElementById('folder');
 	
@@ -58,11 +59,16 @@ if !@book_basic.nil?
 
 @level1_list.each do |l1|
 	%>
-	<div id="<%= l1.id %>" style="width:600px; background-color:yellow;">
+	<div id="<%= l1.id %>" style="width:700px; background-color:yellow;">
 		<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 		<input type="hidden" name="id" value="<%= l1.id.to_s %>">
 		<input type="text" style="width:500" name="title" value="<%= l1.title %>">
-		<input type="submit" value="저장"><br>
+		<input type="submit" value="텍스트저장">
+		<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
+		:onmouseover => "this.style.cursor='hand';",
+		:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
+		:with => "'article_id="+l1.id.to_s+"'")	%>
+		<br>
 		<textarea name="content" style='width: 500px; height: 50px;' onkeyup='this.style.height =this.scrollHeight'><%= l1.content %></textarea>
 		<% end %>
 		<%
@@ -71,11 +77,16 @@ if !@book_basic.nil?
 			@level2_list.each do |l2|
 			%>
 			<br>
-			<div id="<%= l2.id %>" style="width:600px; background-color:blue;padding-left:5px;margin-left:5px">
+			<div id="<%= l2.id %>" style="width:700px; background-color:blue;padding-left:5px;margin-left:5px">
 				<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 				<input type="hidden" name="id" value="<%= l2.id.to_s %>">
 				<input type="text" style="width:500" name="title" value="<%= l2.title %>">
-				<input type="submit" value="저장"><br>
+				<input type="submit" value="텍스트저장">
+				<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
+				:onmouseover => "this.style.cursor='hand';",
+				:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
+				:with => "'article_id="+l2.id.to_s+"'")	%>				
+				<br>
 				<textarea name="content" style='width: 500px; height: 50px;' onkeyup='this.style.height =this.scrollHeight'><%= l2.content %></textarea>
 				<% end %>
 				<%
@@ -84,11 +95,16 @@ if !@book_basic.nil?
 					@level3_list.each do |l3|
 					%>
 					<br>
-					<div id="<%= l3.id %>" style="width:600px; background-color:green;padding-left:5px;margin-left:5px">
+					<div id="<%= l3.id %>" style="width:700px; background-color:green;padding-left:5px;margin-left:5px">
 						<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 						<input type="hidden" name="id" value="<%= l3.id.to_s %>">
 						<input type="text" style="width:500" name="title" value="<%= l3.title %>">
-						<input type="submit" value="저장"><br>
+						<input type="submit" value="텍스트저장">
+						<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
+						:onmouseover => "this.style.cursor='hand';",
+						:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
+						:with => "'article_id="+l3.id.to_s+"'")	%>						
+						<br>
 						<textarea name="content" style='width: 500px; height: 50px;' onkeyup='this.style.height =this.scrollHeight'><%= l3.content %></textarea>
 						<% end %>
 						<%
@@ -97,11 +113,16 @@ if !@book_basic.nil?
 							@level4_list.each do |l4|
 							%>
 							<br>
-							<div id="<%= l4.id %>" style="width:600px; background-color:purple;padding-left:5px;margin-left:5px">
+							<div id="<%= l4.id %>" style="width:700px; background-color:purple;padding-left:5px;margin-left:5px">
 								<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 								<input type="hidden" name="id" value="<%= l4.id.to_s %>">
 								<input type="text" style="width:500" name="title" value="<%= l4.title %>">
-								<input type="submit" value="저장"><br>
+								<input type="submit" value="저장">
+								<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
+								:onmouseover => "this.style.cursor='hand';",
+								:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
+								:with => "'article_id="+l4.id.to_s+"'")	%>								
+								<br>
 								<textarea name="content" style='width: 500px; height: 50px;' onkeyup='this.style.height =this.scrollHeight'><%= l4.content %></textarea>
 								<% end %>
 							</div>			
@@ -125,6 +146,7 @@ if !@book_basic.nil?
 end
 %>
 <div id="result"></div>
+<div id="mlayout_run"></div>
 </body>
 </html>
 

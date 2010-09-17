@@ -64,6 +64,83 @@ class BookarticlesController < ApplicationController
     end
   end
 
+  def publish_book
+    
+    booktemplate = Mytemplate.first(:name => "Book sample")  
+    article_id = params[:article_id]
+    
+    puts_message booktemplate.path
+    puts_message article_id
+    
+    make_xml_contents(booktemplate, article_id)
+    
+    goal = booktemplate.path    
+    puts_message goal
+    
+    xml_file = <<-EOF
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+    <plist version="1.0">
+    <dict>
+    	<key>Action</key>
+    	<string>RefreshXML</string>
+    	<key>DocPath</key>
+    	<string>#{goal}</string>   
+    	<key>ID</key>
+     	<string>#{booktemplate.temp_id}</string>    	
+    </dict>
+    </plist>
+
+    EOF
+
+    njob = booktemplate.path + "/publish_job.mJob" 
+    File.open(njob,'w') { |f| f.write xml_file }    
+    system "open #{njob}"
+
+    job_done = booktemplate.path + "/web/done.txt" 
+
+    puts_message "creating M file!!!"
+
+    time_after_180_seconds = Time.now + 180.seconds     
+    while Time.now < time_after_180_seconds
+      break if File.exists?(job_done)
+    end
+
+    if !File.exists?(job_done)
+      pid = `ps -c -eo pid,comm | grep MLayout`.to_s
+      pid = pid.gsub(/MLayout 2/,'').gsub(' ', '')
+      system "kill #{pid}"     
+      puts_message "MLayout was killed!!!!! ============"
+    else
+      puts_message "There is job done file of M file making!"
+    end
+
+    puts_message "publish_mjob end"               
+    
+    @temp = booktemplate
+    
+    # render :partial => "mlayout_run"
+    render :update do |page|
+      page.replace_html 'mlayout_run', :partial => 'mlayout_run', :object => @temp
+    end    
+  end
+
+  
+  def make_xml_contents(mytemplate, article_id)
+    
+    article_content = Book_article.get(article_id.to_i).content
+
+    xml_file = <<-EOF
+    <xml>
+      #{article_content}
+    </xml>
+    EOF
+
+    path = mytemplate.path
+    write_2_file =  path + "/web/contents.xml"      
+    File.open(write_2_file,'w') { |f| f.write xml_file }
+    
+  end
   # DELETE /articles/1
   # DELETE /articles/1.xml
   def destroy

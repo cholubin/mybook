@@ -1,0 +1,14 @@
+<% doc_name = @temp.id.to_s %>
+
+<script>
+function popup(doc_name) {
+   var url = "/MClientBox/index.html?spread_list=YES&user_path=/user_files/<%= current_user.userid %>&doc_path=/article_templates/"+ doc_name+".mlayoutP"
+   width = screen.width;
+   height = screen.height;
+   window.open(url ,'mybook','width='+width+', height='+height);
+
+}
+
+	hide_progress();
+	popup('<%= doc_name %>');	
+</script>
