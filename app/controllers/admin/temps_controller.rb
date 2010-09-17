@@ -468,11 +468,11 @@ class Admin::TempsController < ApplicationController
         system "open #{mjob}"
     end 
     
-    time_after_15_seconds = Time.now + 15.seconds     
+    time_after_30_seconds = Time.now + 30.seconds     
     thumb_path = "#{RAILS_ROOT}/public#{temp.thumb_url}"
     puts_message thumb_path
       puts_message "waiting for thumnail image!"    
-    while Time.now < time_after_15_seconds
+    while Time.now < time_after_30_seconds
       break if File.exists?(thumb_path)
     end
            
