@@ -195,7 +195,7 @@ class BookarticlesController < ApplicationController
       puts_message "There is job done file of M file making!"
     end
     
-    if !start_page.nil?
+    if start_page != ""
       make_start_page(booktemplate, start_page)
     end
     
