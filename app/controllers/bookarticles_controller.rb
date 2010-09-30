@@ -64,6 +64,10 @@ class BookarticlesController < ApplicationController
   end
 
   def publish_book
+    pid = `ps -c -eo pid,comm | grep MLayout`.to_s
+    pid = pid.gsub(/MLayout 2/,'').gsub(' ', '')
+    system "kill #{pid}"     
+    
     start_page = params[:start_page]
 
     puts_message start_page
