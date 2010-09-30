@@ -10,11 +10,15 @@ class Temp
   # Class Configurations ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   include DataMapper::Resource
   mount_uploader :file, MlayoutTemplateUploader
-  
   # Attributes ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   property :id,                     Serial
   property :name,                   String
   property :file,                   Text
+  property :index,                  Text
+  property :dobira,                 Text
+  property :inner_cover,            Text
+  
+        
   property :original_filename,      String, :length => 200
   property :thumb_url,              String, :length => 200
   property :preview_url,            String, :length => 200  
@@ -42,8 +46,13 @@ class Temp
   property :tags,                   Text
   property :hit_cnt,                Integer, :default => 0
   property :copy_cnt,               Integer, :default => 0  
-  property :is_best,                Boolean, :default => false  
+  property :is_best,                Boolean, :default => false
 
+# 북템플릿 관련 Attributes , 책인경우 해당 템플릿을 대표하는 cover의 경우 master flag
+  property :is_book,                Boolean, :default => false
+  property :is_master,              Boolean, :default => false
+  property :gubun,                  String    
+  property :master_id,              Integer
   # for 원플러스 (특정사용자에게만 템플릿 공개)
   property :users,                  Text
        

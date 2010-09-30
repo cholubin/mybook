@@ -104,7 +104,11 @@ class MytemplatesController < ApplicationController
   end
 
   def publish
-    @mytemplate = Mytemplate.first(:file_filename => params[:id] + ".mlayoutP.zip", :user_id => current_user.id)   
+    if Mytemplate.all(:file_filename => params[:id] + ".mlayoutP.zip", :user_id => current_user.id).count >0
+      @mytemplate = Mytemplate.first(:file_filename => params[:id] + ".mlayoutP.zip", :user_id => current_user.id)   
+    else
+      @mytemplate = Mytemplate.get(params[:id])   
+    end
     erase_job_done_file(@mytemplate)       
     check_job_done_and_publish(@mytemplate) 
     close_document(@mytemplate)  
@@ -141,7 +145,13 @@ class MytemplatesController < ApplicationController
 
     mypdf = Mypdf.new
     mypdf.name = mytemplate.name
-    mypdf.pdf_filename = mytemplate.file_filename.gsub(/.mlayoutP.zip/,'.pdf')
+
+    if mytemplate.is_book = true
+      mypdf.pdf_filename = mytemplate.name.gsub(/.mlayoutP/,'.pdf')
+    else
+      mypdf.pdf_filename = mytemplate.file_filename.gsub(/.mlayoutP.zip/,'.pdf')
+    end
+
     mypdf.user_id = current_user.id
     
     
@@ -214,6 +224,20 @@ class MytemplatesController < ApplicationController
 
     copy_template(@mytemplate, @mytemplate.temp_id)    
     # if @mytemplate != nil && @mytemplate.save && @user.save        
+  
+    @copy_folder = Temp.get(params[:temp_id])
+    if @copy_folder.is_book == true
+      new_temp_dir = "#{RAILS_ROOT}/public/user_files/" + current_user.userid + "/article_templates/" + @mytemplate.id.to_s + "/"
+      FileUtils.mkdir_p(File.dirname(new_temp_dir))   
+      FileUtils.cp_r TEMP_PATH + @copy_folder.id.to_s, new_temp_dir 
+      File.rename new_temp_dir + params[:temp_id] + "inner_cover.mlayoutP" , new_temp_dir  + @mytemplate.id.to_s + "inner_cover.mlayoutP"
+      File.rename new_temp_dir + params[:temp_id] + "inner_cover.mlayoutP.zip" , new_temp_dir  + @mytemplate.id.to_s + "inner_cover.mlayoutP.zip"      
+      File.rename new_temp_dir + params[:temp_id] + "dobira.mlayoutP" , new_temp_dir  + @mytemplate.id.to_s + "dobira.mlayoutP"
+      File.rename new_temp_dir + params[:temp_id] + "dobira.mlayoutP.zip" , new_temp_dir  + @mytemplate.id.to_s + "dobira.mlayoutP.zip"
+      File.rename new_temp_dir + params[:temp_id] + "index.mlayoutP" , new_temp_dir  + @mytemplate.id.to_s + "index.mlayoutP"
+      File.rename new_temp_dir + params[:temp_id] + "index.mlayoutP.zip" , new_temp_dir  + @mytemplate.id.to_s + "index.mlayoutP.zip"
+    end
+    
     @mytemplate
   
     render :update do |page|
@@ -249,14 +273,19 @@ class MytemplatesController < ApplicationController
     
     begin
       if mytemplate != nil
-        if File.exist?(mytemplate.path.force_encoding('UTF8-MAC')) 
-          FileUtils.remove_entry_secure mytemplate.path.force_encoding('UTF8-MAC') 
+        if File.exist?(mytemplate.path) 
+          FileUtils.rm_rf mytemplate.path
         end
+  
+        if File.exist?(mytemplate.file_path+mytemplate.id.to_s) 
+          FileUtils.rm_rf mytemplate.file_path+mytemplate.id.to_s
+        end
+
       end
     rescue
       puts_message "Error! in progress of mytemplate file deletion."
     end
-    
+
     mytemplate.destroy
     
     respond_to do |format|
@@ -334,6 +363,12 @@ class MytemplatesController < ApplicationController
       
       # 복제된 템플릿 객체
       @cloned_object = mytemplate
+      
+      if @object_to_clone.is_book == true
+        @cloned_object.is_book = @object_to_clone.is_book
+        @cloned_object.is_master = @object_to_clone.is_master
+        @cloned_object.gubun = @object_to_clone.gubun
+      end
       
       @cloned_object.name = @object_to_clone.name
       # @cloned_object.file_filename = @object_to_clone.file_filename
@@ -539,8 +574,16 @@ class MytemplatesController < ApplicationController
       #        
       # puts_message mypdf.basic_path
       puts_message "set_pdf_path Start!"
-      pdf = "#{RAILS_ROOT}" + "/public/user_files/" + current_user.userid + "/article_templates/" + "#{mytemplate.file_filename.gsub(/.zip/,'')}" +"/web/document.pdf"
-      url = "#{HOSTING_URL}" + "/user_files/" + current_user.userid + "/article_templates/" + "#{mytemplate.file_filename.gsub(/.zip/,'')}" +"/web/document.pdf" 
+      
+      if mytemplate.is_book = true
+        temp = mytemplate.name.split('.')
+        book_id = temp[0]
+        pdf = "#{RAILS_ROOT}" + "/public/user_files/" + current_user.userid + "/book_article/" + book_id + "/" + "#{mytemplate.name}" +"/web/document.pdf"
+        url = "#{HOSTING_URL}" + "/user_files/" + current_user.userid + "/book_article/" + book_id + "/" + "#{mytemplate.name}" +"/web/document.pdf"
+      else
+        pdf = "#{RAILS_ROOT}" + "/public/user_files/" + current_user.userid + "/article_templates/" + "#{mytemplate.file_filename.gsub(/.zip/,'')}" +"/web/document.pdf"
+        url = "#{HOSTING_URL}" + "/user_files/" + current_user.userid + "/article_templates/" + "#{mytemplate.file_filename.gsub(/.zip/,'')}" +"/web/document.pdf" 
+      end
       mytemplate.pdf = url 
       mytemplate.pdf_path = pdf
       if mytemplate.save

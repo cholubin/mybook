@@ -28,6 +28,12 @@ class Mytemplate
   property :pdf,                    String, :length => 200     
   property :pdf_path,               String, :length => 200       
   property :folder,                 String, :default => "basic"
+  
+  # 북템플릿 관련 Attributes , 책인경우 해당 템플릿을 대표하는 cover의 경우 master flag
+    property :is_book,                Boolean, :default => false
+    property :is_master,              Boolean, :default => false
+    property :gubun,                  String    
+    property :master_id,              Integer  
 
   timestamps :at
   
@@ -45,7 +51,7 @@ class Mytemplate
   
 
   def file_path   
-    dir = "#{RAILS_ROOT}" + "/public/user_files/#{self.user.userid}/templates/"
+    dir = "#{RAILS_ROOT}" + "/public/user_files/#{self.user.userid}/article_templates/"
     FileUtils.mkdir_p dir if not File.exist?(dir)
     FileUtils.chmod 0777, dir
 

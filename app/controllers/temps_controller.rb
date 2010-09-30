@@ -465,7 +465,7 @@ class TempsController < ApplicationController
     temp_id = params[:id]                           
     path = "#{RAILS_ROOT}/public/user_files/" + current_user.userid + "/templates"
     @object_to_clone = Temp.get(temp_id) 
-    puts @object_to_clone.id
+
     @cloned_object = Mytemplate.new
     @cloned_object.name = @object_to_clone.name
     @cloned_object.file_filename = @object_to_clone.file_filename
@@ -486,9 +486,8 @@ class TempsController < ApplicationController
  
     new_temp_dir = path + "/" + mytemplate_filename
     FileUtils.mkdir_p(File.dirname(new_temp_dir))   
-    puts_message @object_to_clone.path
-    puts_message new_temp_dir
     FileUtils.cp_r TEMP_PATH + mytemplate_filename, new_temp_dir  
+    
     #--- delete template's mjob file     
     tmp = new_temp_dir + "/do_job.mjob"
     FileUtils.remove_entry_secure(tmp) if File.exist?(tmp)  

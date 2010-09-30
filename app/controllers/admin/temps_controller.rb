@@ -89,60 +89,240 @@ class Admin::TempsController < ApplicationController
     render 'temp'
   end
 
-  # POST /temps
-  # POST /temps.xml
-  def create
-           
-    @temp = Temp.new(params[:temp])
-        
-    file_path = @temp.file_path
 
-    @temp.file = params[:temp][:file]  if params[:temp][:file]
-    @temp.original_filename = params[:temp][:file].original_filename
-    @temp.file_filename = sanitize_filename(@temp.original_filename) if params[:temp][:file]
+  def book_basic_process(temp, param1)
+    if @temp.save
+      file_name_by_id = @temp.id.to_s
+    end
+    
+    @temp.file = param1  if param1
+    @temp.original_filename = param1.original_filename
+    # @temp.file_filename = sanitize_filename(@temp.original_filename) if params[:temp][:file]
+    @temp.file_filename = file_name_by_id + ".mlayoutP.zip"
     @temp_filename = @temp.filename
-    
+
     @extname = ".mlayoutP.zip"
-    
-    while File.exist?(file_path + @temp_filename) 
-      @temp_filename = @temp_filename.gsub(@extname,'') + "_1" + @extname
-      @temp.file_filename = @temp_filename
-    end 
+
     @temp.file_filename = @temp_filename
     @temp.file_filename_encoded = @temp.file.filename
+
+    @temp.zip_file = "#{RAILS_ROOT}/public/templates/" + @temp.file_filename  if param1
+    @temp.path = "#{RAILS_ROOT}" + "/public/templates/" + @temp.file_filename.gsub(/.zip/,'')  if param1    
+    @temp.type = "template"
+
+    @temp.thumb_url = "/templates/" + @temp.filename.gsub(/.zip/,'') + "/web/doc_thumb.jpg"         
+    @temp.preview_url = "/templates/" + @temp.filename.gsub(/.zip/,'') + "/web/doc_preview.jpg"    
+    
+    respond_to do |format|
+      if @temp.save
+        
+        # filename renaming ======================================================================
+        file_path = @temp.file_path
+        file_name = @temp.file_filename_encoded
+        
+        if file_name
+
+         if  File.exist?(file_path + file_name)
+          	File.rename file_path + file_name, file_path  + @temp.file_filename #original file
+          	@temp.zip_file = file_path  + @temp.file_filename
+          end
+        end      
+        # filename renaming ======================================================================
+                
+        begin
+          unzip_uploaded_file(@temp)
+          puts_message "unzip_uploaded_file finished!"
+          
+          make_contens_xml(@temp) 
+          puts_message "make_contens_xml finished!"
+                    
+          erase_job_done_file(@temp)
+          puts_message "erase_job_done_file finished!"
+                  
+          flash[:notice] = 'Temp was successfully created.'
+          format.html { redirect_to admin_temps_path }
+        rescue
+          flash[:notice] = "failed to upload."  
+          puts "\n============================== \n error while processing \n ============================== \n"
+          #           
+        end
+      else
+        @board = "temp"
+        @section = "new"
+        format.html { render :action => "new" }
+      end
+    end    
+  end
+
+  def create
+
+    @temp = Temp.new(params[:temp])
+
+    if @temp.save
+      file_name_by_id = @temp.id.to_s
+    end
+          
+    if params[:temp][:is_book] == "1"
       
+      begin
+        new_dir = TEMP_PATH + file_name_by_id + "/"
+        if !File.exist?(new_dir)
+         FileUtils.mkdir_p new_dir
+         FileUtils.chmod 0777, new_dir
+        end
+                
+        uploader = MlayoutTemplateUploader.new
+        uploader.store!(params[:temp][:inner_cover])
+        uploader.store!(params[:temp][:index])        
+        uploader.store!(params[:temp][:dobira])
+        
+        file_path = @temp.file_path
+        
+        #한글문제 처리해야 한다!!!
+        File.rename file_path + params[:temp][:inner_cover].original_filename, new_dir  + file_name_by_id + "inner_cover" + ".mlayoutP.zip"        
+        File.rename file_path + params[:temp][:index].original_filename, new_dir  + file_name_by_id + "index" + ".mlayoutP.zip"                
+        File.rename file_path + params[:temp][:dobira].original_filename, new_dir  + file_name_by_id + "dobira" + ".mlayoutP.zip"                
+        
+
+        unzip(new_dir+file_name_by_id+"inner_cover"+".mlayoutP.zip",new_dir,params[:temp][:inner_cover].original_filename.gsub(/.zip/,''),file_name_by_id + "inner_cover" + ".mlayoutP")    
+        unzip(new_dir+file_name_by_id+"index"+".mlayoutP.zip",new_dir,params[:temp][:index].original_filename.gsub(/.zip/,''),file_name_by_id + "index" + ".mlayoutP")    
+        unzip(new_dir+file_name_by_id+"dobira"+".mlayoutP.zip",new_dir,params[:temp][:dobira].original_filename.gsub(/.zip/,''),file_name_by_id + "dobira" + ".mlayoutP")    
+        
+        # unzip(file, destination, original_filename, modified_filename)
+        
+      rescue
+        puts_message "에러나버렸잖어!!!!!!!!!!!!!!!!!!!!!!!!!!"
+      end
+    end
+
+    
+    @temp.file = params[:temp][:file]  if params[:temp][:file]
+    @temp.original_filename = params[:temp][:file].original_filename
+    # @temp.file_filename = sanitize_filename(@temp.original_filename) if params[:temp][:file]
+    @temp.file_filename = file_name_by_id + ".mlayoutP.zip"
+    @temp_filename = @temp.filename
+
+    @extname = ".mlayoutP.zip"
+
+    @temp.file_filename = @temp_filename
+    @temp.file_filename_encoded = @temp.file.filename
+
     @temp.zip_file = "#{RAILS_ROOT}/public/templates/" + @temp.file_filename  if params[:temp][:file]
     @temp.path = "#{RAILS_ROOT}" + "/public/templates/" + @temp.file_filename.gsub(/.zip/,'')  if params[:temp][:file]    
     @temp.type = "template"
-    
+
     @temp.thumb_url = "/templates/" + @temp.filename.gsub(/.zip/,'') + "/web/doc_thumb.jpg"         
-    @temp.preview_url = "/templates/" + @temp.filename.gsub(/.zip/,'') + "/web/doc_preview.jpg"             
+    @temp.preview_url = "/templates/" + @temp.filename.gsub(/.zip/,'') + "/web/doc_preview.jpg"
     
-        
+            
+    if params[:temp][:is_book] == "1"
+      # 북템플릿 처리 
+      @temp.is_book = true
+      @temp.is_master = true
+      @temp.gubun = "master"
+      @temp.master_id = file_name_by_id.to_i
+      
+      master_book_template_process(@temp)
+    else
+      # 일반템플릿 처리 
+      basic_template_process(@temp)
+    end      
+  end
+
+  def master_book_template_process(temp)
+    @temp = temp
     respond_to do |format|
       if @temp.save
+        
+        # 원플러스용 사용자별 템플릿 공개 혀용여부에 따른 처리루틴 =====================
+        if TEMPLATE_OPEN_FUNC_TOGGLE == true
+          temp_id = @temp.id
+          user_list = params[:user_list].split(',')
 
-        # 원플러스용 사용자별 템플릿 공개 혀용 
-        temp_id = @temp.id
-        user_list = params[:user_list].split(',')
-
-        if !user_list.nil? 
-          # 먼저 해당템플릿에 대해 공개허용된 사용자정보를 삭제한다. 
-          user_open_all = Usertempopenlist.all(:temp_id => temp_id)
-          if !user_open_all.nil?
-            user_open_all.destroy
-          end
-          # 새롭게 사용자별로 허용한다.  
-          user_list.each do |u|
-            usertemp = Usertempopenlist.new()
-            usertemp.user_id = u
-            usertemp.temp_id = temp_id
-            usertemp.save
+          if !user_list.nil? 
+            # 먼저 해당템플릿에 대해 공개허용된 사용자정보를 삭제한다. 
+            user_open_all = Usertempopenlist.all(:temp_id => temp_id)
+            if !user_open_all.nil?
+              user_open_all.destroy
+            end
+            # 새롭게 사용자별로 허용한다.  
+            user_list.each do |u|
+              usertemp = Usertempopenlist.new()
+              usertemp.user_id = u
+              usertemp.temp_id = temp_id
+              usertemp.save
+            end
           end
         end
 
         
         # filename renaming ======================================================================
+        file_path = @temp.file_path
+        file_name = @temp.file_filename_encoded
+        
+        if file_name
+
+          if File.exist?(file_path + file_name)
+          	File.rename file_path + file_name, file_path  + @temp.file_filename #original file
+          	@temp.zip_file = file_path  + @temp.file_filename
+          end
+        end      
+        # filename renaming ======================================================================
+                
+        begin
+          unzip_uploaded_file(@temp)
+          puts_message "unzip_uploaded_file finished!"
+          
+          make_contens_xml(@temp) 
+          puts_message "make_contens_xml finished!"
+                    
+          erase_job_done_file(@temp)
+          puts_message "erase_job_done_file finished!"
+                  
+          flash[:notice] = 'Temp was successfully created.'
+          format.html { redirect_to admin_temps_path }
+        rescue
+          flash[:notice] = "failed to upload."  
+          puts "\n============================== \n error while processing \n ============================== \n"
+          redirect_to admin_temps_path          
+        end
+      else
+        @board = "temp"
+        @section = "new"
+        format.html { render :action => "new" }
+      end
+    end    
+  end
+  
+  def basic_template_process(temp)
+    @temp = temp
+    respond_to do |format|
+      if @temp.save
+        
+        # 원플러스용 사용자별 템플릿 공개 혀용여부에 따른 처리루틴 =====================
+        if TEMPLATE_OPEN_FUNC_TOGGLE == true
+          temp_id = @temp.id
+          user_list = params[:user_list].split(',')
+
+          if !user_list.nil? 
+            # 먼저 해당템플릿에 대해 공개허용된 사용자정보를 삭제한다. 
+            user_open_all = Usertempopenlist.all(:temp_id => temp_id)
+            if !user_open_all.nil?
+              user_open_all.destroy
+            end
+            # 새롭게 사용자별로 허용한다.  
+            user_list.each do |u|
+              usertemp = Usertempopenlist.new()
+              usertemp.user_id = u
+              usertemp.temp_id = temp_id
+              usertemp.save
+            end
+          end
+        end
+
+        
+        # filename renaming ======================================================================
+        file_path = @temp.file_path
         file_name = @temp.file_filename_encoded
         
         if file_name
@@ -176,13 +356,11 @@ class Admin::TempsController < ApplicationController
         @section = "new"
         format.html { render :action => "new" }
       end
-    end
-          
-
+    end    
   end
+  
 
-  # PUT /temps/1
-  # PUT /temps/1.xml
+
   def update
     @menu = "template"
     @board = "temp"
@@ -373,23 +551,10 @@ class Admin::TempsController < ApplicationController
      end
      
      begin              
-
        unzip(template.zip_file, destination, template.original_filename.gsub(/.zip/,''), template.file_filename.gsub(/.zip/,''))    
        path = TEMP_PATH + template.file_filename.gsub(/.zip/,'')         
        mjob_filename = path + "/do_job.mjob"  
-
-    
-       #        if not File.exists?(mjob_filename)
-       #   # FileUtils.touch(mjob_filename)
-       #   # puts_message "mjob 파일 생성!"
-       # end         
-       
-       # osx_tmp_path = ("#{RAILS_ROOT}"+"/public/templates/__MACOSX")
-       # if File.exists?(osx_tmp_path)
-       #   FileUtils.remove_entry_secure osx_tmp_path
-       # end          
       rescue          
-       # template.result = "failed"
        puts_error "Template unzip process was failed!"    
       end  
                  
@@ -438,9 +603,7 @@ class Admin::TempsController < ApplicationController
   def make_contens_xml(temp) 
     erase_job_done_file(temp)
     path = temp.path
-    puts_message "templagte's path: "
-    puts_message path
-    # njob = path + "/do_job.mJob"
+
     mjob_file= <<-EOF
     <?xml version="1.0" encoding="UTF-8"?>
     <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -471,7 +634,8 @@ class Admin::TempsController < ApplicationController
     time_after_30_seconds = Time.now + 30.seconds     
     thumb_path = "#{RAILS_ROOT}/public#{temp.thumb_url}"
     puts_message thumb_path
-      puts_message "waiting for thumnail image!"    
+    puts_message "waiting for thumnail image!"    
+    
     while Time.now < time_after_30_seconds
       break if File.exists?(thumb_path)
     end
@@ -479,30 +643,6 @@ class Admin::TempsController < ApplicationController
     puts_message "make_contens_xml finished"
   end
   
-  # def process_index_thumbnail(temp)          
-  # 
-  #   previews = Dir.new(temp.path  + "/web/").entries.sort.delete_if{|x| !(x =~ /jpg$/)}.delete_if{|x| !(x =~ /spread_preview/)}   
-  # 
-  #   
-  #   original_image = temp.path  + "/web/" + previews[0] 
-  #   result_image = temp.path  + "/web/jquery_preview.jpg"                     
-  #   
-  #   puts_message original_image
-  #   
-  #   #rvm ruby 1.8.7 - Development environment on jaigouk's local machine
-  #   # @image = Miso::Image.new(original_image)               
-  # 
-  #   # Native OSX Ruby version includes ruby cocoa
-  #   # @image = Miso::Processor::CoreImage.new(original_image)
-  #   
-  #   # @image.crop(280, 124) #if options[:crop]  
-  #   # @image.fit(280, 124)# if options[:fit]
-  #   # @image.write(result_image)
-  #   temp.spread_preview_url = "#{HOSTING_URL}" + "/user_files/templates/" + @temp.filename + "/web/" + previews[0] 
-  #   temp.save  
-  #   puts_message "process_index_thumbnail finished"   
-  # end
-
   def count_images(temp)       
     begin
       doc = File.open(temp.path + "/web/contents.xml")

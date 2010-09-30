@@ -1,8 +1,10 @@
-<% doc_name = @temp.id.to_s %>
+<% 	doc_name = @temp.name.gsub(/.mlayoutP/,'') 
+	book_id = @book_id
+%>
 
 <script>
 function popup(doc_name) {
-   var url = "/MClientBox/index.html?spread_list=YES&user_path=/user_files/<%= current_user.userid %>&doc_path=/article_templates/"+ doc_name+".mlayoutP"
+   var url = "/MClientBox/index.html?spread_list=YES&user_path=/user_files/<%= current_user.userid %>&doc_path=/book_article/<%= book_id%>/"+ doc_name + ".mlayoutP"
    width = screen.width;
    height = screen.height;
    window.open(url ,'mybook','width='+width+', height='+height);

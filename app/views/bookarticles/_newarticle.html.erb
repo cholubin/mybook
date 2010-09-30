@@ -7,10 +7,6 @@
 
 <div id="layer1" style="display:none"><%= image_tag("/images/template/loading.gif", :width => '100') %></div>
 
-
-
-
-
 <script language="javascript">
 
 function folder_view() {
@@ -41,35 +37,89 @@ function show_progress() {
 function hide_progress() {
 	document.getElementById("layer1").style.display = "none";		
 }
+
+function hide_div(div_id) {
+	var id_btn = div_id + "_btn";
+	var id_div = div_id + "_sub";
+	
+	var t = document.getElementById(id_div);
+	var btn = document.getElementById(id_btn);
+	
+	if (t.style.display == "none") {
+		t.style.display = "block";
+		btn.value = "-";			
+	}else{
+		t.style.display = "none";	
+		btn.value = "+";									
+	}
+}
+
+function get_temp_id(temp_id) {
+	var selct_box = document.getElementById("select_temp_" + temp_id);
+	var master_select_box = document.getElementById("master_template_select");
+
+	var str1 = master_select_box.options[master_select_box.selectedIndex].value;
+	var str2 = selct_box.options[selct_box.selectedIndex].value;	
+	return str1 +"_"+ str2;
+	
+}
+
+function get_start_page(temp_id) {
+	var str = document.getElementById(temp_id+"_start_page").value;
+	return str;
+}
+
+
 </script>
 
 </head>
 <body>
 
-<%  
-if !@book_basic.nil?
-	book_id = @book_basic.id
-%>
+<% if !@book_basic.nil?; book_id = @book_basic.id %>
 
 <%= @book_basic.title %>
-<%end %>
 
-<%
+
+<br>
+마스터템플릿: <select id="master_template_select">
+	<%
+	  @temp_list = Mytemplate.all()
+	  @temp_list.each do |t| 
+		%>
+		<option value="<%= t.id.to_s %>"><%= t.name %></option>
+		<%
+	  end
+	 %>
+</select>
+
+<%end 
+
 @level1_list = Book_article.all(:user_id => current_user.id, :book_basic_id => book_id.to_i, :self_level => 1)
 
 @level1_list.each do |l1|
 	%>
-	<div id="<%= l1.id %>" style="width:700px; background-color:yellow;">
+	<!-- Level1 Div bloc Start  ============================================================================-->
+	<div id="<%= l1.id %>" style="width:800px; background-color:yellow;">
 		<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 		<input type="hidden" name="id" value="<%= l1.id.to_s %>">
-		<input type="text" style="width:500" name="title" value="<%= l1.title %>">
+		
 		<input type="submit" value="텍스트저장">
+		<select id="select_temp_<%= l1.id %>">
+			<option value="dobira">도비라</option>
+			<option value="content">본문</option>			
+		</select>
+		
 		<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
 		:onmouseover => "this.style.cursor='hand';",
 		:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
-		:with => "'article_id="+l1.id.to_s+"'")	%>
+		:with => "'start_page='+get_start_page("+l1.id.to_s+")+'&level_id="+l1.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l1.id.to_s+")")	%>
+		<input id="<%= l1.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l1.id.to_s %>')" value="-">
+		<input id="<%= l1.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
 		<br>
-		<textarea name="content" style='width: 500px; height: 50px;' onkeyup='this.style.height =this.scrollHeight'><%= l1.content %></textarea>
+		<input type="text" style="width:750" name="title" value="<%= l1.title %>">
+		<div id="<%= l1.id.to_s + "_sub" %>">
+			<textarea name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= l1.content %></textarea>
+		
 		<% end %>
 		<%
 		@level2_list  = Book_article.all(:user_id => current_user.id, :book_basic_id => book_id.to_i, :self_level => 2, :upper_level => l1.id.to_i)
@@ -77,17 +127,28 @@ if !@book_basic.nil?
 			@level2_list.each do |l2|
 			%>
 			<br>
+			<!-- Level2 Div bloc Start  ============================================================================-->
 			<div id="<%= l2.id %>" style="width:700px; background-color:blue;padding-left:5px;margin-left:5px">
 				<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 				<input type="hidden" name="id" value="<%= l2.id.to_s %>">
-				<input type="text" style="width:500" name="title" value="<%= l2.title %>">
+
 				<input type="submit" value="텍스트저장">
+				<select id="select_temp_<%= l2.id %>">
+					<option value="dobira">도비라</option>
+					<option value="content">본문</option>			
+				</select>
+
 				<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
 				:onmouseover => "this.style.cursor='hand';",
 				:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
-				:with => "'article_id="+l2.id.to_s+"'")	%>				
+				:with => "'start_page='+get_start_page("+l2.id.to_s+")+'&level_id="+l2.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l2.id.to_s+")")	%>
+				<input id="<%= l2.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l2.id.to_s %>')" value="-">
+				<input id="<%= l2.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
 				<br>
-				<textarea name="content" style='width: 500px; height: 50px;' onkeyup='this.style.height =this.scrollHeight'><%= l2.content %></textarea>
+				<input type="text" style="width:750" name="title" value="<%= l2.title %>">
+				<div id="<%= l2.id.to_s + "_sub" %>">
+					<textarea name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= l2.content %></textarea>
+				
 				<% end %>
 				<%
 				@level3_list  = Book_article.all(:user_id => current_user.id, :book_basic_id => book_id.to_i, :self_level => 3, :upper_level => l2.id.to_i)
@@ -95,6 +156,7 @@ if !@book_basic.nil?
 					@level3_list.each do |l3|
 					%>
 					<br>
+					<!-- Level3 Div bloc Start  ============================================================================-->
 					<div id="<%= l3.id %>" style="width:700px; background-color:green;padding-left:5px;margin-left:5px">
 						<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 						<input type="hidden" name="id" value="<%= l3.id.to_s %>">
@@ -104,8 +166,10 @@ if !@book_basic.nil?
 						:onmouseover => "this.style.cursor='hand';",
 						:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
 						:with => "'article_id="+l3.id.to_s+"'")	%>						
+						<input id="<%= l3.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l3.id.to_s %>')" value="-">
 						<br>
-						<textarea name="content" style='width: 500px; height: 50px;' onkeyup='this.style.height =this.scrollHeight'><%= l3.content %></textarea>
+						<div id="<%= l3.id.to_s + "_sub" %>">
+							<textarea name="content" style='width: 500px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= l3.content %></textarea>
 						<% end %>
 						<%
 						@level4_list  = Book_article.all(:user_id => current_user.id, :book_basic_id => book_id.to_i, :self_level => 4, :upper_level => l3.id.to_i)
@@ -113,6 +177,7 @@ if !@book_basic.nil?
 							@level4_list.each do |l4|
 							%>
 							<br>
+							<!-- Level4 Div bloc Start  ============================================================================-->	
 							<div id="<%= l4.id %>" style="width:700px; background-color:purple;padding-left:5px;margin-left:5px">
 								<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 								<input type="hidden" name="id" value="<%= l4.id.to_s %>">
@@ -121,32 +186,44 @@ if !@book_basic.nil?
 								<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
 								:onmouseover => "this.style.cursor='hand';",
 								:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
-								:with => "'article_id="+l4.id.to_s+"'")	%>								
+								:with => "'article_id="+l4.id.to_s+"'")	%>	
+								<input id="<%= l4.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l4.id.to_s %>')" value="-">							
 								<br>
-								<textarea name="content" style='width: 500px; height: 50px;' onkeyup='this.style.height =this.scrollHeight'><%= l4.content %></textarea>
+								<div id="<%= l4.id.to_s + "_sub" %>">
+									<textarea name="content" style='width: 500px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= l4.content %></textarea>
+								</div>
 								<% end %>
-							</div>			
+							</div>
+							<!-- Level4 Div bloc End  ============================================================================-->	
 							<%
 							end
 						end
 						%>
-						
-					</div>			
+					</div>	
+					</div>
+					<!-- Level3 Div bloc End  ============================================================================-->				
 					<%
 					end
 				end
 				%>
-			</div>			
+			</div>
+			</div>
+			<!-- Level2 Div bloc End  ============================================================================-->				
 			<%
 			end
 		end
 		%>
-	</div><br>
+	</div>
+	</div>
+	<!-- Level1 Div bloc End  ============================================================================-->	
+	<br>
 	<%
 end
 %>
+
 <div id="result"></div>
 <div id="mlayout_run"></div>
+
 </body>
 </html>
 

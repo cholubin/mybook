@@ -56,8 +56,15 @@ class CappuccinoController < ApplicationController
     @user = current_user
     # mytemplate = @user.mytemplates.get(id)
     # tpl = Temp.get(mytemplate.temp_id)
-    mytemplate = Mytemplate.first(:file_filename => id, :user_id => @user.id)    
-    path = "#{RAILS_ROOT}/public/user_files/" + current_user.userid + "/article_templates/" + mytemplate.file_filename.gsub(/.zip/,'')
+    if Mytemplate.all(:file_filename => id, :user_id => @user.id).count > 0
+      mytemplate = Mytemplate.first(:file_filename => id, :user_id => @user.id)    
+      path = "#{RAILS_ROOT}/public/user_files/" + current_user.userid + "/article_templates/" + mytemplate.file_filename.gsub(/.zip/,'')
+    else
+      temp = docname.split('.')
+      mytemplate = Mytemplate.first(:name => docname, :user_id => @user.id)    
+      path = "#{RAILS_ROOT}/public/user_files/" + current_user.userid + "/book_article/" + temp[0] + "/" + docname
+    end
+    
     xml_file= <<-EOF
     <?xml version="1.0" encoding="UTF-8"?>
     <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -101,12 +108,16 @@ class CappuccinoController < ApplicationController
         
     @user = current_user
     # puts_message @user.userid
-    mytemplate = Mytemplate.first(:id => id.to_i, :user_id => @user.id)
-    path = mytemplate.path
     
-    # path = path.force_encoding("UTF-8").encode!
-    # path = CGI::escape(path).gsub(/%2F/,'/').gsub(/%3F/,'?').gsub(/%3D/,'=').gsub(/%26/,'&') 
-
+    if Mytemplate.all(:id => id.to_i, :user_id => @user.id).count < 1
+      puts_message "Here"
+      puts_message docname
+      
+      mytemplate = Mytemplate.first(:name => docname, :user_id => @user.id)
+    else
+      mytemplate = Mytemplate.first(:id => id.to_i, :user_id => @user.id)      
+    end
+    path = mytemplate.path
     
     xml_file= <<-EOF
     <?xml version="1.0" encoding="UTF-8"?>
