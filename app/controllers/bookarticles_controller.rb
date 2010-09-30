@@ -129,6 +129,7 @@ class BookarticlesController < ApplicationController
         booktemplate.name = dest_filename
         booktemplate.master_id = master_template_id
         booktemplate.user_id = current_user.id
+        booktemplate.level_id = book_level_id
         booktemplate.save
       rescue
         puts_message "errrrrrrrrrrrrrrrorrrrrrrrr"
@@ -140,6 +141,7 @@ class BookarticlesController < ApplicationController
       booktemplate.name = dest_filename
       booktemplate.master_id = master_template_id
       booktemplate.user_id = current_user.id      
+      booktemplate.level_id = book_level_id      
       booktemplate.save
     end
     make_contens_xml(booktemplate)
@@ -287,8 +289,8 @@ puts_message "contents.xml 지울 파일이 없다네 !"
       
       FileUtils.touch(write_2_file)
 
-      time_after_4_seconds = Time.now + 4.seconds     
-      while Time.now < time_after_4_seconds
+      time_after_1_seconds = Time.now + 1.seconds     
+      while Time.now < time_after_1_seconds
       # loop do
       #   break if File.exists?(write_2_file)
       end

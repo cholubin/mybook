@@ -33,7 +33,8 @@ class Mytemplate
     property :is_book,                Boolean, :default => false
     property :is_master,              Boolean, :default => false
     property :gubun,                  String    
-    property :master_id,              Integer  
+    property :master_id,              Integer
+    property :level_id,               Integer  
 
   timestamps :at
   

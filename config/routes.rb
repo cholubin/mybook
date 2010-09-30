@@ -59,7 +59,7 @@ ActionController::Routing::Routes.draw do |map|
   map.cappuccino '/mlayout', :controller => "Cappuccino", :action => "show_cappuccino_ui"
       
   map.publish '/publish/:id', :controller => "mytemplates", :action => "publish"
-
+  map.publish '/publish/:id.:id', :controller => "mytemplates", :action => "publish"
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'
 end

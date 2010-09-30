@@ -107,7 +107,12 @@ class MytemplatesController < ApplicationController
     if Mytemplate.all(:file_filename => params[:id] + ".mlayoutP.zip", :user_id => current_user.id).count >0
       @mytemplate = Mytemplate.first(:file_filename => params[:id] + ".mlayoutP.zip", :user_id => current_user.id)   
     else
-      @mytemplate = Mytemplate.get(params[:id])   
+      if Mytemplate.all(:id => params[:id].to_i).count > 0
+        @mytemplate = Mytemplate.get(params[:id].to_i)   
+      else
+        @mytemplate = Mytemplate.first(:level_id => params[:id].to_i)           
+      end
+
     end
     erase_job_done_file(@mytemplate)       
     check_job_done_and_publish(@mytemplate) 
