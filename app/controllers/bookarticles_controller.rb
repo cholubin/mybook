@@ -240,8 +240,8 @@ class BookarticlesController < ApplicationController
 
     puts_message "creating Start Page!!!!!!!!"
 
-    time_after_180_seconds = Time.now + 180.seconds     
-    while Time.now < time_after_180_seconds
+    time_after_10_seconds = Time.now + 10.seconds     
+    while Time.now < time_after_10_seconds
     # loop do
       break if File.exists?(job_done)
       puts_message " 시작페이지 넣는 중......"
