@@ -65,8 +65,12 @@ class BookarticlesController < ApplicationController
 
   def publish_book
     pid = `ps -c -eo pid,comm | grep MLayout`.to_s
-    pid = pid.gsub(/MLayout 2/,'').gsub(' ', '')
-    system "kill #{pid}"     
+    puts_message pid
+    if pid != ""
+      pid = pid.gsub(/MLayout 2/,'').gsub(' ', '')
+      system "kill #{pid}"           
+    end
+    
     
     start_page = params[:start_page]
 
@@ -116,6 +120,7 @@ class BookarticlesController < ApplicationController
       FileUtils.cp_r src_path + src_filename, dest_path + dest_filename
     end
     
+
     
     #복사된 템플릿을 Mjob 처리해준다.
     
@@ -145,6 +150,13 @@ class BookarticlesController < ApplicationController
       booktemplate.save
     end
     make_contens_xml(booktemplate)
+    
+    contents_xml_path =  dest_path + dest_filename + "/web/contents.xml"
+    loop do
+      puts_message "content.xml 생성 체크!!!!!!!!"
+      break if File.exists?(contents_xml_path)
+    end
+    
     make_xml_contents(booktemplate, book_level_id)
 
     goal = booktemplate.path    
@@ -185,7 +197,7 @@ class BookarticlesController < ApplicationController
     # while Time.now < time_after_180_seconds
     loop do
       break if File.exists?(job_done)
-      puts_message "XML파일 업데이트중............"
+      # puts_message "XML파일 업데이트중............"
     end
 
     if !File.exists?(job_done)
@@ -287,30 +299,30 @@ puts_message "contents.xml 삭제 성공!"
 puts_message "contents.xml 지울 파일이 없다네 !"        
       end
       
-      FileUtils.touch(write_2_file)
-
-      time_after_1_seconds = Time.now + 1.seconds     
-      while Time.now < time_after_1_seconds
+      # # time_after_2_seconds = Time.now + 2.seconds     
+      # # while Time.now < time_after_2_seconds
       # loop do
       #   break if File.exists?(write_2_file)
-      end
+      # end
       
     rescue
-      puts_message "contents.xml 삭제 실패!"      
+      puts_message "contents.xml 삭제 실패! 먼지모를 에러 발생!!!"      
     end
     
 puts_message "저장할 contents.xml 파일 경로: " + write_2_file
 
-    if File.exists?(write_2_file)
-      File.open(write_2_file,'w') { |f| f.write xml_file }
-    else
-      loop do 
-        break if File.exists?(write_2_file)
-      end
-    end 
+    begin
+      FileUtils.touch(write_2_file)
+      FileUtils.touch(write_2_file)
+      FileUtils.touch(write_2_file)
+      FileUtils.touch(write_2_file)
+    rescue
+      puts_message "여기서 일단 에러 난다니까!!!"
+    end
+    File.open(write_2_file,'w') { |f| f.write xml_file }
     
-    time_after_4_seconds = Time.now + 4.seconds     
-    while Time.now < time_after_4_seconds
+    time_after_10_seconds = Time.now + 10.seconds     
+    while Time.now < time_after_10_seconds
     # loop do
     #   break if File.exists?(write_2_file)
     end
