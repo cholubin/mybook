@@ -83,7 +83,7 @@ function get_start_page(temp_id) {
 <br>
 마스터템플릿: <select id="master_template_select">
 	<%
-	  @temp_list = Mytemplate.all()
+	  @temp_list = Mytemplate.all(:gubun => "master")
 	  @temp_list.each do |t| 
 		%>
 		<option value="<%= t.id.to_s %>"><%= t.name %></option>

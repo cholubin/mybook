@@ -233,12 +233,23 @@ class BookarticlesController < ApplicationController
 
     puts_message "creating Start Page!!!!!!!!"
 
-    # time_after_180_seconds = Time.now + 180.seconds     
-    # while Time.now < time_after_180_seconds
-    loop do
+    time_after_180_seconds = Time.now + 180.seconds     
+    while Time.now < time_after_180_seconds
+    # loop do
       break if File.exists?(job_done)
-      puts_message "시작페이지 넣는 중......"
+      puts_message " 시작페이지 넣는 중......"
     end    
+    
+    if !File.exists?(job_done)
+      pid = `ps -c -eo pid,comm | grep MLayout`.to_s
+      pid = pid.gsub(/MLayout 2/,'').gsub(' ', '')
+      system "kill #{pid}"     
+      puts_message "MLayout was killed!!!!! ============"
+    else
+      puts_message "There is job done file of M file making!"
+    end
+
+    
   end
   
   def make_xml_contents(book_template, level_id)
