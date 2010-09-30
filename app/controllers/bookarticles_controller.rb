@@ -296,7 +296,9 @@ puts_message "contents.xml 지울 파일이 없다네 !"
     
 puts_message "저장할 contents.xml 파일 경로: " + write_2_file
 
-    File.open(write_2_file,'w') { |f| f.write xml_file }
+    if File.exists?(write_2_file)
+      File.open(write_2_file,'w') { |f| f.write xml_file }
+    end 
     
     time_after_4_seconds = Time.now + 4.seconds     
     while Time.now < time_after_4_seconds
