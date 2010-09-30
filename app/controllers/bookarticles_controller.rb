@@ -313,16 +313,14 @@ puts_message "저장할 contents.xml 파일 경로: " + write_2_file
 
     begin
       FileUtils.touch(write_2_file)
-      FileUtils.touch(write_2_file)
-      FileUtils.touch(write_2_file)
-      FileUtils.touch(write_2_file)
     rescue
       puts_message "여기서 일단 에러 난다니까!!!"
     end
+    
     File.open(write_2_file,'w') { |f| f.write xml_file }
     
-    time_after_10_seconds = Time.now + 10.seconds     
-    while Time.now < time_after_10_seconds
+    time_after_1_seconds = Time.now + 1.seconds     
+    while Time.now < time_after_1_seconds
     # loop do
     #   break if File.exists?(write_2_file)
     end
