@@ -115,6 +115,12 @@ function get_start_page(temp_id) {
 		:with => "'start_page='+get_start_page("+l1.id.to_s+")+'&level_id="+l1.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l1.id.to_s+")")	%>
 		<input id="<%= l1.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l1.id.to_s %>')" value="-">
 		<input id="<%= l1.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
+		<% t_name =  book_id.to_s + "." + l1.id.to_s + ".dobira.mlayoutP" 
+			if Mytemplate.all(:name => t_name ).count > 0
+				p_id = Mytemplate.first(:name => t_name ).id.to_s 
+			%>
+				<input type="button" value="PDF생성" onClick="document.location.href='/publish/<%= p_id %>'">
+			<% end %>
 		<br>
 		<input type="text" style="width:750" name="title" value="<%= l1.title %>">
 		<div id="<%= l1.id.to_s + "_sub" %>">
@@ -144,6 +150,12 @@ function get_start_page(temp_id) {
 				:with => "'start_page='+get_start_page("+l2.id.to_s+")+'&level_id="+l2.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l2.id.to_s+")")	%>
 				<input id="<%= l2.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l2.id.to_s %>')" value="-">
 				<input id="<%= l2.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
+				<% t_name =  book_id.to_s + "." + l2.id.to_s + ".mlayoutP" 
+					if Mytemplate.all(:name => t_name ).count > 0
+						p_id = Mytemplate.first(:name => t_name ).id.to_s 
+					%>
+						<input type="button" value="PDF생성" onClick="document.location.href='/publish/<%= p_id %>'">
+					<% end %>
 				<br>
 				<input type="text" style="width:750" name="title" value="<%= l2.title %>">
 				<div id="<%= l2.id.to_s + "_sub" %>">
