@@ -51,7 +51,7 @@ class Temp
 # 북템플릿 관련 Attributes , 책인경우 해당 템플릿을 대표하는 cover의 경우 master flag
   property :is_book,                Boolean, :default => false
   property :is_master,              Boolean, :default => false
-  property :gubun,                  String    
+  property :gubun,                  String,  :default => "not_hidden"  
   property :master_id,              Integer
   # for 원플러스 (특정사용자에게만 템플릿 공개)
   property :users,                  Text

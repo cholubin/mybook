@@ -33,13 +33,13 @@ class MytemplatesController < ApplicationController
     @categories = Category.all(:order => :priority)        
 
     if cate == "all" and folder == "all"
-      @mytemplates = Mytemplate.all(:gubun.not => "hidden",:user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                   
+      @mytemplates = Mytemplate.all(:gubun.not => "hidden", :user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                   
     elsif cate == "all" and folder != "all"
-      @mytemplates = Mytemplate.all(:gubun.not => "hidden",:folder => Tempfolder.get(folder).name, :user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                                   
+      @mytemplates = Mytemplate.all(:folder => Tempfolder.get(folder).name, :user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                                   
     elsif cate != "all" and folder == "all"
-      @mytemplates = Mytemplate.all(:gubun.not => "hidden",:category => Category.get(cate.to_i).name, :user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                                   
+      @mytemplates = Mytemplate.all(:category => Category.get(cate.to_i).name, :user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                                   
     elsif cate != "all" and folder != "all"
-      @mytemplates = Mytemplate.all(:gubun.not => "hidden",:folder => Tempfolder.get(folder).name, :category => Category.get(cate.to_i).name, :user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                           
+      @mytemplates = Mytemplate.all(:folder => Tempfolder.get(folder).name, :category => Category.get(cate.to_i).name, :user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                           
     end
     
     @tempfolders = Tempfolder.all(:user_id => current_user.id)
@@ -368,6 +368,10 @@ class MytemplatesController < ApplicationController
         @cloned_object.is_book = @object_to_clone.is_book
         @cloned_object.is_master = @object_to_clone.is_master
         @cloned_object.gubun = @object_to_clone.gubun
+      else 
+        @cloned_object.is_book = false
+        @cloned_object.is_master = false
+        @cloned_object.gubun = "not_hidden"
       end
       
       @cloned_object.name = @object_to_clone.name
@@ -575,7 +579,7 @@ class MytemplatesController < ApplicationController
       # puts_message mypdf.basic_path
       puts_message "set_pdf_path Start!"
       
-      if mytemplate.is_book = true
+      if mytemplate.is_book == true
         temp = mytemplate.name.split('.')
         book_id = temp[0]
         pdf = "#{RAILS_ROOT}" + "/public/user_files/" + current_user.userid + "/book_article/" + book_id + "/" + "#{mytemplate.name}" +"/web/document.pdf"
