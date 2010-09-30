@@ -194,8 +194,11 @@ class BookarticlesController < ApplicationController
     else
       puts_message "There is job done file of M file making!"
     end
-
-    make_start_page(booktemplate, start_page)
+    
+    if !start_page.nil?
+      make_start_page(booktemplate, start_page)
+    end
+    
     puts_message "publish_mjob end"               
     
     @temp = booktemplate
