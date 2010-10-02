@@ -100,10 +100,11 @@ function get_start_page(temp_id) {
 </select>
 
 
-<div id="<%= incover.id.to_s %>" style="width:750px; background-color:yellow;">
+<div id="<%= incover.id.to_s %>" style="width:750px; background-color:gray;">
 	<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 	<input type="hidden" name="id" value="<%= incover.id.to_s %>">	
-	
+
+	<input id="<%= incover.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= incover.id.to_s %>')" value="+">
 	<input type="submit" value="텍스트저장">
 	<select id="select_temp_<%= incover.id %>">
 		<option value="incover">속표지</option>
@@ -112,20 +113,21 @@ function get_start_page(temp_id) {
 	:onmouseover => "this.style.cursor='hand';",
 	:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
 	:with => "'start_page='+get_start_page("+incover.id.to_s+")+'&level_id="+incover.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+incover.id.to_s+")")	%>
-	<input id="<%= incover.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= incover.id.to_s %>')" value="-">
+	<span style="margin-left:20px"></span>
 	<input id="<%= incover.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
 	<br>
 	<input type="text" style="width:750" name="title" value="<%= incover.title %>">
-	<div id="<%= incover.id.to_s + "_sub" %>">
+	<div id="<%= incover.id.to_s + "_sub" %>" style="display:none">
 		<textarea name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= incover.content %></textarea>
 	</div>	
 	<% end %>
 </div>
 
-<div id="<%= contents_table.id.to_s %>" style="width:750px; background-color:yellow;">
+<div id="<%= contents_table.id.to_s %>" style="width:750px; background-color:gray">
 	<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 	<input type="hidden" name="id" value="<%= contents_table.id.to_s %>">	
-	
+
+	<input id="<%= contents_table.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= contents_table.id.to_s %>')" value="+">
 	<input type="submit" value="텍스트저장">
 	<select id="select_temp_<%= contents_table.id %>">
 		<option value="contents_table_l">차례(왼쪽)</option>
@@ -136,20 +138,21 @@ function get_start_page(temp_id) {
 	:onmouseover => "this.style.cursor='hand';",
 	:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
 	:with => "'start_page='+get_start_page("+contents_table.id.to_s+")+'&level_id="+contents_table.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+contents_table.id.to_s+")")	%>
-	<input id="<%= contents_table.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= contents_table.id.to_s %>')" value="-">
-	<input id="<%= contents_table.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
+	
+	<span style="margin-left:20px"></span><input id="<%= contents_table.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
 	<br>
 	<input type="text" style="width:750" name="title" value="<%= contents_table.title %>">
-	<div id="<%= contents_table.id.to_s + "_sub" %>">
+	<div id="<%= contents_table.id.to_s + "_sub" %>" style="display:none">
 		<textarea name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= contents_table.content %></textarea>
 	</div>
 	<% end %>
 </div>
 
-<div id="<%= prologue.id.to_s %>" style="width:750px; background-color:yellow;">
+<div id="<%= prologue.id.to_s %>" style="width:750px; background-color:gray;">
 	<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 	<input type="hidden" name="id" value="<%= prologue.id.to_s %>">	
-	
+
+	<input id="<%= prologue.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= prologue.id.to_s %>')" value="+">
 	<input type="submit" value="텍스트저장">
 	<select id="select_temp_<%= prologue.id %>">
 		<option value="prologue">머릿말</option>
@@ -159,11 +162,11 @@ function get_start_page(temp_id) {
 	:onmouseover => "this.style.cursor='hand';",
 	:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
 	:with => "'start_page='+get_start_page("+prologue.id.to_s+")+'&level_id="+prologue.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+prologue.id.to_s+")")	%>
-	<input id="<%= prologue.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= prologue.id.to_s %>')" value="-">
-	<input id="<%= prologue.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
+	
+	<span style="margin-left:20px"></span><input id="<%= prologue.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
 	<br>
 	<input type="text" style="width:750" name="title" value="<%= prologue.title %>">
-	<div id="<%= prologue.id.to_s + "_sub" %>">
+	<div id="<%= prologue.id.to_s + "_sub" %>" style="display:none">
 		<textarea name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= prologue.content %></textarea>
 	</div>	
 	<% end %>
@@ -181,6 +184,7 @@ function get_start_page(temp_id) {
 		<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 		<input type="hidden" name="id" value="<%= l1.id.to_s %>">
 		
+		<input id="<%= l1.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l1.id.to_s %>')" value="-">
 		<input type="submit" value="텍스트저장">
 		<select id="select_temp_<%= l1.id %>">
 			<option value="body_l">본문(왼쪽)</option>
@@ -192,8 +196,8 @@ function get_start_page(temp_id) {
 		:onmouseover => "this.style.cursor='hand';",
 		:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
 		:with => "'start_page='+get_start_page("+l1.id.to_s+")+'&level_id="+l1.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l1.id.to_s+")")	%>
-		<input id="<%= l1.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l1.id.to_s %>')" value="-">
-		<input id="<%= l1.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
+		
+		<span style="margin-left:20px"></span><input id="<%= l1.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
 		<br>
 		<input type="text" style="width:750" name="title" value="<%= l1.title %>">
 		<div id="<%= l1.id.to_s + "_sub" %>">
@@ -207,10 +211,11 @@ function get_start_page(temp_id) {
 			%>
 			<br>
 			<!-- Level2 Div bloc Start  ============================================================================-->
-			<div id="<%= l2.id %>" style="width:700px; background-color:blue;padding-left:5px;margin-left:5px">
+			<div id="<%= l2.id %>" style="width:740px; background-color:blue;padding-left:5px;margin-left:5px">
 				<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 				<input type="hidden" name="id" value="<%= l2.id.to_s %>">
-
+				
+				<input id="<%= l2.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l2.id.to_s %>')" value="-">
 				<input type="submit" value="텍스트저장">
 				<select id="select_temp_<%= l2.id %>">
 					<option value="body_l">본문(왼쪽)</option>
@@ -222,13 +227,13 @@ function get_start_page(temp_id) {
 				:onmouseover => "this.style.cursor='hand';",
 				:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
 				:with => "'start_page='+get_start_page("+l2.id.to_s+")+'&level_id="+l2.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l2.id.to_s+")")	%>
-				<input id="<%= l2.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l2.id.to_s %>')" value="-">
-				<input id="<%= l2.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
+				
+				<span style="margin-left:20px"></span><input id="<%= l2.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
 
 				<br>
-				<input type="text" style="width:750" name="title" value="<%= l2.title %>">
+				<input type="text" style="width:740" name="title" value="<%= l2.title %>">
 				<div id="<%= l2.id.to_s + "_sub" %>">
-					<textarea name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= l2.content %></textarea>
+					<textarea name="content" style='width:740px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= l2.content %></textarea>
 				
 				<% end %>
 				<%
@@ -238,19 +243,27 @@ function get_start_page(temp_id) {
 					%>
 					<br>
 					<!-- Level3 Div bloc Start  ============================================================================-->
-					<div id="<%= l3.id %>" style="width:700px; background-color:green;padding-left:5px;margin-left:5px">
+					<div id="<%= l3.id %>" style="width:730px; background-color:green;padding-left:5px;margin-left:5px">
 						<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 						<input type="hidden" name="id" value="<%= l3.id.to_s %>">
-						<input type="text" style="width:500" name="title" value="<%= l3.title %>">
+						<input type="text" style="width:730" name="title" value="<%= l3.title %>">
+						
+						<input id="<%= l3.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l3.id.to_s %>')" value="-">
 						<input type="submit" value="텍스트저장">
+						
+						<select id="select_temp_<%= l3.id %>">
+							<option value="body_l">본문(왼쪽)</option>
+							<option value="body_r">본문(오른쪽)</option>			
+							<option value="title_page">표제지</option>
+						</select>
 						<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
 						:onmouseover => "this.style.cursor='hand';",
 						:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
-						:with => "'article_id="+l3.id.to_s+"'")	%>						
-						<input id="<%= l3.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l3.id.to_s %>')" value="-">
+						:with => "'start_page='+get_start_page("+l3.id.to_s+")+'&level_id="+l3.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l3.id.to_s+")")	%>						
+						<span style="margin-left:20px"></span><input id="<%= l3.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호
 						<br>
 						<div id="<%= l3.id.to_s + "_sub" %>">
-							<textarea name="content" style='width: 500px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= l3.content %></textarea>
+							<textarea name="content" style='width: 730px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= l3.content %></textarea>
 						<% end %>
 						<%
 						@level4_list  = Book_article.all(:user_id => current_user.id, :book_basic_id => book_id.to_i, :self_level => 4, :upper_level => l3.id.to_i)
@@ -259,19 +272,27 @@ function get_start_page(temp_id) {
 							%>
 							<br>
 							<!-- Level4 Div bloc Start  ============================================================================-->	
-							<div id="<%= l4.id %>" style="width:700px; background-color:purple;padding-left:5px;margin-left:5px">
+							<div id="<%= l4.id %>" style="width:720px; background-color:purple;padding-left:5px;margin-left:5px">
 								<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 								<input type="hidden" name="id" value="<%= l4.id.to_s %>">
-								<input type="text" style="width:500" name="title" value="<%= l4.title %>">
-								<input type="submit" value="저장">
+								<input type="text" style="width:720" name="title" value="<%= l4.title %>">
+
+								<input id="<%= l4.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l4.id.to_s %>')" value="-">	
+								<input type="submit" value="텍스트저장">
+								
+								<select id="select_temp_<%= l4.id %>">
+									<option value="body_l">본문(왼쪽)</option>
+									<option value="body_r">본문(오른쪽)</option>			
+									<option value="title_page">표제지</option>
+								</select>
 								<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
 								:onmouseover => "this.style.cursor='hand';",
 								:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
-								:with => "'article_id="+l4.id.to_s+"'")	%>	
-								<input id="<%= l4.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l4.id.to_s %>')" value="-">							
+								:with => "'start_page='+get_start_page("+l4.id.to_s+")+'&level_id="+l4.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l4.id.to_s+")")	%>	
+								<span style="margin-left:20px"></span><input id="<%= l4.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호						
 								<br>
 								<div id="<%= l4.id.to_s + "_sub" %>">
-									<textarea name="content" style='width: 500px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= l4.content %></textarea>
+									<textarea name="content" style='width: 720px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= l4.content %></textarea>
 								</div>
 								<% end %>
 							</div>
