@@ -144,8 +144,8 @@ class Admin::MytemplatesController < ApplicationController
     @mytemplate = Mytemplate.new
     @mytemplate.user_id = current_user.id  
     @mytemplate.temp_id = params[:temp_id] 
-
-
+  
+  
     copy_template(@mytemplate, @mytemplate.temp_id)    
     # if @mytemplate != nil && @mytemplate.save && @user.save        
     @mytemplate
@@ -327,23 +327,21 @@ class Admin::MytemplatesController < ApplicationController
       new_temp_dir = path + "/" + mytemplate_filename
       FileUtils.mkdir_p(File.dirname(new_temp_dir))   
       
-       puts_message TEMP_PATH + mytemplate_filename
-       puts_message new_temp_dir  
-      
+      puts_message TEMP_PATH + mytemplate_filename
+      puts_message new_temp_dir  
+
       source_path = TEMP_PATH + mytemplate_filename
-      
+
       source_path = source_path.force_encoding('UTF8-MAC')
       new_temp_dir = new_temp_dir.force_encoding('UTF8-MAC')
-      
+
       puts_message  source_path
       puts_message  new_temp_dir
-      
+
       FileUtils.cp_r source_path, new_temp_dir  
       #--- delete template's mjob file     
       tmp = new_temp_dir + "/do_job.mjob"
       FileUtils.remove_entry_secure(tmp) if File.exist?(tmp)
-      
-      
 
     end     
 
@@ -385,7 +383,6 @@ class Admin::MytemplatesController < ApplicationController
 
        job_to_do = (path + "/refresh_xml_job.mJob")
        File.open(job_to_do,'w') { |f| f.write xml_file }    
-
 
        system("open #{job_to_do}")
 

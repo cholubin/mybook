@@ -28,12 +28,7 @@
 	}
 
 </script>
-
-<% if params[:category_name] == nil  or params[:category_name] != "현수막" %>	
-	<%= stylesheet_link_tag '/css/slideimg.css' %>
-<%elsif params[:category_name] == "현수막"   %>
-	<%= stylesheet_link_tag '/css/slideimg_banner.css' %>
-<%end %>
+<%= stylesheet_link_tag '/css/slideimg.css' %>
 
 <!-- Best Template section start -->
 <% if @temps_best != nil and @temps_best.length > 0 %>
@@ -118,7 +113,7 @@
 				<tr> 
 				<td class="templatelist"><a href="/temps/<%=my.id%>?search=<%=params[:search]%>&page=<%=params[:page]%>"><%= my.name %></a></td></tr>
 				<tr> 
-				<td class="templatelist"><a href="#"><%= my.category%>/<%= my.subcategory if my.subcategory != nil %></a></td></tr>
+				<td class="templatelist"><a href="#"><%= Category.get(my.category.to_i).name%><%= "/" + Subcategory.get(my.subcategory.to_i).name if my.subcategory != nil %></a></td></tr>
 				<tr>
 					<td class="templatelist">
 						<% if signed_in? %>

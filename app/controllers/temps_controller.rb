@@ -14,14 +14,15 @@ class TempsController < ApplicationController
     #    @temp.destroy
     
     if params[:category_name] != nil
-      @category_name = Category.get(params[:category_name].to_i).name
+      # @category_name = Category.get(params[:category_name].to_i).name
+      @category_name = params[:category_name]
     end
     if params[:subcategory_name] != nil
-      @subcategory_name = Subcategory.get(params[:subcategory_name].to_i).name
+      # @subcategory_name = Subcategory.get(params[:subcategory_name].to_i).name
+      @subcategory_name = params[:subcategory_name]
     end
     
     # 사용자별 템플릿 공개여부 결정 기능 추가 (for oneplus)
-    puts_message TEMPLATE_OPEN_FUNC_TOGGLE.to_s
     if TEMPLATE_OPEN_FUNC_TOGGLE == true
       if signed_in?
         if @category_name != nil and @subcategory_name != nil
@@ -33,33 +34,36 @@ class TempsController < ApplicationController
         elsif  @subcategory_name != nil
           @temps = Temp.all(:subcategory => @subcategory_name).isopen(current_user.userid).search(params[:search], params[:page])      
         else
-          @category_name = Category.first(:priority => 1).name
+          @category_name = Category.first(:priority => 1).id.to_s
           @temps = Temp.all(:category => @category_name).isopen(current_user.userid).search(params[:search], params[:page])      
           @temps_best = Temp.all(:category => @category_name).best
         end
         @total_count = Temp.search(params[:search],"").isopen(current_user.userid).count    
       else
+    
         @temps = Temp.all(:id => '9999999')
         @total_count = 0
       end
+      
     else
+     
       if @category_name != nil and @subcategory_name != nil
-        @temps = Temp.all(:category => @category_name, :subcategory => @subcategory_name).search(params[:search], params[:page])
-        @temps_best = Temp.all(:category => @category_name).best
-      elsif @category_name != nil
-        @temps = Temp.all(:category => @category_name).search(params[:search], params[:page])      
-        @temps_best = Temp.all(:category => @category_name).best
+        @temps = Temp.all(:category => @category_name, :subcategory => @subcategory_name, :is_display => true).search(params[:search], params[:page])
+        @temps_best = Temp.all(:category => @category_name, :is_display => true).best
+      elsif @category_name != nil      
+        @temps = Temp.all(:category => @category_name, :is_display => true).search(params[:search], params[:page])      
+        @temps_best = Temp.all(:category => @category_name, :is_display => true).best
       elsif  @subcategory_name != nil
-        @temps = Temp.all(:subcategory => @subcategory_name).search(params[:search], params[:page])      
+        @temps = Temp.all(:subcategory => @subcategory_name, :is_display => true).search(params[:search], params[:page])      
       else
-        @category_name = Category.first(:priority => 1).name
-        @temps = Temp.all(:category => @category_name).search(params[:search], params[:page])      
-        @temps_best = Temp.all(:category => @category_name).best
+        @category_name = Category.first(:priority => 1).id.to_s
+        @temps = Temp.all(:category => @category_name, :is_display => true).search(params[:search], params[:page])      
+        @temps_best = Temp.all(:category => @category_name, :is_display => true).best
       end
-      @total_count = Temp.search(params[:search],"").count      
+      @total_count = Temp.all(:is_display => true).search(params[:search],"").count      
     end
     
-  
+    puts_message @temps.count.to_s
           
     @categories = Category.all(:order => :priority)    
     

@@ -28,7 +28,9 @@ class Mytemplate
   property :pdf,                    String, :length => 200     
   property :pdf_path,               String, :length => 200       
   property :folder,                 String, :default => "basic"
-  
+
+  property :is_display,             Boolean, :default => true
+    
   # 북템플릿 관련 Attributes , 책인경우 해당 템플릿을 대표하는 cover의 경우 master flag
     property :is_book,                Boolean, :default => false
     property :is_master,              Boolean, :default => false

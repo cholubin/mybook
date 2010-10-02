@@ -114,7 +114,7 @@ function hide_progress() {
 				<tr> 
 				<td class="templatelist"><a href="/mytemplates/<%=my.id%>?cate=<%= cate %>&search=<%=params[:search]%>&page=<%=params[:page]%>"><%= my.name %></a></td></tr>
 				<tr> 
-				<td class="templatelist"><a href="#"><%= my.category%><%="/"+my.subcategory if my.subcategory != nil%></a></td></tr>
+				<td class="templatelist"><a href="#"><%= Category.get(my.category.to_i).name%><%="/"+Subcategory.get(my.subcategory.to_i).name if my.subcategory != nil%></a></td></tr>
 				<tr>
 				<td class="templatelist">
 					<img src="/images/template/edit_instant_s.jpg" border="0" title="즉시편집" style="cursor:hand;" onClick="popup('<%= doc_name %>');">

@@ -1,1 +1,3 @@
-<%= collection_select(:temp, :subcategory, subcategories, :name, :name,{:selected   => "1"}) %>
+<% if subcategories.count > 0 %>
+<%= collection_select(:temp, :subcategory, subcategories, :id, :name,{:selected   => "1"}) %>
+<% end  %>

@@ -76,7 +76,7 @@ class BookarticlesController < ApplicationController
 
     puts_message start_page
     #마스터템플릿 아이디와 현재선택된 템플릿 구분을 참고하여 복사할대상으로 삼는다.
-    master_template_info = params[:temp_id].split('_')
+    master_template_info = params[:temp_id].split('.')
     master_template_id = master_template_info[0]
     template_name = master_template_info[1] #gubun or inner_cover ...
     
@@ -95,7 +95,7 @@ class BookarticlesController < ApplicationController
     #작업에 필요한 템플릿을 book_article폴더로 복사해넣는다. 그전에 작업한 녀석은 그대로 삭제하고 붙여넣는다.
     
     #본문 템플릿인 경우 (본문 템플릿을 마스터로 잡아 폴더밖에 있기 때문.)
-    if template_name == "content"
+    if template_name == "body_l"
       #복사대상 
       src_path = "#{RAILS_ROOT}" + "/public/user_files/#{current_user.userid}/article_templates/"
       src_filename = master_template_id + ".mlayoutP"
@@ -113,6 +113,7 @@ class BookarticlesController < ApplicationController
       dest_filename = book_id + "." + book_level_id + "." + template_name + ".mlayoutP"      
     end
     
+    puts_message dest_path + dest_filename
     if File.exist?(dest_path + dest_filename)
       FileUtils.rm_rf dest_path + dest_filename
       FileUtils.cp_r src_path + src_filename, dest_path + dest_filename
@@ -159,6 +160,11 @@ class BookarticlesController < ApplicationController
     
     make_xml_contents(booktemplate, book_level_id)
 
+    if File.exists?(booktemplate.path + "/web/contents.xml2")
+      FileUtils.rm_rf booktemplate.path + "/web/contents.xml"
+      File.rename booktemplate.path + "/web/contents.xml2", booktemplate.path + "/web/contents.xml" 
+    end
+    
     goal = booktemplate.path    
     puts_message goal
     
@@ -193,9 +199,9 @@ class BookarticlesController < ApplicationController
     
     puts_message "creating M file!!!"
 
-    # time_after_180_seconds = Time.now + 180.seconds     
-    # while Time.now < time_after_180_seconds
-    loop do
+    time_after_180_seconds = Time.now + 180.seconds     
+    while Time.now < time_after_180_seconds
+    # loop do
       break if File.exists?(job_done)
       # puts_message "XML파일 업데이트중............"
     end
@@ -258,7 +264,7 @@ class BookarticlesController < ApplicationController
     while Time.now < time_after_10_seconds
     # loop do
       break if File.exists?(job_done)
-      puts_message " 시작페이지 넣는 중......"
+      # puts_message " 시작페이지 넣는 중......"
     end    
     
     if !File.exists?(job_done)
@@ -289,21 +295,16 @@ puts_message "현재 작업중인 텍스트박스 컨텐츠: " + article_content
     EOF
 
     path = book_template.path
-    write_2_file =  path + "/web/contents.xml"      
+    write_2_file =  path + "/web/contents.xml2"      
     
     begin
       if File.exist?(write_2_file)
         FileUtils.rm_rf write_2_file
+        
 puts_message "contents.xml 삭제 성공!"
       else
 puts_message "contents.xml 지울 파일이 없다네 !"        
       end
-      
-      # # time_after_2_seconds = Time.now + 2.seconds     
-      # # while Time.now < time_after_2_seconds
-      # loop do
-      #   break if File.exists?(write_2_file)
-      # end
       
     rescue
       puts_message "contents.xml 삭제 실패! 먼지모를 에러 발생!!!"      
@@ -312,15 +313,13 @@ puts_message "contents.xml 지울 파일이 없다네 !"
 puts_message "저장할 contents.xml 파일 경로: " + write_2_file
 
     begin
-      FileUtils.touch(write_2_file)
+      File.open(write_2_file,'w') { |f| f.write xml_file }
     rescue
       puts_message "여기서 일단 에러 난다니까!!!"
     end
     
-    File.open(write_2_file,'w') { |f| f.write xml_file }
-    
-    time_after_1_seconds = Time.now + 1.seconds     
-    while Time.now < time_after_1_seconds
+    time_after_5_seconds = Time.now + 5.seconds     
+    while Time.now < time_after_5_seconds
     # loop do
     #   break if File.exists?(write_2_file)
     end

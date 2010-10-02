@@ -39,10 +39,11 @@ class Admin::TempsController < ApplicationController
   def update_subcategories
       # updates subcategories based on (main)category selected
       
-      categories = Category.first(:name => params[:category_id])
+      categories = Category.first(:id => params[:category_id].to_i)
       subcategories = categories.subcategories
 
-      # puts subcategories.inspect
+      
+      puts_message subcategories.count.to_s
 
       render :update do |page|
         page.replace_html 'subcategories', :partial => 'subcategories', :object => subcategories
@@ -155,79 +156,159 @@ class Admin::TempsController < ApplicationController
   end
 
   def create
-
+    #가끔 떠있떤 M이 이상작동을 한다!
+    #일단 깔끔하게 M을 죽이고 시작하자! 하지만 나중에 정식 서비스때에는 다른 방법을 생각해야 한다!
+    pid = `ps -c -eo pid,comm | grep MLayout`.to_s
+    pid = pid.gsub(/MLayout 2/,'').gsub(' ', '')
+    system "kill #{pid}"     
+    
     @temp = Temp.new(params[:temp])
-
-    if @temp.save
-      file_name_by_id = @temp.id.to_s
-    end
-          
-    if params[:temp][:is_book] == "1"
-      
-      begin
-        new_dir = TEMP_PATH + file_name_by_id + "/"
-        if !File.exist?(new_dir)
-         FileUtils.mkdir_p new_dir
-         FileUtils.chmod 0777, new_dir
-        end
-                
-        uploader = MlayoutTemplateUploader.new
-        uploader.store!(params[:temp][:inner_cover])
-        uploader.store!(params[:temp][:index])        
-        uploader.store!(params[:temp][:dobira])
-        
-        file_path = @temp.file_path
-        
-        #한글문제 처리해야 한다!!!
-        File.rename file_path + params[:temp][:inner_cover].original_filename, new_dir  + file_name_by_id + "inner_cover" + ".mlayoutP.zip"        
-        File.rename file_path + params[:temp][:index].original_filename, new_dir  + file_name_by_id + "index" + ".mlayoutP.zip"                
-        File.rename file_path + params[:temp][:dobira].original_filename, new_dir  + file_name_by_id + "dobira" + ".mlayoutP.zip"                
-        
-
-        unzip(new_dir+file_name_by_id+"inner_cover"+".mlayoutP.zip",new_dir,params[:temp][:inner_cover].original_filename.gsub(/.zip/,''),file_name_by_id + "inner_cover" + ".mlayoutP")    
-        unzip(new_dir+file_name_by_id+"index"+".mlayoutP.zip",new_dir,params[:temp][:index].original_filename.gsub(/.zip/,''),file_name_by_id + "index" + ".mlayoutP")    
-        unzip(new_dir+file_name_by_id+"dobira"+".mlayoutP.zip",new_dir,params[:temp][:dobira].original_filename.gsub(/.zip/,''),file_name_by_id + "dobira" + ".mlayoutP")    
-        
-        # unzip(file, destination, original_filename, modified_filename)
-        
-      rescue
-        puts_message "에러나버렸잖어!!!!!!!!!!!!!!!!!!!!!!!!!!"
-      end
+    if @temp.save; file_name_by_id = @temp.id.to_s; end
+    
+    create_template(@temp, file_name_by_id, params[:temp])
+    
     end
 
+
+  def create_template(temp, file_name_by_id, prm_temp)
+    #템플릿생성을 위한 기본작업     
+    @this_temp = temp
+    @this_temp.is_display = true 
+
+    template_common_process(@this_temp, file_name_by_id, prm_temp)
     
-    @temp.file = params[:temp][:file]  if params[:temp][:file]
-    @temp.original_filename = params[:temp][:file].original_filename
-    # @temp.file_filename = sanitize_filename(@temp.original_filename) if params[:temp][:file]
-    @temp.file_filename = file_name_by_id + ".mlayoutP.zip"
-    @temp_filename = @temp.filename
-
-    @extname = ".mlayoutP.zip"
-
-    @temp.file_filename = @temp_filename
-    @temp.file_filename_encoded = @temp.file.filename
-
-    @temp.zip_file = "#{RAILS_ROOT}/public/templates/" + @temp.file_filename  if params[:temp][:file]
-    @temp.path = "#{RAILS_ROOT}" + "/public/templates/" + @temp.file_filename.gsub(/.zip/,'')  if params[:temp][:file]    
-    @temp.type = "template"
-
-    @temp.thumb_url = "/templates/" + @temp.filename.gsub(/.zip/,'') + "/web/doc_thumb.jpg"         
-    @temp.preview_url = "/templates/" + @temp.filename.gsub(/.zip/,'') + "/web/doc_preview.jpg"
-    
-            
-    if params[:temp][:is_book] == "1"
+    if prm_temp[:is_book] == "1"
       # 북템플릿 처리 
-      @temp.is_book = true
-      @temp.is_master = true
-      @temp.gubun = "master"
-      @temp.master_id = file_name_by_id.to_i
-      
-      master_book_template_process(@temp)
+      @this_temp.is_book = true
+      @this_temp.is_master = true
+      @this_temp.gubun = "master"
+      @this_temp.master_id = file_name_by_id.to_i
+
+      master_book_template_process(@this_temp)
+      basic_book_template_process(@this_temp, file_name_by_id, prm_temp)
     else
       # 일반템플릿 처리 
-      basic_template_process(@temp)
-    end      
+      basic_template_process(@this_temp)
+    end  
+    
+
+    
+      
   end
+
+  def template_common_process(temp, file_name_by_id, prm_temp)
+    @this_temp = temp
+    
+    @this_temp.file = prm_temp[:file]  if prm_temp[:file]
+    @this_temp.original_filename = prm_temp[:file].original_filename
+    # @temp.file_filename = sanitize_filename(@temp.original_filename) if params[:temp][:file]
+    @this_temp.file_filename = file_name_by_id + ".mlayoutP.zip"
+    @temp_filename = @this_temp.filename
+
+    @this_temp.file_filename = @temp_filename
+    @this_temp.file_filename_encoded = @this_temp.file.filename
+
+    @this_temp.zip_file = "#{RAILS_ROOT}/public/templates/" + @this_temp.file_filename  if prm_temp[:file]
+    @this_temp.path = "#{RAILS_ROOT}" + "/public/templates/" + @this_temp.file_filename.gsub(/.zip/,'')  if prm_temp[:file]    
+    @this_temp.type = "template"
+
+    @this_temp.thumb_url = "/templates/" + @this_temp.filename.gsub(/.zip/,'') + "/web/doc_thumb.jpg"         
+    @this_temp.preview_url = "/templates/" + @this_temp.filename.gsub(/.zip/,'') + "/web/doc_preview.jpg"
+    
+    return @this_temp
+    
+  end
+
+  def basic_book_template_process_sub(master_temp, file_name_by_id, thisname, prm_temp, prm_this)
+    this_name = thisname
+    file_path = master_temp.file_path    
+    
+    @mytemp = Temp.new()
+
+    @mytemp.is_display = false
+    @mytemp.category = prm_temp[:category]
+    @mytemp.subcategory = prm_temp[:subcategory]
+    @mytemp.is_book = true
+    @mytemp.is_master = false
+    @mytemp.gubun = this_name
+    @mytemp.master_id = file_name_by_id.to_i
+    @mytemp.name = file_name_by_id + "." + this_name
+    @mytemp.file = prm_this
+    
+    template_book_common_process(@mytemp, file_name_by_id, this_name)
+    
+    @mytemp.save
+
+    new_dir = TEMP_PATH + file_name_by_id + "/"
+    if !File.exist?(new_dir)
+     FileUtils.mkdir_p new_dir
+     FileUtils.chmod 0777, new_dir
+    end
+
+    #한글 파일명 문제 처리해야 한다!!!
+    loop do 
+      break if File.exists?(file_path + prm_this.original_filename)
+    end
+    
+    FileUtils.mv file_path + prm_this.original_filename, new_dir  + file_name_by_id + thisname + ".mlayoutP.zip"        
+    unzip(new_dir+file_name_by_id + thisname +".mlayoutP.zip", new_dir, prm_this.original_filename.gsub(/.zip/,''), file_name_by_id + thisname + ".mlayoutP")    
+
+    make_contens_xml(@mytemp) 
+    erase_job_done_file(@mytemp)
+    
+  end
+  
+  def basic_book_template_process(temp, file_name_by_id, prm_temp)
+    @master_temp = temp
+    
+    if !prm_temp[:body_r].nil?
+      thisname = "body_r"
+      basic_book_template_process_sub(@master_temp, file_name_by_id , thisname, prm_temp, prm_temp[:body_r])
+    end
+    
+    if ! prm_temp[:incover].nil?
+      thisname = "incover"
+      basic_book_template_process_sub(@master_temp, file_name_by_id , thisname, prm_temp, prm_temp[:incover])
+    end
+
+    if ! prm_temp[:prologue].nil?
+      thisname = "prologue"
+      basic_book_template_process_sub(@master_temp, file_name_by_id , thisname, prm_temp, prm_temp[:prologue])
+    end
+
+    if ! prm_temp[:contents_table_l].nil?
+      thisname = "contents_table_l"
+      basic_book_template_process_sub(@master_temp, file_name_by_id , thisname, prm_temp, prm_temp[:contents_table_l])
+    end
+
+    if ! prm_temp[:contents_table_r].nil?
+      thisname = "contents_table_r"
+      basic_book_template_process_sub(@master_temp, file_name_by_id , thisname, prm_temp, prm_temp[:contents_table_r])
+    end
+    
+    if ! prm_temp[:title_page].nil?
+      thisname = "title_page"
+      basic_book_template_process_sub(@master_temp, file_name_by_id , thisname, prm_temp, prm_temp[:title_page])
+    end    
+    
+  end
+
+  def template_book_common_process(temp, file_name_by_id, tempname)
+    @this_temp = temp
+    
+    @this_temp.file_filename = file_name_by_id +  tempname + ".mlayoutP.zip"
+
+    @this_temp.zip_file = "#{RAILS_ROOT}/public/templates/" + file_name_by_id + "/" + @this_temp.file_filename
+    @this_temp.path = "#{RAILS_ROOT}" + "/public/templates/" + file_name_by_id + "/" + @this_temp.file_filename.gsub(/.zip/,'')
+    @this_temp.type = "book_sub"
+
+    @this_temp.thumb_url = "/templates/" + file_name_by_id + "/" + @this_temp.filename.gsub(/.zip/,'') + "/web/doc_thumb.jpg"         
+    @this_temp.preview_url = "/templates/" + file_name_by_id + "/" + @this_temp.filename.gsub(/.zip/,'') + "/web/doc_preview.jpg"
+    
+    # return @this_temp
+    
+  end
+
 
   def master_book_template_process(temp)
     @temp = temp
@@ -294,12 +375,14 @@ class Admin::TempsController < ApplicationController
     end    
   end
   
+  
+  
   def basic_template_process(temp)
     @temp = temp
     respond_to do |format|
       if @temp.save
         
-        # 원플러스용 사용자별 템플릿 공개 혀용여부에 따른 처리루틴 =====================
+        # 원플러스용 사용자별 템플릿 공개 혀용여부에 따른 처리루틴 START =====================
         if TEMPLATE_OPEN_FUNC_TOGGLE == true
           temp_id = @temp.id
           user_list = params[:user_list].split(',')
@@ -319,7 +402,7 @@ class Admin::TempsController < ApplicationController
             end
           end
         end
-
+        # 원플러스용 사용자별 템플릿 공개 혀용여부에 따른 처리루틴 END =====================
         
         # filename renaming ======================================================================
         file_path = @temp.file_path
@@ -440,7 +523,7 @@ class Admin::TempsController < ApplicationController
         chk.each do |chk|
           @temp = Temp.get(chk[0].to_i)
 
-          if @temp != nil
+          if @temp != nil and  @temp.file_filename != nil
             if File.exist?(TEMP_PATH + @temp.file_filename) 
               File.delete(TEMP_PATH + @temp.file_filename)   
             end
@@ -449,9 +532,23 @@ class Admin::TempsController < ApplicationController
                 # FileUtils.rm_rf @temp.path ==> 인코딩때문에 삭제되지 않는다!
                 # File의 경우 상관없으나 FileUtils의 경우 인코딩처리를 해줘야 한다.
                 FileUtils.rm_rf @temp.path.force_encoding('UTF8-MAC')                 
+                #북템플릿의 폴더 지우기 
+                
             end
           end
           temp_id = @temp.id
+          
+          #북템플릿일 경우 서브 템플릿을 모두 삭제처리한다.
+          if @temp.is_book == true and @temp.is_master == true
+            @all_sub_temps = Temp.all(:master_id => @temp.id, :is_master => false)
+            @all_sub_temps.destroy
+            
+            #폴더도 삭제처리한다.
+            if File.exist?(@temp.path.gsub(/.mlayoutP/, '')) 
+              FileUtils.rm_rf @temp.path.gsub(/.mlayoutP/, '')
+            end
+          end
+          
           if @temp.destroy
             usertempopenlist = Usertempopenlist.all(:temp_id => temp_id)
             usertempopenlist.destroy

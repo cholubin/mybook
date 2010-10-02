@@ -235,12 +235,33 @@ class MytemplatesController < ApplicationController
       new_temp_dir = "#{RAILS_ROOT}/public/user_files/" + current_user.userid + "/article_templates/" + @mytemplate.id.to_s + "/"
       FileUtils.mkdir_p(File.dirname(new_temp_dir))   
       FileUtils.cp_r TEMP_PATH + @copy_folder.id.to_s, new_temp_dir 
-      File.rename new_temp_dir + params[:temp_id] + "inner_cover.mlayoutP" , new_temp_dir  + @mytemplate.id.to_s + "inner_cover.mlayoutP"
-      File.rename new_temp_dir + params[:temp_id] + "inner_cover.mlayoutP.zip" , new_temp_dir  + @mytemplate.id.to_s + "inner_cover.mlayoutP.zip"      
-      File.rename new_temp_dir + params[:temp_id] + "dobira.mlayoutP" , new_temp_dir  + @mytemplate.id.to_s + "dobira.mlayoutP"
-      File.rename new_temp_dir + params[:temp_id] + "dobira.mlayoutP.zip" , new_temp_dir  + @mytemplate.id.to_s + "dobira.mlayoutP.zip"
-      File.rename new_temp_dir + params[:temp_id] + "index.mlayoutP" , new_temp_dir  + @mytemplate.id.to_s + "index.mlayoutP"
-      File.rename new_temp_dir + params[:temp_id] + "index.mlayoutP.zip" , new_temp_dir  + @mytemplate.id.to_s + "index.mlayoutP.zip"
+      
+      if File.exists?(new_temp_dir + params[:temp_id] + "body_r.mlayoutP")
+        File.rename new_temp_dir + params[:temp_id] + "body_r.mlayoutP" , new_temp_dir  + @mytemplate.id.to_s + "body_r.mlayoutP"
+        File.rename new_temp_dir + params[:temp_id] + "body_r.mlayoutP.zip" , new_temp_dir  + @mytemplate.id.to_s + "body_r.mlayoutP.zip"                
+      end
+      if File.exists?(new_temp_dir + params[:temp_id] + "contents_table_l.mlayoutP")
+        File.rename new_temp_dir + params[:temp_id] + "contents_table_l.mlayoutP" , new_temp_dir  + @mytemplate.id.to_s + "contents_table_l.mlayoutP"        
+        File.rename new_temp_dir + params[:temp_id] + "contents_table_l.mlayoutP.zip" , new_temp_dir  + @mytemplate.id.to_s + "contents_table_l.mlayoutP.zip"
+      end
+      if File.exists?(new_temp_dir + params[:temp_id] + "contents_table_r.mlayoutP")
+        File.rename new_temp_dir + params[:temp_id] + "contents_table_r.mlayoutP" , new_temp_dir  + @mytemplate.id.to_s + "contents_table_r.mlayoutP"        
+        File.rename new_temp_dir + params[:temp_id] + "contents_table_r.mlayoutP.zip" , new_temp_dir  + @mytemplate.id.to_s + "contents_table_r.mlayoutP.zip"                
+      end
+      if File.exists?(new_temp_dir + params[:temp_id] + "incover.mlayoutP")
+        File.rename new_temp_dir + params[:temp_id] + "incover.mlayoutP" , new_temp_dir  + @mytemplate.id.to_s + "incover.mlayoutP"        
+        File.rename new_temp_dir + params[:temp_id] + "incover.mlayoutP.zip" , new_temp_dir  + @mytemplate.id.to_s + "incover.mlayoutP.zip"                
+      end
+      if File.exists?(new_temp_dir + params[:temp_id] + "prologue.mlayoutP")
+        File.rename new_temp_dir + params[:temp_id] + "prologue.mlayoutP" , new_temp_dir  + @mytemplate.id.to_s + "prologue.mlayoutP"        
+        File.rename new_temp_dir + params[:temp_id] + "prologue.mlayoutP.zip" , new_temp_dir  + @mytemplate.id.to_s + "prologue.mlayoutP.zip"                
+      end
+      if File.exists?(new_temp_dir + params[:temp_id] + "title_page.mlayoutP")
+        File.rename new_temp_dir + params[:temp_id] + "title_page.mlayoutP" , new_temp_dir  + @mytemplate.id.to_s + "title_page.mlayoutP"        
+        File.rename new_temp_dir + params[:temp_id] + "title_page.mlayoutP.zip" , new_temp_dir  + @mytemplate.id.to_s + "title_page.mlayoutP.zip"                
+      end
+
+      
     end
     
     @mytemplate
@@ -370,10 +391,12 @@ class MytemplatesController < ApplicationController
       @cloned_object = mytemplate
       
       if @object_to_clone.is_book == true
+        @cloned_object.is_display = @object_to_clone.is_display
         @cloned_object.is_book = @object_to_clone.is_book
         @cloned_object.is_master = @object_to_clone.is_master
         @cloned_object.gubun = @object_to_clone.gubun
       else 
+        @cloned_object.is_display = @object_to_clone.is_display        
         @cloned_object.is_book = false
         @cloned_object.is_master = false
         @cloned_object.gubun = "not_hidden"

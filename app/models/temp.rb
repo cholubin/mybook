@@ -14,10 +14,12 @@ class Temp
   property :id,                     Serial
   property :name,                   String
   property :file,                   Text
-  property :index,                  Text
-  property :dobira,                 Text
-  property :inner_cover,            Text
-  
+  property :body_r,                  Text
+  property :incover,                 Text
+  property :prologue,            Text
+  property :contents_table_l,            Text
+  property :contents_table_r,            Text
+  property :title_page,            Text
         
   property :original_filename,      String, :length => 200
   property :thumb_url,              String, :length => 200
@@ -47,6 +49,7 @@ class Temp
   property :hit_cnt,                Integer, :default => 0
   property :copy_cnt,               Integer, :default => 0  
   property :is_best,                Boolean, :default => false
+  property :is_display,             Boolean, :default => true
 
 # 북템플릿 관련 Attributes , 책인경우 해당 템플릿을 대표하는 cover의 경우 master flag
   property :is_book,                Boolean, :default => false

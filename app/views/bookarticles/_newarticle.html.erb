@@ -60,7 +60,7 @@ function get_temp_id(temp_id) {
 
 	var str1 = master_select_box.options[master_select_box.selectedIndex].value;
 	var str2 = selct_box.options[selct_box.selectedIndex].value;	
-	return str1 +"_"+ str2;
+	return str1 +"."+ str2;
 	
 }
 
@@ -105,8 +105,9 @@ function get_start_page(temp_id) {
 		
 		<input type="submit" value="텍스트저장">
 		<select id="select_temp_<%= l1.id %>">
-			<option value="content">본문</option>
-			<option value="dobira">도비라</option>
+			<option value="body_l">본문(왼쪽)</option>
+			<option value="body_r">본문(오른쪽)</option>			
+			<option value="title_page">표제지</option>
 		</select>
 		
 		<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
@@ -140,8 +141,9 @@ function get_start_page(temp_id) {
 
 				<input type="submit" value="텍스트저장">
 				<select id="select_temp_<%= l2.id %>">
-					<option value="content">본문</option>			
-					<option value="dobira">도비라</option>
+					<option value="body_l">본문(왼쪽)</option>
+					<option value="body_r">본문(오른쪽)</option>			
+					<option value="title_page">표제지</option>
 				</select>
 
 				<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
