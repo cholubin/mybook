@@ -84,21 +84,22 @@ function get_start_page(temp_id) {
   prologue = Book_article.first(:user_id => current_user.id, :book_basic_id => book_id.to_i, :gubun => "prologue")
 %>
 
-<%= @book_basic.title %>
+<h1><%= @book_basic.title %></h1>
 
 
 <br>
-마스터템플릿: <select id="master_template_select">
-	<%
-	  @temp_list = Mytemplate.all(:gubun => "master", :user_id => current_user.id)
-	  @temp_list.each do |t| 
-		%>
-		<option value="<%= t.id.to_s %>"><%= t.name %></option>
+<div style="width:750px; margin-left: 545px;">
+	<font color=white>마스터 템플릿 선택:</font> <select id="master_template_select">
 		<%
-	  end
-	 %>
-</select>
-
+		  @temp_list = Mytemplate.all(:gubun => "master", :user_id => current_user.id)
+		  @temp_list.each do |t| 
+			%>
+			<option value="<%= t.id.to_s %>"><%= t.name %></option>
+			<%
+		  end
+		 %>
+	</select>
+</div>
 
 <div id="<%= incover.id.to_s %>" style="width:750px; background-color:gray;">
 	<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
@@ -116,9 +117,9 @@ function get_start_page(temp_id) {
 	<span style="margin-left:20px"></span>
 	<input id="<%= incover.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
 	<br>
-	<input type="text" style="width:750" name="title" value="<%= incover.title %>">
+	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= incover.title %>">
 	<div id="<%= incover.id.to_s + "_sub" %>" style="display:none">
-		<textarea name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= incover.content %></textarea>
+		<textarea name="content" style='width:750px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= incover.content %></textarea>
 	</div>	
 	<% end %>
 </div>
@@ -141,7 +142,7 @@ function get_start_page(temp_id) {
 	
 	<span style="margin-left:20px"></span><input id="<%= contents_table.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
 	<br>
-	<input type="text" style="width:750" name="title" value="<%= contents_table.title %>">
+	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= contents_table.title %>">
 	<div id="<%= contents_table.id.to_s + "_sub" %>" style="display:none">
 		<textarea name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= contents_table.content %></textarea>
 	</div>
@@ -165,13 +166,14 @@ function get_start_page(temp_id) {
 	
 	<span style="margin-left:20px"></span><input id="<%= prologue.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
 	<br>
-	<input type="text" style="width:750" name="title" value="<%= prologue.title %>">
+	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= prologue.title %>">
 	<div id="<%= prologue.id.to_s + "_sub" %>" style="display:none">
 		<textarea name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= prologue.content %></textarea>
 	</div>	
 	<% end %>
 </div>
 
+<div style="height:30px"></div>
 
 <% 
 
@@ -199,9 +201,9 @@ function get_start_page(temp_id) {
 		
 		<span style="margin-left:20px"></span><input id="<%= l1.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
 		<br>
-		<input type="text" style="width:750" name="title" value="<%= l1.title %>">
+		<input type="text" style="width:750; font-size:12px;" name="title" value="<%= l1.title %>">
 		<div id="<%= l1.id.to_s + "_sub" %>">
-			<textarea name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= l1.content %></textarea>
+			<textarea name="content" style='width:750px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l1.content %></textarea>
 		
 		<% end %>
 		<%
@@ -231,9 +233,9 @@ function get_start_page(temp_id) {
 				<span style="margin-left:20px"></span><input id="<%= l2.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호  
 
 				<br>
-				<input type="text" style="width:740" name="title" value="<%= l2.title %>">
+				<input type="text" style="width:740; font-size:12px;" name="title" value="<%= l2.title %>">
 				<div id="<%= l2.id.to_s + "_sub" %>">
-					<textarea name="content" style='width:740px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= l2.content %></textarea>
+					<textarea name="content" style='width:740px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l2.content %></textarea>
 				
 				<% end %>
 				<%
@@ -246,7 +248,7 @@ function get_start_page(temp_id) {
 					<div id="<%= l3.id %>" style="width:730px; background-color:green;padding-left:5px;margin-left:5px">
 						<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 						<input type="hidden" name="id" value="<%= l3.id.to_s %>">
-						<input type="text" style="width:730" name="title" value="<%= l3.title %>">
+						
 						
 						<input id="<%= l3.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l3.id.to_s %>')" value="-">
 						<input type="submit" value="텍스트저장">
@@ -262,8 +264,9 @@ function get_start_page(temp_id) {
 						:with => "'start_page='+get_start_page("+l3.id.to_s+")+'&level_id="+l3.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l3.id.to_s+")")	%>						
 						<span style="margin-left:20px"></span><input id="<%= l3.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호
 						<br>
+						<input type="text" style="width:730; font-size:12px;" name="title" value="<%= l3.title %>">
 						<div id="<%= l3.id.to_s + "_sub" %>">
-							<textarea name="content" style='width: 730px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= l3.content %></textarea>
+							<textarea name="content" style='width: 730px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l3.content %></textarea>
 						<% end %>
 						<%
 						@level4_list  = Book_article.all(:user_id => current_user.id, :book_basic_id => book_id.to_i, :self_level => 4, :upper_level => l3.id.to_i)
@@ -275,7 +278,7 @@ function get_start_page(temp_id) {
 							<div id="<%= l4.id %>" style="width:720px; background-color:purple;padding-left:5px;margin-left:5px">
 								<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 								<input type="hidden" name="id" value="<%= l4.id.to_s %>">
-								<input type="text" style="width:720" name="title" value="<%= l4.title %>">
+								
 
 								<input id="<%= l4.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l4.id.to_s %>')" value="-">	
 								<input type="submit" value="텍스트저장">
@@ -291,8 +294,9 @@ function get_start_page(temp_id) {
 								:with => "'start_page='+get_start_page("+l4.id.to_s+")+'&level_id="+l4.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l4.id.to_s+")")	%>	
 								<span style="margin-left:20px"></span><input id="<%= l4.id.to_s + "_start_page" %>" type="text" style="width:30px;"> 시작 페이지 번호						
 								<br>
+								<input type="text" style="width:720; font-size:12px;" name="title" value="<%= l4.title %>">
 								<div id="<%= l4.id.to_s + "_sub" %>">
-									<textarea name="content" style='width: 720px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= l4.content %></textarea>
+									<textarea name="content" style='width: 720px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l4.content %></textarea>
 								</div>
 								<% end %>
 							</div>
