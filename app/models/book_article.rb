@@ -20,7 +20,8 @@ class Book_article
   property :content,            Text
   property :self_level,         Integer
   property :upper_level,        Integer
-  property :user_id,            Integer      
+  property :user_id,            Integer
+  property :gubun,              String      
   timestamps :at
   
 end

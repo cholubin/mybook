@@ -178,11 +178,27 @@ def test
       book_basic_id = @new_book.id
   end
   
-  puts_message book_basic_id.to_s
+  new_article = Book_article.new()
+  new_article.book_basic_id = @new_book.id
+  new_article.user_id = current_user.id
+  new_article.title = basic[1]
+  new_article.gubun = "incover"  
+  new_article.save
   
-  basic.each do |b|
-    puts b
-  end
+  new_article = Book_article.new()
+  new_article.book_basic_id = @new_book.id
+  new_article.user_id = current_user.id
+  new_article.title = basic[2]
+  new_article.gubun = "contents_table"
+  new_article.save
+
+  new_article = Book_article.new()
+  new_article.book_basic_id = @new_book.id
+  new_article.user_id = current_user.id
+  new_article.title = basic[3]
+  new_article.gubun = "prologue"
+  new_article.save
+
   
   if !level1.nil?
   

@@ -32,6 +32,7 @@ class BookarticlesController < ApplicationController
     end
   end
 
+
   def left_list_delete
     
     book_id = params[:book_id].to_i
@@ -158,7 +159,7 @@ class BookarticlesController < ApplicationController
       break if File.exists?(contents_xml_path)
     end
     
-    make_xml_contents(booktemplate, book_level_id)
+    make_xml_contents(booktemplate, book_level_id, book_id)
 
     if File.exists?(booktemplate.path + "/web/contents.xml2")
       FileUtils.rm_rf booktemplate.path + "/web/contents.xml"
@@ -279,14 +280,19 @@ class BookarticlesController < ApplicationController
     
   end
   
-  def make_xml_contents(book_template, level_id)
+  def make_xml_contents(book_template, level_id, book_id)
     
 puts_message "make_xml_contents 함수 진행중 ........."
 puts_message "현재 작업중인 텍스트박스 아이디: " + level_id
 
     erase_job_done_file(book_template)
     
-    article_content = Book_article.get(level_id.to_i).content
+    if level_id == "incover"
+      article_content = Book_basic.get(book_id.to_i).inner_cover_content
+    else
+      article_content = Book_article.get(level_id.to_i).content
+    end
+    
 
 puts_message "현재 작업중인 텍스트박스 컨텐츠: " + article_content
     
