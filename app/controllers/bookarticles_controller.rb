@@ -297,7 +297,7 @@ puts_message "현재 작업중인 텍스트박스 아이디: " + level_id
 puts_message "현재 작업중인 텍스트박스 컨텐츠: " + article_content
     
     xml_file = <<-EOF
-<xml>#{article_content}</xml>
+<xml><body>#{article_content}</body></xml>
     EOF
 
     path = book_template.path
