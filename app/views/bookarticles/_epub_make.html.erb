@@ -1,0 +1,19 @@
+<% 
+book_id = @book_id
+down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book_id}/#{book_id}.epub"
+%> 
+
+<div id="this_epub_file">
+&nbsp;<a href="<%= down_link %>"><font color="white">epub 다운</font></a>
+</div>
+
+<script>
+	hide_progress();
+	<% if @error_message.nil? %>
+		$('#epub_file').html($('#this_epub_file').html());
+		alert("EPUB파일 생성이 완료되었습니다!");	
+	<% else %>
+		alert("<%= @error_message %>");	
+	<% end %>
+</script>
+

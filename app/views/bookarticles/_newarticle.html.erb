@@ -72,12 +72,38 @@ function get_start_page(temp_id) {
 
 </script>
 
-</head>
-<body>
-
 <% if !@book_basic.nil? 
 		book_id = @book_basic.id 
 %>
+
+<script>
+$(document).ready(function(){
+	
+	$('#epub_make').click(function() {
+		if (window.confirm('EPUB파일을 생성하시겠습니까?')){
+			show_progress();
+			
+			$.ajax({
+				data:'book_id=<%= book_id %>', 
+				dataType:'script', 
+				type:'post', 
+				url:'/bookarticles/epub_make',
+				success:function(request){$('#epub_make').html(request);}
+			});				
+			
+		}else{
+			return false;
+		};
+		
+	});
+});
+
+
+
+</script>
+</head>
+<body>
+
 <%
   incover = Book_article.first(:user_id => current_user.id, :book_basic_id => book_id.to_i, :gubun => "incover")
   contents_table = Book_article.first(:user_id => current_user.id, :book_basic_id => book_id.to_i, :gubun => "contents_table")
@@ -85,12 +111,17 @@ function get_start_page(temp_id) {
 %>
 
 <h1><%= @book_basic.title %></h1>
-<input type="button" value="EPUB 생성" onClick="alert('개발 진행중입니다.');"> &nbsp; 
+<input type="button" id="epub_make" value="EPUB 생성"> &nbsp;
 <input type="button" value="EPUB 불러오기" onClick="alert('개발 진행중입니다.');"> &nbsp; 
 <input type="button" value="Ipad Mbook 생성" onClick="alert('개발 진행중입니다.');"> &nbsp; 
+<div id="epub_file">
+<% if File.exists?(RAILS_ROOT + "/public/user_files/#{current_user.userid}/book_article/#{book_id}/#{book_id}.epub")
+down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book_id}/#{book_id}.epub"
+%> 
+&nbsp;<a href="<%= down_link %>"><font color="white">epub 다운</font></a>
+<% end %>
+</div>
 
-
-<br>
 <div style="width:750px; margin-left: 545px;">
 	<font color=white>마스터 템플릿 선택:</font> <select id="master_template_select">
 		<%
@@ -115,10 +146,10 @@ function get_start_page(temp_id) {
 	</select>
 	<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
 	:onmouseover => "this.style.cursor='hand';",
-	:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
+	:onclick => "if (window.confirm('선택하신 템플릿에 텍스트를 적용하여 편집하시겠습니까?')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
 	:with => "'start_page='+get_start_page("+incover.id.to_s+")+'&level_id="+incover.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+incover.id.to_s+")")	%>
 	<span style="margin-left:20px"></span>
-	<input id="<%= incover.id.to_s + "_start_page" %>" name="start_page" value="<%= incover.start_page %>" type="text" style="width:30px;"> 시작 페이지 번호  
+	<input id="<%= incover.id.to_s + "_start_page" %>" name="start_page" value="<%= incover.start_page %>" type="text" style="width:30px;"> 시작페이지 적용  
 	<br>
 	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= incover.title %>">
 	<div id="<%= incover.id.to_s + "_sub" %>" style="display:none">
@@ -140,10 +171,10 @@ function get_start_page(temp_id) {
 	
 	<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
 	:onmouseover => "this.style.cursor='hand';",
-	:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
+	:onclick => "if (window.confirm('선택하신 템플릿에 텍스트를 적용하여 편집하시겠습니까?')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
 	:with => "'start_page='+get_start_page("+contents_table.id.to_s+")+'&level_id="+contents_table.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+contents_table.id.to_s+")")	%>
 	
-	<span style="margin-left:20px"></span><input id="<%= contents_table.id.to_s + "_start_page" %>" value="<%= contents_table.start_page %>" name="start_page" type="text" style="width:30px;"> 시작 페이지 번호  
+	<span style="margin-left:20px"></span><input id="<%= contents_table.id.to_s + "_start_page" %>" value="<%= contents_table.start_page %>" name="start_page" type="text" style="width:30px;"> 시작페이지 적용  
 	<br>
 	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= contents_table.title %>">
 	<div id="<%= contents_table.id.to_s + "_sub" %>" style="display:none">
@@ -164,10 +195,10 @@ function get_start_page(temp_id) {
 	
 	<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
 	:onmouseover => "this.style.cursor='hand';",
-	:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
+	:onclick => "if (window.confirm('선택하신 템플릿에 텍스트를 적용하여 편집하시겠습니까?')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
 	:with => "'start_page='+get_start_page("+prologue.id.to_s+")+'&level_id="+prologue.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+prologue.id.to_s+")")	%>
 	
-	<span style="margin-left:20px"></span><input id="<%= prologue.id.to_s + "_start_page" %>" name="start_page" value="<%= prologue.start_page %>" type="text" style="width:30px;"> 시작 페이지 번호  
+	<span style="margin-left:20px"></span><input id="<%= prologue.id.to_s + "_start_page" %>" name="start_page" value="<%= prologue.start_page %>" type="text" style="width:30px;"> 시작페이지 적용  
 	<br>
 	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= prologue.title %>">
 	<div id="<%= prologue.id.to_s + "_sub" %>" style="display:none">
@@ -199,10 +230,10 @@ function get_start_page(temp_id) {
 		
 		<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
 		:onmouseover => "this.style.cursor='hand';",
-		:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
+		:onclick => "if (window.confirm('선택하신 템플릿에 텍스트를 적용하여 편집하시겠습니까?')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
 		:with => "'start_page='+get_start_page("+l1.id.to_s+")+'&level_id="+l1.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l1.id.to_s+")")	%>
 		
-		<span style="margin-left:20px"></span><input id="<%= l1.id.to_s + "_start_page" %>" name="start_page" value="<%= l1.start_page %>" type="text" style="width:30px;"> 시작 페이지 번호  
+		<span style="margin-left:20px"></span><input id="<%= l1.id.to_s + "_start_page" %>" name="start_page" value="<%= l1.start_page %>" type="text" style="width:30px;"> 시작페이지 적용  
 		<br>
 		<input type="text" style="width:750; font-size:12px;" name="title" value="<%= l1.title %>">
 		<div id="<%= l1.id.to_s + "_sub" %>">
@@ -230,10 +261,10 @@ function get_start_page(temp_id) {
 
 				<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
 				:onmouseover => "this.style.cursor='hand';",
-				:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
+				:onclick => "if (window.confirm('선택하신 템플릿에 텍스트를 적용하여 편집하시겠습니까?')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
 				:with => "'start_page='+get_start_page("+l2.id.to_s+")+'&level_id="+l2.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l2.id.to_s+")")	%>
 				
-				<span style="margin-left:20px"></span><input id="<%= l2.id.to_s + "_start_page" %>" name="start_page" value="<%= l2.start_page %>" type="text" style="width:30px;"> 시작 페이지 번호  
+				<span style="margin-left:20px"></span><input id="<%= l2.id.to_s + "_start_page" %>" name="start_page" value="<%= l2.start_page %>" type="text" style="width:30px;"> 시작페이지 적용  
 
 				<br>
 				<input type="text" style="width:740; font-size:12px;" name="title" value="<%= l2.title %>">
@@ -263,9 +294,9 @@ function get_start_page(temp_id) {
 						</select>
 						<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
 						:onmouseover => "this.style.cursor='hand';",
-						:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
+						:onclick => "if (window.confirm('선택하신 템플릿에 텍스트를 적용하여 편집하시겠습니까?')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
 						:with => "'start_page='+get_start_page("+l3.id.to_s+")+'&level_id="+l3.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l3.id.to_s+")")	%>						
-						<span style="margin-left:20px"></span><input id="<%= l3.id.to_s + "_start_page" %>" name="start_page" value="<%= l3.start_page %>" type="text" style="width:30px;"> 시작 페이지 번호
+						<span style="margin-left:20px"></span><input id="<%= l3.id.to_s + "_start_page" %>" name="start_page" value="<%= l3.start_page %>" type="text" style="width:30px;"> 시작페이지 적용
 						<br>
 						<input type="text" style="width:730; font-size:12px;" name="title" value="<%= l3.title %>">
 						<div id="<%= l3.id.to_s + "_sub" %>">
@@ -292,9 +323,9 @@ function get_start_page(temp_id) {
 								</select>
 								<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
 								:onmouseover => "this.style.cursor='hand';",
-								:onclick => "if (window.confirm('M파일로 만들고 편집창을 띄운다!')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
+								:onclick => "if (window.confirm('선택하신 템플릿에 텍스트를 적용하여 편집하시겠습니까?')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
 								:with => "'start_page='+get_start_page("+l4.id.to_s+")+'&level_id="+l4.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l4.id.to_s+")")	%>	
-								<span style="margin-left:20px"></span><input id="<%= l4.id.to_s + "_start_page" %>" name="start_page" value="<%= l4.start_page %>" type="text" style="width:30px;"> 시작 페이지 번호						
+								<span style="margin-left:20px"></span><input id="<%= l4.id.to_s + "_start_page" %>" name="start_page" value="<%= l4.start_page %>" type="text" style="width:30px;"> 시작페이지 적용						
 								<br>
 								<input type="text" style="width:720; font-size:12px;" name="title" value="<%= l4.title %>">
 								<div id="<%= l4.id.to_s + "_sub" %>">
@@ -332,7 +363,7 @@ end
 
 <div id="result"></div>
 <div id="mlayout_run"></div>
-
+<div id="epub_make"></div>
 </body>
 </html>
 

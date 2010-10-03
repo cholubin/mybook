@@ -23,6 +23,26 @@ class BookarticlesController < ApplicationController
     
     @article.title = params[:title]
     @article.content = params[:content]
+    book_id = @article.book_basic_id.to_s
+    
+    #book_article 폴더가 없으면 생성하고 해당 폴더 밑으로 현재작업중인 책의 아이디로 폴더를 만든다.
+    book_article_dir = "#{RAILS_ROOT}" + "/public/user_files/#{current_user.userid}/book_article/#{book_id}/"
+    if !File.exist?(book_article_dir)
+     FileUtils.mkdir_p book_article_dir
+    end    
+    
+    #EPUB 생성을 위한 html 파일 생성 
+    html_file = <<-EOF
+    <html>
+    <title>Web Top Print Shop</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <body>
+    #{@article.content}
+    </body></html>
+    EOF
+
+    write_2_file = "#{RAILS_ROOT}" + "/public/user_files/#{current_user.userid}/book_article/#{book_id}/#{book_id}." + "#{params[:id]}.html"
+    File.open(write_2_file,'w') { |f| f.write html_file }
     
     puts_message @article.title + " Updated!"
     
@@ -56,6 +76,12 @@ class BookarticlesController < ApplicationController
         puts_message "error occured on progress of deleting Book_articles table..."        
       end
 
+      # 폴더 삭제
+      book_article_dir = "#{RAILS_ROOT}" + "/public/user_files/#{current_user.userid}/book_article/#{book_id}/"
+      if File.exists?(book_article_dir)
+        FileUtils.rm_rf book_article_dir
+      end
+      
       render :partial => "new_book_list", :object => @book_list, :object => @need_reload
       # render 'bookarticle'
     else
@@ -404,5 +430,67 @@ puts_message "저장할 contents.xml 파일 경로: " + write_2_file
     end
   end
 
+def epub_make
+  
+  
+  book_id = params[:book_id]
+  @book_basic = Book_basic.get(book_id.to_i)
+  book_title = @book_basic.title
+  
+  puts_message @book_basic.title + " epub_make Start!"
+  
+  book_article_dir = "#{RAILS_ROOT}" + "/public/user_files/#{current_user.userid}/book_article/#{book_id}/"
+
+  incover = Book_article.first(:book_basic_id => @book_basic.id, :gubun => "incover")
+  contents_table = Book_article.first(:book_basic_id => @book_basic.id, :gubun => "contents_table")
+  prologue = Book_article.first(:book_basic_id => @book_basic.id, :gubun => "prologue")  
+  
+  # incover = book_id + "." + Book_article.first(:book_basic_id => @book_basic.id, :gubun => "incover").id.to_s + ".html"
+  # contents_table = book_id + "." + Book_article.first(:book_basic_id => @book_basic.id, :gubun => "contents_table").id.to_s + ".html"
+  
+  if File.exists?(book_article_dir + book_id + "." + incover.id.to_s + ".html") and File.exists?(book_article_dir + book_id + "." + contents_table.id.to_s + ".html") and File.exists?(book_article_dir + book_id + "." + prologue.id.to_s + ".html")
+    myfiles = book_article_dir + book_id + "." + incover.id.to_s + ".html", book_article_dir + book_id + "." + contents_table.id.to_s + ".html", book_article_dir + book_id + "." + prologue.id.to_s + ".html"
+    mynav = {:label => '속표지', :content => book_id + "." + incover.id.to_s + ".html"}, {:label => '차례', :content => book_id + "." + contents_table.id.to_s + ".html"}, {:label => '머리말', :content => book_id + "." + prologue.id.to_s + ".html"}  
+  
+    @level1_list = Book_article.all(:user_id => current_user.id, :book_basic_id => book_id.to_i, :self_level => 1)
+  
+    @level1_list.each do |l1|
+      if File.exists?(book_article_dir + book_id + "." + l1.id.to_s + ".html")
+        myfiles << book_article_dir + book_id + "." + l1.id.to_s + ".html"
+        mynav << {:label => l1.title, :content => book_id + "." + l1.id.to_s + ".html"}
+      end
+    
+      @level2_list = Book_article.all(:user_id => current_user.id, :book_basic_id => book_id.to_i, :self_level => 2, :upper_level => l1.id.to_i)
+      @level2_list.each do |l2|
+        if File.exists?(book_article_dir + book_id + "." + l2.id.to_s + ".html")
+          myfiles << book_article_dir + book_id + "." + l2.id.to_s + ".html"
+          mynav << {:label => l2.title, :content => book_id + "." + l2.id.to_s + ".html"}
+        end
+      end
+    end
+
+  
+    epub = EeePub.make do
+      title       book_title
+      creator     'SungdoGL'
+      publisher   'SungdoGL'
+      date        '2010-10'
+      identifier  'http://print.iedit.net', :scheme => 'URL'
+      uid         'http://print.iedit.net'
+
+      files myfiles
+      nav mynav
+    end
+    epub.save(book_article_dir + book_id + '.epub')
+
+  else
+    @error_message = "먼저 EPUB파일 생성을 위한 파일들을 생성하셔야 합니다.(텍스트 저장)"
+  end
+  puts_message "epub_make End!"
+  
+  @book_id = book_id
+  render :partial => "epub_make", :object => @error_message, :object => @book_id
+  
+end
   
 end
