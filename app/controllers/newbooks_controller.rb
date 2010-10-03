@@ -163,15 +163,12 @@ def test
   level4_self = params[:level4_self]      
 
   book_title = basic[0]
-  book_inner_cover = basic[1]
+  book_incover = basic[1]
   book_index = basic[2]
   book_prologue = basic[3]
   
   @new_book = Book_basic.new()
   @new_book.title = book_title
-  @new_book.inner_cover = book_inner_cover
-  @new_book.index_title = book_index
-  @new_book.prologue_title = book_prologue
   @new_book.user_id = current_user.id
 
   if @new_book.save

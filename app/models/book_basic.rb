@@ -14,13 +14,6 @@ class Book_basic
   # Attributes ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   property :id,                   Serial
   property :title,                String
-  property :cover,                String
-  property :inner_cover,          String
-  property :inner_cover_content,  Text
-  property :prologue_title,       String
-  property :prologue_content,     Text  
-  property :index_title,          String
-  property :index_content,        Text  
   property :user_id,              Integer        
   timestamps :at
 

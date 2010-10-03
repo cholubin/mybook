@@ -15,12 +15,11 @@ class BookarticlesController < ApplicationController
     render 'bookarticle'  
   end
   
-
-
-  # PUT /articles/1
-  # PUT /articles/1.xml
   def update
     @article = Book_article.get(params[:id].to_i)
+    
+    @article.start_page = params[:start_page]
+    @article.selected_tempid = params[:select_temp]
     
     @article.title = params[:title]
     @article.content = params[:content]

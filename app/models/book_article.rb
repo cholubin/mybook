@@ -22,6 +22,9 @@ class Book_article
   property :upper_level,        Integer
   property :user_id,            Integer
   property :gubun,              String      
+  
+  property :selected_tempid,    String
+  property :start_page,         String 
   timestamps :at
   
 end
