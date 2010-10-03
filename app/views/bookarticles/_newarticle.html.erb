@@ -96,6 +96,8 @@ $(document).ready(function(){
 		};
 		
 	});
+	
+	
 });
 
 
@@ -122,19 +124,21 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 <% end %>
 </div>
 
-<div style="width:750px; margin-left: 545px;">
-	<font color=white>마스터 템플릿 선택:</font> <select id="master_template_select">
+<% form_remote_tag :url => {:action => 'update_master_temp'}, :update => "update_master_temp" do %>
+	<input type="hidden" name="book_id" value="<%= book_id %>">
+<div style="width:750px; margin-left: 500px;">
+	<font color=white>마스터 템플릿 선택:</font> <select id="master_template_select" name="master_template_select">
 		<%
 		  @temp_list = Mytemplate.all(:gubun => "master", :user_id => current_user.id)
 		  @temp_list.each do |t| 
 			%>
-			<option value="<%= t.id.to_s %>"><%= t.name %></option>
+			<option value="<%= t.id.to_s %>" <%= "selected" if Book_basic.get(book_id.to_i).select_master_tempid == t.id %>><%= t.name %></option>
 			<%
 		  end
 		 %>
-	</select>
+	</select>&nbsp;<input id="master_tempid" type="submit" value="저장">
 </div>
-
+<% end %>
 <div id="<%= incover.id.to_s %>" style="width:750px; background-color:gray;">
 	<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 	<input type="hidden" name="id" value="<%= incover.id.to_s %>">	
@@ -364,6 +368,8 @@ end
 <div id="result"></div>
 <div id="mlayout_run"></div>
 <div id="epub_make"></div>
+<div id="update_master_temp"></div>
+
 </body>
 </html>
 

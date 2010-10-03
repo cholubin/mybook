@@ -492,5 +492,17 @@ def epub_make
   render :partial => "epub_make", :object => @error_message, :object => @book_id
   
 end
-  
+
+  def update_master_temp
+    book_id = params[:book_id].to_i
+    master_tempid = params[:master_template_select].to_i
+
+    @ba = Book_basic.get(book_id)
+    puts_message @ba.title
+    @ba.select_master_tempid = master_tempid
+    @ba.save
+    
+    render :partial => "update_master_temp"
+  end  
+
 end

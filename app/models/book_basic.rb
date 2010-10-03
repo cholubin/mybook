@@ -15,6 +15,7 @@ class Book_basic
   property :id,                   Serial
   property :title,                String
   property :user_id,              Integer        
+  property :select_master_tempid,  Integer
   timestamps :at
 
 end
