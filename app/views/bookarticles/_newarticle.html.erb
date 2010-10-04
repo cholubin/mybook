@@ -162,6 +162,30 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 	<% end %>
 </div>
 
+<div id="<%= prologue.id.to_s %>" style="width:750px; background-color:gray;">
+	<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
+	<input type="hidden" name="id" value="<%= prologue.id.to_s %>">	
+
+	<input id="<%= prologue.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= prologue.id.to_s %>')" value="+">
+	<input type="submit" value="텍스트저장">
+	<select id="select_temp_<%= prologue.id %>" name="select_temp">
+		<option value="prologue" <%= "selected" if prologue.selected_tempid == "prologue" %>>머릿말</option>
+	</select>
+	
+	<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
+	:onmouseover => "this.style.cursor='hand';",
+	:onclick => "if (window.confirm('선택하신 템플릿에 텍스트를 적용하여 편집하시겠습니까?')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
+	:with => "'start_page='+get_start_page("+prologue.id.to_s+")+'&level_id="+prologue.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+prologue.id.to_s+")")	%>
+	
+	<span style="margin-left:20px"></span><input id="<%= prologue.id.to_s + "_start_page" %>" name="start_page" value="<%= prologue.start_page %>" type="text" style="width:30px;"> 시작페이지 적용  
+	<br>
+	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= prologue.title %>">
+	<div id="<%= prologue.id.to_s + "_sub" %>" style="display:none">
+		<textarea name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= prologue.content %></textarea>
+	</div>	
+	<% end %>
+</div>
+
 <div id="<%= contents_table.id.to_s %>" style="width:750px; background-color:gray">
 	<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
 	<input type="hidden" name="id" value="<%= contents_table.id.to_s %>">	
@@ -184,30 +208,6 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 	<div id="<%= contents_table.id.to_s + "_sub" %>" style="display:none">
 		<textarea name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= contents_table.content %></textarea>
 	</div>
-	<% end %>
-</div>
-
-<div id="<%= prologue.id.to_s %>" style="width:750px; background-color:gray;">
-	<% form_remote_tag :url => {:action => 'update'}, :update => "result" do %>
-	<input type="hidden" name="id" value="<%= prologue.id.to_s %>">	
-
-	<input id="<%= prologue.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= prologue.id.to_s %>')" value="+">
-	<input type="submit" value="텍스트저장">
-	<select id="select_temp_<%= prologue.id %>" name="select_temp">
-		<option value="prologue" <%= "selected" if prologue.selected_tempid == "prologue" %>>머릿말</option>
-	</select>
-	
-	<%= image_tag '/images/mytemplates/editing.jpg', :align => 'absmiddle', 
-	:onmouseover => "this.style.cursor='hand';",
-	:onclick => "if (window.confirm('선택하신 템플릿에 텍스트를 적용하여 편집하시겠습니까?')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
-	:with => "'start_page='+get_start_page("+prologue.id.to_s+")+'&level_id="+prologue.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+prologue.id.to_s+")")	%>
-	
-	<span style="margin-left:20px"></span><input id="<%= prologue.id.to_s + "_start_page" %>" name="start_page" value="<%= prologue.start_page %>" type="text" style="width:30px;"> 시작페이지 적용  
-	<br>
-	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= prologue.title %>">
-	<div id="<%= prologue.id.to_s + "_sub" %>" style="display:none">
-		<textarea name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= prologue.content %></textarea>
-	</div>	
 	<% end %>
 </div>
 
