@@ -110,7 +110,7 @@ $(document).ready(function(){
 				var html_str = "<textarea class='wymeditor' id='"+level_id+"_textarea"+"' name='content' style='width:750px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'>"+request+"</textarea>"
 				$('#'+level_id+'_textarea').html(html_str);
 				
-				$('#'+level_id+'_sub .wym_box').remove();
+				$('#'+level_id+'_sub .wym_box:first').remove();
 				
 				$('#'+level_id+ '_textarea' +'.wymeditor').wymeditor({
 					
