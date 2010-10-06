@@ -115,29 +115,48 @@ $(document).ready(function(){
 				$('#'+level_id+ '_textarea' +'.wymeditor').wymeditor({
 					
 					html: 		request,
-			        stylesheet: 'styles.css',
+			        lang: 'kr',
+			        stylesheet: '/css/wymeditor/styles.css',
 
-			        //customize the tools menu with toolsItems option
-			        //'name' is the name of the command which will be executed
-			        //when the user clicks on the button
-			        //'title' is the button's title (automagically localized)
-			        //'css' is the button's class name
+					postInit: function(wym) {
+
+			           $(wym._box).find(wym._options.containersSelector)
+			              .removeClass('wym_dropdown')
+			              .addClass('wym_panel')
+						  .css('float', 'right')
+						  .css('width', '60px')
+			              .find('h2 > span')
+			              .remove();
+
+						// $(wym.).wym_area_bottom.css('display', 'none')
+			           $(wym._box).find(wym._options.classesSelector)
+			              .remove();
+
+			            //adjust the editor's height
+			            $(wym._box).find(wym._options.iframeSelector)
+			                .css('height', '350px')
+							.css('width', '660px');
+			        },
+
 			        toolsItems: [
 			        {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'}, 
 			        {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'},
-			        {'name': 'CreateLink', 'title': 'Link', 'css': 'wym_tools_link'},
-			        {'name': 'Unlink', 'title': 'Unlink', 'css': 'wym_tools_unlink'},
-			        {'name': 'InsertImage', 'title': 'Image', 'css': 'wym_tools_image'},
-			        {'name': 'InsertOrderedList', 'title': 'Ordered_List',
-			            'css': 'wym_tools_ordered_list'},
-			        {'name': 'InsertUnorderedList', 'title': 'Unordered_List',
-			            'css': 'wym_tools_unordered_list'},
-			        {'name': 'InsertTable', 'title': 'Table', 'css': 'wym_tools_table'},
 			        {'name': 'Paste', 'title': 'Paste_From_Word',
 			            'css': 'wym_tools_paste'},
 			        {'name': 'Undo', 'title': 'Undo', 'css': 'wym_tools_undo'},
 			        {'name': 'Redo', 'title': 'Redo', 'css': 'wym_tools_redo'}
-			    ]
+			    	]
+					,
+
+					containersItems: [
+					{'name': 'P', 'title': 'Paragraph', 'css': 'wym_containers_p'},
+					{'name': 'H1', 'title': 'Heading_1', 'css': 'wym_containers_h1'},
+					{'name': 'H2', 'title': 'Heading_2', 'css': 'wym_containers_h2'},		
+					{'name': 'H3', 'title': 'Heading_3', 'css': 'wym_containers_h3'},
+					{'name': 'H4', 'title': 'Heading_4', 'css': 'wym_containers_h4'},
+			        {'name': 'H5', 'title': 'Heading_5', 'css': 'wym_containers_h5'},
+			        {'name': 'H6', 'title': 'Heading_6', 'css': 'wym_containers_h6'}
+					]
 
 			    });
 			}
