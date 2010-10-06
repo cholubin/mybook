@@ -108,6 +108,9 @@ $(document).ready(function(){
 			url:'/bookarticles/update_article_from_m',
 			success:function(request){
 				$('#'+level_id+'_txtarea').text(request);
+				
+				$('#'+level_id+'_txtarea').fadeOut('slow').fadeIn('fast');
+				
 			}
 		});				
 		
