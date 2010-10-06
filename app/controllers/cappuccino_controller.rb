@@ -161,7 +161,6 @@ class CappuccinoController < ApplicationController
   end
   
   def send_result(mytemplate)  
-    puts_message "send_resultsend_resultsend_resultsend_resultsend_result"
     # tpl = Temp.get(mytemplate.temp_id)
     path = mytemplate.path
     dat_file = path + "/web/result.dat"

@@ -505,4 +505,31 @@ end
     render :partial => "update_master_temp"
   end  
 
+  def update_article_from_m
+    level_id = params[:level_id]
+    
+    @mytemp = Mytemplate.first(:level_id => level_id.to_i)
+    book_id = Book_article.get(level_id.to_i).book_basic_id.to_s
+    make_contens_xml(@mytemp)
+
+    read_2_file = "#{RAILS_ROOT}" + "/public/user_files/#{current_user.userid}/book_article/#{book_id}/#{@mytemp.name}/web/contents.xml"
+    puts_message read_2_file
+
+    data = ""                             
+    if File.exists?(read_2_file)
+      File.open(read_2_file) do |f|
+        f.each{|line| data << line}
+      end                   
+      data = data.gsub(/<xml>/,'').gsub(/<body>/,'').gsub('</body>','').gsub('</xml>','')
+    else
+      data = "no dat file."
+    end
+    
+    book_article = Book_article.get(level_id.to_i)
+    book_article.content = data
+    book_article.save
+    
+    render :nothing => true    
+  end
+
 end

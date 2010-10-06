@@ -89,25 +89,22 @@
 end%>
 </div>
 
-<table class="clipart_table2">
-    <thead>
-        <tr>
-            <td class="clipart_thead_bottom" width="400px">&nbsp;</td>
-			<td class="clipart_thead_bottom" width="400px" align="right">
-				<% if @mypdfs.count > 0 %>
-				<%= image_tag '/images/mybook/delete_s.jpg', :align => 'absmiddle', 
-				:onmouseover => "this.style.cursor='hand';",
-				:onclick => "if (window.confirm('선택하신 PDF파일을 정말 삭제하시겠습니까?')){}else{return false;};" + remote_function(:url => { :controller => 'mypdfs', :action => :deleteSelection },
-				:with => "'pdf_id=' + result()")
-				%>
-				<% end %>
-			</td>
-        </tr>
-    </thead>
-</table>
+<div style="height:10px">
+<img src="/images/mytemplates/line.jpg">
+</div>
+
+<div style="height:30px">
+<% if @mypdfs.count > 0 %>
+	<%= image_tag '/images/mybook/delete_s.jpg', :align => 'absmiddle', 
+	:onmouseover => "this.style.cursor='hand';",
+	:onclick => "if (window.confirm('선택하신 PDF파일을 정말 삭제하시겠습니까?')){}else{return false;};" + remote_function(:url => { :controller => 'mypdfs', :action => :deleteSelection },
+	:with => "'pdf_id=' + result()")
+	%>
+<% end %>
+</div>
 
 			<table width="776">
-				<tr height="20">
+				<tr>
 					<td width="546" align="left">
 						<div class="pager">
 							<% if @mypdfs.count > 0 %>

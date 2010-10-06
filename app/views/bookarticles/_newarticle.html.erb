@@ -97,6 +97,21 @@ $(document).ready(function(){
 		
 	});
 	
+	$('.update_btn').click(function(){
+		temp = event.target.id.split("_");
+		level_id = temp[2];
+
+		$.ajax({
+			data:'level_id='+level_id, 
+			dataType:'script', 
+			type:'post', 
+			url:'/bookarticles/update_article_from_m',
+			success:function(request){
+				alert("원고함이 업데이트 되었습니다!");
+			}
+		});				
+		
+	});
 	
 });
 
@@ -154,6 +169,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 	:with => "'start_page='+get_start_page("+incover.id.to_s+")+'&level_id="+incover.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+incover.id.to_s+")")	%>
 	<span style="margin-left:20px"></span>
 	<input id="<%= incover.id.to_s + "_start_page" %>" name="start_page" value="<%= incover.start_page %>" type="text" style="width:30px;"> 시작페이지 적용  
+	<span style="float:right"><input type="button" id="up_btn_<%= incover.id.to_s %>" class="update_btn" value="원고함 업데이트"></span>
 	<br>
 	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= incover.title %>">
 	<div id="<%= incover.id.to_s + "_sub" %>" style="display:none">
