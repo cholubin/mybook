@@ -1,5 +1,5 @@
-<html>
-<head>
+<script type="text/javascript" src="/js/wymeditor/jquery.wymeditor.min.js"></script>
+
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <style>
 #layer1{border:0px solid green;position:absolute; left:500px; top:200px;width:100;height:100px; z-index:999999}
@@ -107,10 +107,39 @@ $(document).ready(function(){
 			type:'post', 
 			url:'/bookarticles/update_article_from_m',
 			success:function(request){
-				$('#'+level_id+'_txtarea').text(request);
+				var html_str = "<textarea class='wymeditor' id='"+level_id+"_textarea"+"' name='content' style='width:750px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'>"+request+"</textarea>"
+				$('#'+level_id+'_textarea').html(html_str);
 				
-				$('#'+level_id+'_txtarea').fadeOut('slow').fadeIn('fast');
+				$('#'+level_id+'_sub .wym_box').remove();
 				
+				$('#'+level_id+ '_textarea' +'.wymeditor').wymeditor({
+					
+					html: 		request,
+			        stylesheet: 'styles.css',
+
+			        //customize the tools menu with toolsItems option
+			        //'name' is the name of the command which will be executed
+			        //when the user clicks on the button
+			        //'title' is the button's title (automagically localized)
+			        //'css' is the button's class name
+			        toolsItems: [
+			        {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'}, 
+			        {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'},
+			        {'name': 'CreateLink', 'title': 'Link', 'css': 'wym_tools_link'},
+			        {'name': 'Unlink', 'title': 'Unlink', 'css': 'wym_tools_unlink'},
+			        {'name': 'InsertImage', 'title': 'Image', 'css': 'wym_tools_image'},
+			        {'name': 'InsertOrderedList', 'title': 'Ordered_List',
+			            'css': 'wym_tools_ordered_list'},
+			        {'name': 'InsertUnorderedList', 'title': 'Unordered_List',
+			            'css': 'wym_tools_unordered_list'},
+			        {'name': 'InsertTable', 'title': 'Table', 'css': 'wym_tools_table'},
+			        {'name': 'Paste', 'title': 'Paste_From_Word',
+			            'css': 'wym_tools_paste'},
+			        {'name': 'Undo', 'title': 'Undo', 'css': 'wym_tools_undo'},
+			        {'name': 'Redo', 'title': 'Redo', 'css': 'wym_tools_redo'}
+			    ]
+
+			    });
 			}
 		});				
 		
@@ -162,7 +191,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 	<input type="hidden" name="id" value="<%= incover.id.to_s %>">	
 
 	<input id="<%= incover.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= incover.id.to_s %>')" value="+">
-	<input type="submit" value="텍스트저장">
+	<input type="submit" class="wymupdate" value="텍스트저장">
 	<select id="select_temp_<%= incover.id %>" name="select_temp">
 		<option value="incover" <%= "selected" if incover.selected_tempid == "incover" %>>속표지</option>
 	</select>
@@ -178,7 +207,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 	<br>
 	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= incover.title %>">
 	<div id="<%= incover.id.to_s + "_sub" %>" style="display:none">
-		<textarea id="<%= incover.id.to_s+"_txtarea" %>" name="content" style='width:750px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= incover.content %></textarea>
+		<textarea class="wymeditor" id="<%= incover.id.to_s+"_textarea" %>" name="content" style='width:750px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= incover.content %></textarea>
 	</div>	
 	<% end %>
 </div>
@@ -188,7 +217,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 	<input type="hidden" name="id" value="<%= prologue.id.to_s %>">	
 
 	<input id="<%= prologue.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= prologue.id.to_s %>')" value="+">
-	<input type="submit" value="텍스트저장">
+	<input type="submit" class="wymupdate" value="텍스트저장">
 	<select id="select_temp_<%= prologue.id %>" name="select_temp">
 		<option value="prologue" <%= "selected" if prologue.selected_tempid == "prologue" %>>머릿말</option>
 	</select>
@@ -205,7 +234,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 	<br>
 	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= prologue.title %>">
 	<div id="<%= prologue.id.to_s + "_sub" %>" style="display:none">
-		<textarea id="<%= prologue.id.to_s+"_txtarea" %>" name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= prologue.content %></textarea>
+		<textarea class="wymeditor" id="<%= prologue.id.to_s+"_textarea" %>" name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= prologue.content %></textarea>
 	</div>	
 	<% end %>
 </div>
@@ -215,7 +244,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 	<input type="hidden" name="id" value="<%= contents_table.id.to_s %>">	
 
 	<input id="<%= contents_table.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= contents_table.id.to_s %>')" value="+">
-	<input type="submit" value="텍스트저장">
+	<input type="submit" class="wymupdate" value="텍스트저장">
 	<select id="select_temp_<%= contents_table.id %>" name="select_temp">
 		<option value="contents_table_l" <%= "selected" if contents_table.selected_tempid == "contents_table_l" %>>차례(왼쪽)</option>
 		<option value="contents_table_r" <%= "selected" if contents_table.selected_tempid == "contents_table_r" %>>차례(오른쪽)</option>		
@@ -233,7 +262,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 	<br>
 	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= contents_table.title %>">
 	<div id="<%= contents_table.id.to_s + "_sub" %>" style="display:none">
-		<textarea id="<%= contents_table.id.to_s+"_txtarea" %>" name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= contents_table.content %></textarea>
+		<textarea class="wymeditor" id="<%= contents_table.id.to_s+"_textarea" %>" name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= contents_table.content %></textarea>
 	</div>
 	<% end %>
 </div>
@@ -252,7 +281,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 		<input type="hidden" name="id" value="<%= l1.id.to_s %>">
 		
 		<input id="<%= l1.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l1.id.to_s %>')" value="-">
-		<input type="submit" value="텍스트저장">
+		<input type="submit" class="wymupdate" value="텍스트저장">
 		<select id="select_temp_<%= l1.id %>" name="select_temp">
 			<option value="body_l" <%= "selected" if l1.selected_tempid == "body_l" %>>본문(왼쪽)</option>
 			<option value="body_r" <%= "selected" if l1.selected_tempid == "body_r" %>>본문(오른쪽)</option>			
@@ -271,7 +300,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 		<br>
 		<input type="text" style="width:750; font-size:12px;" name="title" value="<%= l1.title %>">
 		<div id="<%= l1.id.to_s + "_sub" %>">
-			<textarea id="<%= l1.id.to_s+"_txtarea" %>" name="content" style='width:750px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l1.content %></textarea>
+			<textarea class="wymeditor" id="<%= l1.id.to_s+"_textarea" %>" name="content" style='width:750px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l1.content %></textarea>
 		
 		<% end %>
 		<%
@@ -286,7 +315,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 				<input type="hidden" name="id" value="<%= l2.id.to_s %>">
 				
 				<input id="<%= l2.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l2.id.to_s %>')" value="-">
-				<input type="submit" value="텍스트저장">
+				<input type="submit" class="wymupdate" value="텍스트저장">
 				<select id="select_temp_<%= l2.id %>" name="select_temp">
 					<option value="body_l" <%= "selected" if l2.selected_tempid == "body_l" %>>본문(왼쪽)</option>
 					<option value="body_r" <%= "selected" if l2.selected_tempid == "body_r" %>>본문(오른쪽)</option>			
@@ -305,7 +334,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 				<br>
 				<input type="text" style="width:740; font-size:12px;" name="title" value="<%= l2.title %>">
 				<div id="<%= l2.id.to_s + "_sub" %>">
-					<textarea id="<%= l2.id.to_s+"_txtarea" %>" name="content" style='width:740px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l2.content %></textarea>
+					<textarea class="wymeditor" id="<%= l2.id.to_s+"_textarea" %>" name="content" style='width:740px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l2.content %></textarea>
 				
 				<% end %>
 				<%
@@ -321,7 +350,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 						
 						
 						<input id="<%= l3.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l3.id.to_s %>')" value="-">
-						<input type="submit" value="텍스트저장">
+						<input type="submit" class="wymupdate" value="텍스트저장">
 						
 						<select id="select_temp_<%= l3.id %>" name="select_temp">
 							<option value="body_l" <%= "selected" if l3.selected_tempid == "body_l" %>>본문(왼쪽)</option>
@@ -339,7 +368,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 						<br>
 						<input type="text" style="width:730; font-size:12px;" name="title" value="<%= l3.title %>">
 						<div id="<%= l3.id.to_s + "_sub" %>">
-							<textarea id="<%= l3.id.to_s+"_txtarea" %>" name="content" style='width: 730px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l3.content %></textarea>
+							<textarea class="wymeditor" id="<%= l3.id.to_s+"_textarea" %>" name="content" style='width: 730px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l3.content %></textarea>
 						<% end %>
 						<%
 						@level4_list  = Book_article.all(:user_id => current_user.id, :book_basic_id => book_id.to_i, :self_level => 4, :upper_level => l3.id.to_i)
@@ -354,7 +383,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 								
 
 								<input id="<%= l4.id.to_s + "_btn" %>" type="button" onClick="hide_div('<%= l4.id.to_s %>')" value="-">	
-								<input type="submit" value="텍스트저장">
+								<input type="submit" class="wymupdate" value="텍스트저장">
 								
 								<select id="select_temp_<%= l4.id %>" name="select_temp">
 									<option value="body_l" <%= "selected" if l4.selected_tempid == "body_l" %>>본문(왼쪽)</option>
@@ -371,7 +400,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 								<br>
 								<input type="text" style="width:720; font-size:12px;" name="title" value="<%= l4.title %>">
 								<div id="<%= l4.id.to_s + "_sub" %>">
-									<textarea id="<%= l4.id.to_s+"_txtarea" %>" name="content" style='width: 720px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l4.content %></textarea>
+									<textarea class="wymeditor" id="<%= l4.id.to_s+"_textarea" %>" name="content" style='width: 720px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l4.content %></textarea>
 								</div>
 								<% end %>
 							</div>
@@ -408,8 +437,64 @@ end
 <div id="epub_make"></div>
 <div id="update_master_temp"></div>
 
-</body>
-</html>
+<script language="javascript">
+$(function() {
+    $('.wymeditor').wymeditor({
+    	
+		lang: 'kr',
+        stylesheet: '/css/wymeditor/styles.css',
 
+		postInit: function(wym) {
+		            //render the containers box as a panel
+		            //and remove the span containing the '>'
+           $(wym._box).find(wym._options.containersSelector)
+              .removeClass('wym_dropdown')
+              .addClass('wym_panel')
+			  .css('float', 'right')
+			  .css('width', '60px')
+              .find('h2 > span')
+              .remove();
+			
+			// $(wym.).wym_area_bottom.css('display', 'none')
+           $(wym._box).find(wym._options.classesSelector)
+              .remove();
 
+            //adjust the editor's height
+            $(wym._box).find(wym._options.iframeSelector)
+                .css('height', '350px')
+				.css('width', '660px');
+        },
+		
+		
+  
+        
+        //customize the tools menu with toolsItems option
+        //'name' is the name of the command which will be executed
+        //when the user clicks on the button
+        //'title' is the button's title (automagically localized)
+        //'css' is the button's class name
+        toolsItems: [
+        {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'}, 
+        {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'},
+        {'name': 'Paste', 'title': 'Paste_From_Word',
+            'css': 'wym_tools_paste'},
+        {'name': 'Undo', 'title': 'Undo', 'css': 'wym_tools_undo'},
+        {'name': 'Redo', 'title': 'Redo', 'css': 'wym_tools_redo'}
+    	]
+		,
+
+		containersItems: [
+		{'name': 'P', 'title': 'Paragraph', 'css': 'wym_containers_p'},
+		{'name': 'H1', 'title': 'Heading_1', 'css': 'wym_containers_h1'},
+		{'name': 'H2', 'title': 'Heading_2', 'css': 'wym_containers_h2'},		
+		{'name': 'H3', 'title': 'Heading_3', 'css': 'wym_containers_h3'},
+		{'name': 'H4', 'title': 'Heading_4', 'css': 'wym_containers_h4'},
+        {'name': 'H5', 'title': 'Heading_5', 'css': 'wym_containers_h5'},
+        {'name': 'H6', 'title': 'Heading_6', 'css': 'wym_containers_h6'},
+		{'name': 'H6', 'title': 'Heading_6', 'css': 'wym_containers_h6'}
+		]
+    
+    });
+});
+</script>
 
