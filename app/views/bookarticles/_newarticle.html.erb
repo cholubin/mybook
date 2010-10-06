@@ -107,7 +107,7 @@ $(document).ready(function(){
 			type:'post', 
 			url:'/bookarticles/update_article_from_m',
 			success:function(request){
-				alert("원고함이 업데이트 되었습니다!");
+				$('#'+level_id+'_txtarea').text(request);
 			}
 		});				
 		
@@ -169,11 +169,13 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 	:with => "'start_page='+get_start_page("+incover.id.to_s+")+'&level_id="+incover.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+incover.id.to_s+")")	%>
 	<span style="margin-left:20px"></span>
 	<input id="<%= incover.id.to_s + "_start_page" %>" name="start_page" value="<%= incover.start_page %>" type="text" style="width:30px;"> 시작페이지 적용  
-	<span style="float:right"><input type="button" id="up_btn_<%= incover.id.to_s %>" class="update_btn" value="원고함 업데이트"></span>
+	<% if !Mytemplate.first(:level_id => incover.id).nil? %>
+		<span style="float:right"><input type="button" id="up_btn_<%= incover.id.to_s %>" class="update_btn" value="원고함 업데이트"></span>
+	<% end %>
 	<br>
 	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= incover.title %>">
 	<div id="<%= incover.id.to_s + "_sub" %>" style="display:none">
-		<textarea name="content" style='width:750px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= incover.content %></textarea>
+		<textarea id="<%= incover.id.to_s+"_txtarea" %>" name="content" style='width:750px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= incover.content %></textarea>
 	</div>	
 	<% end %>
 </div>
@@ -194,10 +196,13 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 	:with => "'start_page='+get_start_page("+prologue.id.to_s+")+'&level_id="+prologue.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+prologue.id.to_s+")")	%>
 	
 	<span style="margin-left:20px"></span><input id="<%= prologue.id.to_s + "_start_page" %>" name="start_page" value="<%= prologue.start_page %>" type="text" style="width:30px;"> 시작페이지 적용  
+	<% if !Mytemplate.first(:level_id => prologue.id).nil? %>
+		<span style="float:right"><input type="button" id="up_btn_<%= prologue.id.to_s %>" class="update_btn" value="원고함 업데이트"></span>
+	<% end %>
 	<br>
 	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= prologue.title %>">
 	<div id="<%= prologue.id.to_s + "_sub" %>" style="display:none">
-		<textarea name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= prologue.content %></textarea>
+		<textarea id="<%= prologue.id.to_s+"_txtarea" %>" name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= prologue.content %></textarea>
 	</div>	
 	<% end %>
 </div>
@@ -219,10 +224,13 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 	:with => "'start_page='+get_start_page("+contents_table.id.to_s+")+'&level_id="+contents_table.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+contents_table.id.to_s+")")	%>
 	
 	<span style="margin-left:20px"></span><input id="<%= contents_table.id.to_s + "_start_page" %>" value="<%= contents_table.start_page %>" name="start_page" type="text" style="width:30px;"> 시작페이지 적용  
+	<% if !Mytemplate.first(:level_id => contents_table.id).nil? %>
+		<span style="float:right"><input type="button" id="up_btn_<%= contents_table.id.to_s %>" class="update_btn" value="원고함 업데이트"></span>
+	<% end %>
 	<br>
 	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= contents_table.title %>">
 	<div id="<%= contents_table.id.to_s + "_sub" %>" style="display:none">
-		<textarea name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= contents_table.content %></textarea>
+		<textarea id="<%= contents_table.id.to_s+"_txtarea" %>" name="content" style='width:750px; height: 100px;' onkeyup='this.style.height =this.scrollHeight'><%= contents_table.content %></textarea>
 	</div>
 	<% end %>
 </div>
@@ -254,10 +262,13 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 		:with => "'start_page='+get_start_page("+l1.id.to_s+")+'&level_id="+l1.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l1.id.to_s+")")	%>
 		
 		<span style="margin-left:20px"></span><input id="<%= l1.id.to_s + "_start_page" %>" name="start_page" value="<%= l1.start_page %>" type="text" style="width:30px;"> 시작페이지 적용  
+		<% if !Mytemplate.first(:level_id => l1.id).nil? %>
+			<span style="float:right"><input type="button" id="up_btn_<%= l1.id.to_s %>" class="update_btn" value="원고함 업데이트"></span>
+		<% end %>
 		<br>
 		<input type="text" style="width:750; font-size:12px;" name="title" value="<%= l1.title %>">
 		<div id="<%= l1.id.to_s + "_sub" %>">
-			<textarea name="content" style='width:750px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l1.content %></textarea>
+			<textarea id="<%= l1.id.to_s+"_txtarea" %>" name="content" style='width:750px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l1.content %></textarea>
 		
 		<% end %>
 		<%
@@ -285,11 +296,13 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 				:with => "'start_page='+get_start_page("+l2.id.to_s+")+'&level_id="+l2.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l2.id.to_s+")")	%>
 				
 				<span style="margin-left:20px"></span><input id="<%= l2.id.to_s + "_start_page" %>" name="start_page" value="<%= l2.start_page %>" type="text" style="width:30px;"> 시작페이지 적용  
-
+				<% if !Mytemplate.first(:level_id => l2.id).nil? %>
+					<span style="float:right"><input type="button" id="up_btn_<%= l2.id.to_s %>" class="update_btn" value="원고함 업데이트"></span>
+				<% end %>	
 				<br>
 				<input type="text" style="width:740; font-size:12px;" name="title" value="<%= l2.title %>">
 				<div id="<%= l2.id.to_s + "_sub" %>">
-					<textarea name="content" style='width:740px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l2.content %></textarea>
+					<textarea id="<%= l2.id.to_s+"_txtarea" %>" name="content" style='width:740px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l2.content %></textarea>
 				
 				<% end %>
 				<%
@@ -317,10 +330,13 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 						:onclick => "if (window.confirm('선택하신 템플릿에 텍스트를 적용하여 편집하시겠습니까?')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
 						:with => "'start_page='+get_start_page("+l3.id.to_s+")+'&level_id="+l3.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l3.id.to_s+")")	%>						
 						<span style="margin-left:20px"></span><input id="<%= l3.id.to_s + "_start_page" %>" name="start_page" value="<%= l3.start_page %>" type="text" style="width:30px;"> 시작페이지 적용
+						<% if !Mytemplate.first(:level_id => l3.id).nil? %>
+							<span style="float:right"><input type="button" id="up_btn_<%= l3.id.to_s %>" class="update_btn" value="원고함 업데이트"></span>
+						<% end %>
 						<br>
 						<input type="text" style="width:730; font-size:12px;" name="title" value="<%= l3.title %>">
 						<div id="<%= l3.id.to_s + "_sub" %>">
-							<textarea name="content" style='width: 730px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l3.content %></textarea>
+							<textarea id="<%= l3.id.to_s+"_txtarea" %>" name="content" style='width: 730px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l3.content %></textarea>
 						<% end %>
 						<%
 						@level4_list  = Book_article.all(:user_id => current_user.id, :book_basic_id => book_id.to_i, :self_level => 4, :upper_level => l3.id.to_i)
@@ -346,10 +362,13 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 								:onclick => "if (window.confirm('선택하신 템플릿에 텍스트를 적용하여 편집하시겠습니까?')){show_progress();}else{return false;};" + remote_function(:url => { :controller => 'bookarticles', :action => :publish_book },
 								:with => "'start_page='+get_start_page("+l4.id.to_s+")+'&level_id="+l4.id.to_s+"&book_id="+book_id.to_s+"&temp_id='+get_temp_id("+l4.id.to_s+")")	%>	
 								<span style="margin-left:20px"></span><input id="<%= l4.id.to_s + "_start_page" %>" name="start_page" value="<%= l4.start_page %>" type="text" style="width:30px;"> 시작페이지 적용						
+								<% if !Mytemplate.first(:level_id => l4.id).nil? %>
+									<span style="float:right"><input type="button" id="up_btn_<%= l4.id.to_s %>" class="update_btn" value="원고함 업데이트"></span>
+								<% end %>
 								<br>
 								<input type="text" style="width:720; font-size:12px;" name="title" value="<%= l4.title %>">
 								<div id="<%= l4.id.to_s + "_sub" %>">
-									<textarea name="content" style='width: 720px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l4.content %></textarea>
+									<textarea id="<%= l4.id.to_s+"_txtarea" %>" name="content" style='width: 720px; height: 100px; font-size:12px;' onkeyup='this.style.height =this.scrollHeight'><%= l4.content %></textarea>
 								</div>
 								<% end %>
 							</div>

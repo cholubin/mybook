@@ -529,7 +529,9 @@ end
     book_article.content = data
     book_article.save
     
-    render :nothing => true    
+    @update_text = book_article.content
+    puts_message @update_text 
+    render :text => @update_text
   end
 
 end
