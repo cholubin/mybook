@@ -445,8 +445,7 @@ $(function() {
         stylesheet: '/css/wymeditor/styles.css',
 
 		postInit: function(wym) {
-		            //render the containers box as a panel
-		            //and remove the span containing the '>'
+
            $(wym._box).find(wym._options.containersSelector)
               .removeClass('wym_dropdown')
               .addClass('wym_panel')
@@ -465,14 +464,6 @@ $(function() {
 				.css('width', '660px');
         },
 		
-		
-  
-        
-        //customize the tools menu with toolsItems option
-        //'name' is the name of the command which will be executed
-        //when the user clicks on the button
-        //'title' is the button's title (automagically localized)
-        //'css' is the button's class name
         toolsItems: [
         {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'}, 
         {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'},
@@ -490,8 +481,7 @@ $(function() {
 		{'name': 'H3', 'title': 'Heading_3', 'css': 'wym_containers_h3'},
 		{'name': 'H4', 'title': 'Heading_4', 'css': 'wym_containers_h4'},
         {'name': 'H5', 'title': 'Heading_5', 'css': 'wym_containers_h5'},
-        {'name': 'H6', 'title': 'Heading_6', 'css': 'wym_containers_h6'},
-		{'name': 'H6', 'title': 'Heading_6', 'css': 'wym_containers_h6'}
+        {'name': 'H6', 'title': 'Heading_6', 'css': 'wym_containers_h6'}
 		]
     
     });
