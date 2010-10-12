@@ -207,7 +207,7 @@ jQuery.extend(WYMeditor, {
     MAIN_CONTAINERS : new Array("p","h1","h2","h3","h4","h5","h6","pre","blockquote"),
 
     BLOCKS : new Array("address", "blockquote", "div", "dl",
-	   "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6", "hr",
+	   "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6", "hr", 
 	   "noscript", "ol", "p", "pre", "table", "ul", "dd", "dt",
 	   "li", "tbody", "td", "tfoot", "th", "thead", "tr"),
 
@@ -361,8 +361,8 @@ jQuery.fn.wymeditor = function(options) {
               + WYMeditor.STATUS
               + "</div>"
               // + "<div class='wym_area_bottom'>"
-              + WYMeditor.LOGO
-              + "</div>"
+              // + WYMeditor.LOGO
+              // + "</div>"
               + "</div>",
 
     logoHtml:  "<a class='wym_wymeditor_link' "
@@ -377,6 +377,7 @@ jQuery.fn.wymeditor = function(options) {
               + WYMeditor.INDEX + "].initIframe(this)'"
               + "></iframe>"
               + "</div>",
+
               
     editorStyles: [],
 
@@ -423,7 +424,7 @@ jQuery.fn.wymeditor = function(options) {
     ],
 
     containersHtml:    "<div class='wym_containers wym_section'>"
-                        + "<h2>{스타일}</h2>"
+                        + "<h2>스타일</h2>"
                         + "<ul>"
                         + WYMeditor.CONTAINERS_ITEMS
                         + "</ul>"
@@ -1092,11 +1093,20 @@ WYMeditor.editor.prototype.findUp = function(node, filter) {
  */
 WYMeditor.editor.prototype.switchTo = function(node,sType) {
 
-  var newNode = this._doc.createElement(sType);
-  var html = jQuery(node).html();
-  node.parentNode.replaceChild(newNode,node);
-  jQuery(newNode).html(html);
-  this.setFocusToNode(newNode);
+  // var newNode = this._doc.createElement(sType);
+  // var html = jQuery(node).html();
+  // node.parentNode.replaceChild(newNode,node);
+  // jQuery(newNode).html(html);
+  // this.setFocusToNode(newNode);
+
+
+  var newNode = this._doc.createElement("P");
+  newNode.className = sType;
+  var html = jQuery(node).html();
+  node.parentNode.replaceChild(newNode,node);
+  jQuery(newNode).html(html);
+  this.setFocusToNode(newNode);
+
 };
 
 WYMeditor.editor.prototype.replaceStrings = function(sVal) {
@@ -1140,16 +1150,59 @@ WYMeditor.editor.prototype.status = function(sMessage) {
 /* @name update
  * @description Updates the element and textarea values
  */
+// 여기
+
 WYMeditor.editor.prototype.update = function() {
 
   var html = this.xhtml();
-  jQuery(this._element).val(html);
+
+
   jQuery(this._box).find(this._options.htmlValSelector).not('.hasfocus').val(html); //#147
+
+	var ptags = this._doc.body;
+	var tags = this._doc;
+
+	
+var newnode = [];
+var node = [];
+var i=0;
+	
+	if($(ptags).children.length > 0){
+		$(ptags)
+			.children()
+			.each(function(){
+				node[i] = $(this);
+				var class_name = node[i].attr('className');
+				var tag_name = node[i].attr('tagName');
+
+				var new_node = tags.createElement(class_name);
+				newnode[i] = $(new_node);
+				newnode[i].context.innerText = node[i].context.innerText;
+
+				// alert(newnode[i]);
+				// alert(newNode.innerText);
+
+
+				i += 1;
+			});	
+	}
+	
+
+var textarea_str = "";
+
+	for(var j=0; j < i; j++) {
+		textarea_str += newnode[j].context.outerHTML;
+	}
+	
+	
+	jQuery(this._element).val(textarea_str);	
+
 };
 
 /* @name dialog
  * @description Opens a dialog box
  */
+
 WYMeditor.editor.prototype.dialog = function( dialogType, dialogFeatures, bodyHtml ) {
   
   var features = dialogFeatures || this._wym._options.dialogFeatures;

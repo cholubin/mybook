@@ -1,0 +1,11 @@
+.h1_title {font-family: AppleMyungjo; font-weight: bold; margin-top:0pt;padding-top:10pt;font-size:20pt; color:#613438;background-image:url(lbl-h1.png);}
+.h2_ch_title {font-family: AppleGothic; font-weight: bold; margin-top:0pt;padding-top:10pt;font-size:18pt; color:#1a1a1a;background-image:url(lbl-h2.png);}
+.h3_ch_m_title {font-family: AppleMyungjo; font-weight: bold; margin-top:0pt;padding-top:10pt;font-size:16pt; color:#030743;background-image:url(lbl-h3.png);}
+.h4_ch_s_title {font-family: AppleGothic; margin-top:0pt;padding-top:10pt;font-size:14pt; color:#954b43;background-image:url(lbl-h4.png);}
+.h5_lead {font-family: AppleGothic; margin-top:0pt;padding-top:10pt;font-size:12pt; color:#5c4b18;background-image:url(lbl-h5.png);}
+.h6_caption {font-family: AppleGothic; margin-top:0pt;padding-top:10pt;font-size:8pt; color:#1a1a1a;background-image:url(lbl-h6.png);}
+.p_body {font-family: AppleMyungjo; margin-top:0pt;padding-top:10pt;font-size:10pt; color:#1a1a1a;background-image:url(lbl-p.png);}
+.p_1_body_r {font-family: AppleMyungjo; text-align:right; margin-top:0pt;padding-top:10pt;font-size:10pt; color:#1a1a1a;background-image:url(lbl-p1.png);}
+.p_2_body_gothic {font-family: AppleGothic; margin-top:0pt;padding-top:10pt;font-size:10pt; color:#1a1a1a;background-image:url(lbl-p2.png);}
+.p_3_body_italic {font-family: AppleMyungjo; font-style:italic; margin-top:0pt;padding-top:10pt;font-size:10pt; color:#1a1a1a;background-image:url(lbl-p3.png);}
+.p_4_body_quotation {font-family: AppleMyungjo; margin-top:0pt;padding-top:10pt;padding-left:30pt; font-size:9pt; color:#1a1a1a;background-image:url(lbl-p4.png);}

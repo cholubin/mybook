@@ -18,6 +18,7 @@ class Book_article
   property :title,              String
   property :order,              Integer
   property :content,            Text
+  property :content_m,          Text
   property :self_level,         Integer
   property :upper_level,        Integer
   property :user_id,            Integer
