@@ -23,8 +23,8 @@ class BookarticlesController < ApplicationController
     
     
     @article.title = params[:title]
-    params[:content] = params[:content].gsub(/<br>/,'').gsub(/&nbsp;/,'')
-    @article.content = params[:content].gsub(/<br>/,'')
+    params[:content] = params[:content].gsub(/&nbsp;/,'')
+    @article.content = params[:content]
     content_m = params[:content].gsub(/<br>/,'')
     content_m = content_m.gsub(/<h1_title>/,'<p class="h1_title">').gsub(/<\/h1_title>/,'</p>')
     content_m = content_m.gsub(/<h2_ch_title>/,'<p class="h2_ch_title">').gsub(/<\/h2_ch_title>/,'</p>')
@@ -339,6 +339,9 @@ puts_message "현재 작업중인 텍스트박스 아이디: " + level_id
     
 
 puts_message "현재 작업중인 텍스트박스 컨텐츠: " + article_content
+
+article_content = article_content.gsub(/<br>/,"\n\n")
+puts_message article_content
     
     xml_file = <<-EOF
 <xml><body>#{article_content}</body></xml>
