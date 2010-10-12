@@ -94,7 +94,7 @@ end%>
 </div>
 
 <div style="height:30px">
-<% if @mypdfs.count > 0 %>
+<% if @mypdfs.length > 0 %>
 	<%= image_tag '/images/mybook/delete_s.jpg', :align => 'absmiddle', 
 	:onmouseover => "this.style.cursor='hand';",
 	:onclick => "if (window.confirm('선택하신 PDF파일을 정말 삭제하시겠습니까?')){}else{return false;};" + remote_function(:url => { :controller => 'mypdfs', :action => :deleteSelection },

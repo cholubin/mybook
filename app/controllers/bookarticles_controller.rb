@@ -24,7 +24,7 @@ class BookarticlesController < ApplicationController
     
     @article.title = params[:title]
     params[:content] = params[:content].gsub(/&nbsp;/,'').gsub(/<br>/,'')
-    @article.content = params[:content]
+    @article.content = params[:content].gsub("\n",'')
     content_m = params[:content].gsub(/<br>/,'')
     content_m = content_m.gsub(/<h1_title>/,'<p class="h1_title">').gsub(/<\/h1_title>/,'</p>')
     content_m = content_m.gsub(/<h2_ch_title>/,'<p class="h2_ch_title">').gsub(/<\/h2_ch_title>/,'</p>')
@@ -37,12 +37,13 @@ class BookarticlesController < ApplicationController
     content_m = content_m.gsub(/<p_2_body_gothic>/,'<p class="p_2_body_gothic">').gsub(/<\/p_2_body_gothic>/,'</p>')
     content_m = content_m.gsub(/<p_3_body_italic>/,'<p class="p_3_body_italic">').gsub(/<\/p_3_body_italic>/,'</p>')
     content_m = content_m.gsub(/<p_4_body_quotation>/,'<p class="p_4_body_quotation">').gsub(/<\/p_4_body_quotation>/,'</p>')
-    # content_m = content_m.gsub(/<p_body><\/p_body>/,'<p></p>')
     
     @article.content_m = content_m
     
-    puts_message @article.content
     book_id = @article.book_basic_id.to_s
+
+    puts_message "content ==>" + @article.content
+    puts_message "content_m ==>" + @article.content_m
     
     #book_article 폴더가 없으면 생성하고 해당 폴더 밑으로 현재작업중인 책의 아이디로 폴더를 만든다.
     book_article_dir = "#{RAILS_ROOT}" + "/public/user_files/#{current_user.userid}/book_article/#{book_id}/"
@@ -570,7 +571,7 @@ end
     make_contens_xml(@mytemp)
 
     read_2_file = "#{RAILS_ROOT}" + "/public/user_files/#{current_user.userid}/book_article/#{book_id}/#{@mytemp.name}/web/contents.xml"
-    puts_message read_2_file
+    
 
     data = ""                             
     if File.exists?(read_2_file)
@@ -578,22 +579,22 @@ end
         f.each{|line| data << line}
       end                   
       data = data.gsub(/<xml>/,'').gsub(/<body>/,'').gsub('</body>','').gsub('</xml>','')
+      puts_message "여기가 엠의 contents.xml내용이다! ==> " + data
     else
       data = "no dat file."
     end
     
-    puts_message data
-    
-    
     book_article = Book_article.get(level_id.to_i)
-
-    # data = data.gsub(/<p_body><\/p_body>/,"\n\n")
-    # data = data.gsub(/<\/p_body>/,"</p_body>\n")
+    
+    puts_message "data ==>" + data
     
     book_article.content = data
+    book_article.content = book_article.content.gsub("\n",'')
+    
+    puts_message "content" + book_article.content
     
     
-    content_m = data.gsub(/<br>/,'')
+    content_m = data.gsub("\n","")
     content_m = content_m.gsub(/<h1_title>/,'<p class="h1_title">').gsub(/<\/h1_title>/,'</p>')
     content_m = content_m.gsub(/<h2_ch_title>/,'<p class="h2_ch_title">').gsub(/<\/h2_ch_title>/,'</p>')
     content_m = content_m.gsub(/<h3_ch_m_title>/,'<p class="h3_ch_m_title">').gsub(/<\/h3_ch_m_title>/,'</p>')
@@ -607,10 +608,12 @@ end
     content_m = content_m.gsub(/<p_4_body_quotation>/,'<p class="p_4_body_quotation">').gsub(/<\/p_4_body_quotation>/,'</p>')    
     
     book_article.content_m = content_m
+    
+    puts_message "content_m  " + book_article.content_m
     book_article.save
     
     @update_text = book_article.content_m
-    puts_message @update_text 
+     
     render :text => @update_text
   end
 
