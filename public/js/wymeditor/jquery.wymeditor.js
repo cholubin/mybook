@@ -1180,7 +1180,7 @@ var i=0;
 
 				var new_node = tags.createElement(class_name);
 				newnode[i] = $(new_node);
-				newnode[i].context.innerText = node[i].context.innerText + "\n";
+				newnode[i].context.innerText = node[i].context.innerText;
 
 				// alert(newnode[i]);
 				// alert(newNode.innerText);

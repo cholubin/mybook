@@ -23,7 +23,7 @@ class BookarticlesController < ApplicationController
     
     
     @article.title = params[:title]
-    params[:content] = params[:content].gsub(/&nbsp;/,'')
+    params[:content] = params[:content].gsub(/&nbsp;/,'').gsub(/<br>/,'')
     @article.content = params[:content]
     content_m = params[:content].gsub(/<br>/,'')
     content_m = content_m.gsub(/<h1_title>/,'<p class="h1_title">').gsub(/<\/h1_title>/,'</p>')
@@ -340,8 +340,43 @@ puts_message "현재 작업중인 텍스트박스 아이디: " + level_id
 
 puts_message "현재 작업중인 텍스트박스 컨텐츠: " + article_content
 
-article_content = article_content.gsub(/<br>/,"\n\n")
-puts_message article_content
+article_content = article_content.gsub(/<p_body>/,"\n<p_body>\n")
+article_content = article_content.gsub(/<\/p_body>/,"\n\n</p_body>")
+
+article_content = article_content.gsub(/<\/h1_title>/,"\n\n</h1_title>")
+article_content = article_content.gsub(/<\/h1_title>/,"\n\n</h1_title>")
+
+article_content = article_content.gsub(/<\/h2_ch_title>/,"\n\n</h2_ch_title>")
+article_content = article_content.gsub(/<\/h2_ch_title>/,"\n\n</h2_ch_title>")
+
+article_content = article_content.gsub(/<\/h3_ch_m_title>/,"\n\n</h3_ch_m_title>")
+article_content = article_content.gsub(/<\/h3_ch_m_title>/,"\n\n</h3_ch_m_title>")
+
+article_content = article_content.gsub(/<\/h4_ch_s_title>/,"\n\n</h4_ch_s_title>")
+article_content = article_content.gsub(/<\/h4_ch_s_title>/,"\n\n</h4_ch_s_title>")
+
+article_content = article_content.gsub(/<\/h5_lead>/,"\n\n</h5_lead>")
+article_content = article_content.gsub(/<\/h5_lead>/,"\n\n</h5_lead>")
+
+article_content = article_content.gsub(/<\/h6_caption>/,"\n\n</h6_caption>")
+article_content = article_content.gsub(/<\/h6_caption>/,"\n\n</h6_caption>")
+
+article_content = article_content.gsub(/<\/p_1_body_r>/,"\n\n</p_1_body_r>")
+article_content = article_content.gsub(/<\/p_1_body_r>/,"\n\n</p_1_body_r>")
+
+article_content = article_content.gsub(/<\/p_2_body_gothic>/,"\n\n</p_2_body_gothic>")
+article_content = article_content.gsub(/<\/p_2_body_gothic>/,"\n\n</p_2_body_gothic>")
+
+article_content = article_content.gsub(/<\/p_3_body_italic>/,"\n\n</p_3_body_italic>")
+article_content = article_content.gsub(/<\/p_3_body_italic>/,"\n\n</p_3_body_italic>")
+
+article_content = article_content.gsub(/<\/p_4_body_quotation>/,"\n\n</p_4_body_quotation>")
+article_content = article_content.gsub(/<\/p_4_body_quotation>/,"\n\n</p_4_body_quotation>")
+
+
+puts_message "Here=============>" + article_content + "<======================"
+
+
     
     xml_file = <<-EOF
 <xml><body>#{article_content}</body></xml>
@@ -552,6 +587,9 @@ end
     
     book_article = Book_article.get(level_id.to_i)
 
+    # data = data.gsub(/<p_body><\/p_body>/,"\n\n")
+    # data = data.gsub(/<\/p_body>/,"</p_body>\n")
+    
     book_article.content = data
     
     
