@@ -24,7 +24,7 @@ class BookarticlesController < ApplicationController
     
     @article.title = params[:title]
     params[:content] = params[:content].gsub(/<br>/,'').gsub(/&nbsp;/,'')
-    @article.content = params[:content].gsub(/<br>/,'').gsub(/<p_body>/,'<p_body>\n')
+    @article.content = params[:content].gsub(/<br>/,'')
     content_m = params[:content].gsub(/<br>/,'')
     content_m = content_m.gsub(/<h1_title>/,'<p class="h1_title">').gsub(/<\/h1_title>/,'</p>')
     content_m = content_m.gsub(/<h2_ch_title>/,'<p class="h2_ch_title">').gsub(/<\/h2_ch_title>/,'</p>')
