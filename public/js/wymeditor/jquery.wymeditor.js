@@ -1172,6 +1172,9 @@ var i=0;
 			.children()
 			.each(function(){
 				node[i] = $(this);
+				if (node[i].attr('className') == ""){
+					node[i].attr('className', 'p_body');
+				}
 				var class_name = node[i].attr('className');
 				var tag_name = node[i].attr('tagName');
 
