@@ -588,7 +588,7 @@ end
     
     book_article = Book_article.get(level_id.to_i)
         
-    article_content = data.gsub("\n",'')
+    article_content = data
     article_content = article_content.gsub(/<p_body>/,"\n<p_body>\n")
     article_content = article_content.gsub(/<\/p_body>/,"\n\n</p_body>")
 

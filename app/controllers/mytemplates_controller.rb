@@ -152,7 +152,7 @@ class MytemplatesController < ApplicationController
     mypdf.name = mytemplate.name
 
     if mytemplate.is_book = true
-      mypdf.pdf_filename = mytemplate.name.gsub(/.mlayoutP/,'.pdf')
+      mypdf.pdf_filename = mytemplate.id.to_s + ".pdf"
     else
       mypdf.pdf_filename = mytemplate.file_filename.gsub(/.mlayoutP.zip/,'.pdf')
     end
