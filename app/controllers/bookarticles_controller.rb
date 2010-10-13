@@ -564,6 +564,7 @@ end
   end  
 
   def update_article_from_m
+    puts_message "카푸치노로부터 원고함 데이타 업데이트 시작!"
     level_id = params[:level_id]
     
     @mytemp = Mytemplate.first(:level_id => level_id.to_i)
@@ -579,22 +580,53 @@ end
         f.each{|line| data << line}
       end                   
       data = data.gsub(/<xml>/,'').gsub(/<body>/,'').gsub('</body>','').gsub('</xml>','')
-      puts_message "여기가 엠의 contents.xml내용이다! ==> " + data
+      puts_message "카푸치노에서 템플릿내의 contents.xml파일 읽어오기 완료!"
     else
       data = "no dat file."
+      puts_message "contents.xml파일이 없음!"
     end
     
     book_article = Book_article.get(level_id.to_i)
+        
+    article_content = data.gsub("\n",'')
+    article_content = article_content.gsub(/<p_body>/,"\n<p_body>\n")
+    article_content = article_content.gsub(/<\/p_body>/,"\n\n</p_body>")
+
+    article_content = article_content.gsub(/<h1_title>/,"\n<h1_title>\n")
+    article_content = article_content.gsub(/<\/h1_title>/,"\n\n</h1_title>")
+
+    article_content = article_content.gsub(/<h2_ch_title>/,"\n<h2_ch_title>\n")
+    article_content = article_content.gsub(/<\/h2_ch_title>/,"\n\n</h2_ch_title>")
+
+    article_content = article_content.gsub(/<h3_ch_m_title>/,"\n<h3_ch_m_title>\n")
+    article_content = article_content.gsub(/<\/h3_ch_m_title>/,"\n\n</h3_ch_m_title>")
+
+    article_content = article_content.gsub(/<h4_ch_s_title>/,"\n<h4_ch_s_title>\n")
+    article_content = article_content.gsub(/<\/h4_ch_s_title>/,"\n\n</h4_ch_s_title>")
+
+    article_content = article_content.gsub(/<h5_lead>/,"\n<h5_lead>\n")
+    article_content = article_content.gsub(/<\/h5_lead>/,"\n\n</h5_lead>")
+
+    article_content = article_content.gsub(/<h6_caption>/,"\n<h6_caption>\n")
+    article_content = article_content.gsub(/<\/h6_caption>/,"\n\n</h6_caption>")
+
+    article_content = article_content.gsub(/<p_1_body_r>/,"\n<p_1_body_r>\n")
+    article_content = article_content.gsub(/<\/p_1_body_r>/,"\n\n</p_1_body_r>")
+
+    article_content = article_content.gsub(/<p_2_body_gothic>/,"\n<p_2_body_gothic>\n")
+    article_content = article_content.gsub(/<\/p_2_body_gothic>/,"\n\n</p_2_body_gothic>")
+
+    article_content = article_content.gsub(/<p_3_body_italic>/,"\n<p_3_body_italic>\n")
+    article_content = article_content.gsub(/<\/p_3_body_italic>/,"\n\n</p_3_body_italic>")
+
+    article_content = article_content.gsub(/<p_4_body_quotation>/,"\n<p_4_body_quotation>\n")
+    article_content = article_content.gsub(/<\/p_4_body_quotation>/,"\n\n</p_4_body_quotation>")
     
-    puts_message "data ==>" + data
+    book_article.content = article_content
+    puts_message "카푸치노를 위한 원고 데이타 준비 완료!"
     
-    book_article.content = data
-    book_article.content = book_article.content.gsub("\n",'')
-    
-    puts_message "content" + book_article.content
-    
-    
-    content_m = data.gsub("\n","")
+    content_m = article_content
+    # content_m = data
     content_m = content_m.gsub(/<h1_title>/,'<p class="h1_title">').gsub(/<\/h1_title>/,'</p>')
     content_m = content_m.gsub(/<h2_ch_title>/,'<p class="h2_ch_title">').gsub(/<\/h2_ch_title>/,'</p>')
     content_m = content_m.gsub(/<h3_ch_m_title>/,'<p class="h3_ch_m_title">').gsub(/<\/h3_ch_m_title>/,'</p>')
@@ -608,10 +640,11 @@ end
     content_m = content_m.gsub(/<p_4_body_quotation>/,'<p class="p_4_body_quotation">').gsub(/<\/p_4_body_quotation>/,'</p>')    
     
     book_article.content_m = content_m
+    puts_message "WYMeditor를 위한 원고 데이타 준비 완료!"
     
-    puts_message "content_m  " + book_article.content_m
     book_article.save
     
+    puts_message "작업을 완료하고 jQuery에게 리턴값 전달!"
     @update_text = book_article.content_m
      
     render :text => @update_text
