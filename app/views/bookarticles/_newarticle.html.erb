@@ -108,7 +108,7 @@ $(document).ready(function(){
 			type:'post', 
 			url:'/bookarticles/update_article_from_m',
 			success:function(request){
-				$('#'+level_id+'_textarea').attr("innerText",request);
+				// $('#'+level_id+'_textarea').attr("innerText",request);
 				var temp = $('#' + level_id + '_sub iframe').attr("contentDocument").body;
 				
 				$(temp).attr("innerHTML", request);
