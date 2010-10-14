@@ -1181,6 +1181,7 @@ var i=0;
 				var new_node = tags.createElement(class_name);
 				newnode[i] = $(new_node);
 				newnode[i].context.innerText = node[i].context.innerText;
+				newnode[i].context.innerHTML = node[i].context.innerHTML;
 
 				// alert(newnode[i]);
 				// alert(newNode.innerText);

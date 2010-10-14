@@ -80,6 +80,36 @@ function get_start_page(temp_id) {
 
 <script>
 $(document).ready(function(){
+	$('.input_text').live("click", function(){
+		var id_temp = event.target.id.split("_");
+		var id = id_temp[1];
+		
+		if($(this).val() == "반영"){
+			$(this).val("텍스트로넣기");
+			// $('#'+id+'_textarea').attr("innerText", "");
+			
+			// $('#'+id+'_sub div').css("display","none");
+			$('#'+id+'_textarea').css("display","none");
+			
+			$.ajax({
+				data:'content=' + $('#'+id+'_textarea').val(), 
+				dataType:'script', 
+				type:'post', 
+				url:'/bookarticles/replace_editor_by_taged_text',
+				success:function(request){
+					var temp = $('#' + id + '_sub iframe').attr("contentDocument").body;
+					$(temp).attr("innerHTML", request);
+				}
+			});
+			
+		}else{
+			$(this).val("반영");
+			$('#'+id+'_textarea').val("");
+			$('#'+id+'_textarea').css("display","block");
+		}
+		
+	});
+	
 	$('#epub_make').click(function() {
 		if (window.confirm('EPUB파일을 생성하시겠습니까?')){
 			show_progress();
@@ -285,6 +315,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 	<% if !Mytemplate.first(:level_id => incover.id).nil? %>
 		<span style="float:right"><input type="button" id="up_btn_<%= incover.id.to_s %>" class="update_btn" value="원고함 업데이트"></span>
 	<% end %>
+	<span style="float:right"><input type="button" id="input-text_<%= incover.id.to_s %>" class="input_text" value="텍스트로 넣기"></span>
 	<br>
 	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= incover.title %>">
 	<div id="<%= incover.id.to_s + "_sub" %>" style="display:none">
@@ -314,6 +345,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 	<% if !Mytemplate.first(:level_id => prologue.id).nil? %>
 		<span style="float:right"><input type="button" id="up_btn_<%= prologue.id.to_s %>" class="update_btn" value="원고함 업데이트"></span>
 	<% end %>
+	<span style="float:right"><input type="button" id="input-text_<%= prologue.id.to_s %>" class="input_text" value="텍스트로 넣기"></span>
 	<br>
 	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= prologue.title %>">
 	<div id="<%= prologue.id.to_s + "_sub" %>" style="display:none">
@@ -344,6 +376,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 	<% if !Mytemplate.first(:level_id => contents_table.id).nil? %>
 		<span style="float:right"><input type="button" id="up_btn_<%= contents_table.id.to_s %>" class="update_btn" value="원고함 업데이트"></span>
 	<% end %>
+	<span style="float:right"><input type="button" id="input-text_<%= contents_table.id.to_s %>" class="input_text" value="텍스트로 넣기"></span>
 	<br>
 	<input type="text" style="width:750;font-size:12px;" name="title" value="<%= contents_table.title %>">
 	<div id="<%= contents_table.id.to_s + "_sub" %>" style="display:none">
@@ -382,6 +415,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 		<% if !Mytemplate.first(:level_id => l1.id).nil? %>
 			<span style="float:right"><input type="button" id="up_btn_<%= l1.id.to_s %>" class="update_btn" value="원고함 업데이트"></span>
 		<% end %>
+		<span style="float:right"><input type="button" id="input-text_<%= l1.id.to_s %>" class="input_text" value="텍스트로 넣기"></span>
 		<br>
 		<input type="text" style="width:750; font-size:12px;" name="title" value="<%= l1.title %>">
 		<div id="<%= l1.id.to_s + "_sub" %>">
@@ -416,6 +450,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 				<% if !Mytemplate.first(:level_id => l2.id).nil? %>
 					<span style="float:right"><input type="button" id="up_btn_<%= l2.id.to_s %>" class="update_btn" value="원고함 업데이트"></span>
 				<% end %>	
+				<span style="float:right"><input type="button" id="input-text_<%= l2.id.to_s %>" class="input_text" value="텍스트로 넣기"></span>
 				<br>
 				<input type="text" style="width:740; font-size:12px;" name="title" value="<%= l2.title %>">
 				<div id="<%= l2.id.to_s + "_sub" %>">
@@ -450,6 +485,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 						<% if !Mytemplate.first(:level_id => l3.id).nil? %>
 							<span style="float:right"><input type="button" id="up_btn_<%= l3.id.to_s %>" class="update_btn" value="원고함 업데이트"></span>
 						<% end %>
+						<span style="float:right"><input type="button" id="input-text_<%= l3.id.to_s %>" class="input_text" value="텍스트로 넣기"></span>
 						<br>
 						<input type="text" style="width:730; font-size:12px;" name="title" value="<%= l3.title %>">
 						<div id="<%= l3.id.to_s + "_sub" %>">
@@ -482,6 +518,7 @@ down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book
 								<% if !Mytemplate.first(:level_id => l4.id).nil? %>
 									<span style="float:right"><input type="button" id="up_btn_<%= l4.id.to_s %>" class="update_btn" value="원고함 업데이트"></span>
 								<% end %>
+								<span style="float:right"><input type="button" id="input-text_<%= l4.id.to_s %>" class="input_text" value="텍스트로 넣기"></span>
 								<br>
 								<input type="text" style="width:720; font-size:12px;" name="title" value="<%= l4.title %>">
 								<div id="<%= l4.id.to_s + "_sub" %>">

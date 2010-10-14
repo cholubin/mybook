@@ -567,6 +567,26 @@ end
     render :partial => "update_master_temp"
   end  
 
+  def replace_editor_by_taged_text
+    
+    content_m = params[:content].gsub("<xml>",'').gsub("<body>",'').gsub("</xml>",'').gsub("</body>",'')
+    content_m = content_m.gsub(/<h1_title>/,'<p class="h1_title">').gsub(/<\/h1_title>/,'</p>')
+    content_m = content_m.gsub(/<h2_ch_title>/,'<p class="h2_ch_title">').gsub(/<\/h2_ch_title>/,'</p>')
+    content_m = content_m.gsub(/<h3_ch_m_title>/,'<p class="h3_ch_m_title">').gsub(/<\/h3_ch_m_title>/,'</p>')
+    content_m = content_m.gsub(/<h4_ch_s_title>/,'<p class="h4_ch_s_title">').gsub(/<\/h4_ch_s_title>/,'</p>')
+    content_m = content_m.gsub(/<h5_lead>/,'<p class="h5_lead">').gsub(/<\/h5_lead>/,'</p>')
+    content_m = content_m.gsub(/<h6_caption>/,'<p class="h6_caption">').gsub(/<\/h6_caption>/,'</p>')
+    content_m = content_m.gsub(/<p_body>/,'<p class="p_body">').gsub(/<\/p_body>/,'</p>')
+    content_m = content_m.gsub(/<p_1_body_r>/,'<p class="p_1_body_r">').gsub(/<\/p_1_body_r>/,'</p>')
+    content_m = content_m.gsub(/<p_2_body_gothic>/,'<p class="p_2_body_gothic">').gsub(/<\/p_2_body_gothic>/,'</p>')
+    content_m = content_m.gsub(/<p_3_body_italic>/,'<p class="p_3_body_italic">').gsub(/<\/p_3_body_italic>/,'</p>')
+    content_m = content_m.gsub(/<p_4_body_quotation>/,'<p class="p_4_body_quotation">').gsub(/<\/p_4_body_quotation>/,'</p>')    
+    
+    @update_text = content_m
+     
+    render :text => @update_text
+  end
+
   def update_article_from_m
     puts_message "카푸치노로부터 원고함 데이타 업데이트 시작!"
     
