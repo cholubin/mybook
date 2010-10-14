@@ -23,9 +23,12 @@ class BookarticlesController < ApplicationController
     
     
     @article.title = params[:title]
-    # params[:content] = params[:content].gsub(/&nbsp;/,'').gsub(/<br>/,'')
-    @article.content = params[:content]
-    content_m = params[:content]
+    
+    puts_message "여기 content ==>" + params[:content]
+    
+    params[:content] = params[:content].gsub(/&nbsp;/,'').gsub(/<br>/,'')
+    @article.content = params[:content].gsub("\n",'')
+    content_m = params[:content].gsub(/<br>/,'')
     content_m = content_m.gsub(/<h1_title>/,'<p class="h1_title">').gsub(/<\/h1_title>/,'</p>')
     content_m = content_m.gsub(/<h2_ch_title>/,'<p class="h2_ch_title">').gsub(/<\/h2_ch_title>/,'</p>')
     content_m = content_m.gsub(/<h3_ch_m_title>/,'<p class="h3_ch_m_title">').gsub(/<\/h3_ch_m_title>/,'</p>')
@@ -42,7 +45,7 @@ class BookarticlesController < ApplicationController
     
     book_id = @article.book_basic_id.to_s
 
-    puts_message "content ==>" + @article.content
+    
     puts_message "content_m ==>" + @article.content_m
     
     #book_article 폴더가 없으면 생성하고 해당 폴더 밑으로 현재작업중인 책의 아이디로 폴더를 만든다.
@@ -251,7 +254,8 @@ class BookarticlesController < ApplicationController
       break if File.exists?(job_done)
       # puts_message "XML파일 업데이트중............"
     end
-
+    puts_message  "XML 교체 완료!"
+    
     if !File.exists?(job_done)
       pid = `ps -c -eo pid,comm | grep MLayout`.to_s
       pid = pid.gsub(/MLayout 2/,'').gsub(' ', '')
@@ -327,8 +331,8 @@ class BookarticlesController < ApplicationController
   
   def make_xml_contents(book_template, level_id, book_id)
     
-puts_message "make_xml_contents 함수 진행중 ........."
-puts_message "현재 작업중인 텍스트박스 아이디: " + level_id
+    puts_message "make_xml_contents 함수 진행중 ........."
+    puts_message "현재 작업중인 텍스트박스 아이디: " + level_id
 
     erase_job_done_file(book_template)
     
@@ -339,43 +343,43 @@ puts_message "현재 작업중인 텍스트박스 아이디: " + level_id
     end
     
 
-puts_message "현재 작업중인 텍스트박스 컨텐츠: " + article_content
+    puts_message "현재 작업중인 텍스트박스 컨텐츠: " + article_content
 
-article_content = article_content.gsub(/<p_body>/,"\n<p_body>\n")
-article_content = article_content.gsub(/<\/p_body>/,"\n\n</p_body>")
+    article_content = article_content.gsub(/<p_body>/,"\n<p_body>\n")
+    article_content = article_content.gsub(/<\/p_body>/,"\n\n</p_body>")
 
-article_content = article_content.gsub(/<h1_title>/,"\n<h1_title>\n")
-article_content = article_content.gsub(/<\/h1_title>/,"\n\n</h1_title>")
+    article_content = article_content.gsub(/<h1_title>/,"\n<h1_title>\n")
+    article_content = article_content.gsub(/<\/h1_title>/,"\n\n</h1_title>")
 
-article_content = article_content.gsub(/<h2_ch_title>/,"\n<h2_ch_title>\n")
-article_content = article_content.gsub(/<\/h2_ch_title>/,"\n\n</h2_ch_title>")
+    article_content = article_content.gsub(/<h2_ch_title>/,"\n<h2_ch_title>\n")
+    article_content = article_content.gsub(/<\/h2_ch_title>/,"\n\n</h2_ch_title>")
 
-article_content = article_content.gsub(/<h3_ch_m_title>/,"\n<h3_ch_m_title>\n")
-article_content = article_content.gsub(/<\/h3_ch_m_title>/,"\n\n</h3_ch_m_title>")
+    article_content = article_content.gsub(/<h3_ch_m_title>/,"\n<h3_ch_m_title>\n")
+    article_content = article_content.gsub(/<\/h3_ch_m_title>/,"\n\n</h3_ch_m_title>")
 
-article_content = article_content.gsub(/<h4_ch_s_title>/,"\n<h4_ch_s_title>\n")
-article_content = article_content.gsub(/<\/h4_ch_s_title>/,"\n\n</h4_ch_s_title>")
+    article_content = article_content.gsub(/<h4_ch_s_title>/,"\n<h4_ch_s_title>\n")
+    article_content = article_content.gsub(/<\/h4_ch_s_title>/,"\n\n</h4_ch_s_title>")
 
-article_content = article_content.gsub(/<h5_lead>/,"\n<h5_lead>\n")
-article_content = article_content.gsub(/<\/h5_lead>/,"\n\n</h5_lead>")
+    article_content = article_content.gsub(/<h5_lead>/,"\n<h5_lead>\n")
+    article_content = article_content.gsub(/<\/h5_lead>/,"\n\n</h5_lead>")
 
-article_content = article_content.gsub(/<h6_caption>/,"\n<h6_caption>\n")
-article_content = article_content.gsub(/<\/h6_caption>/,"\n\n</h6_caption>")
+    article_content = article_content.gsub(/<h6_caption>/,"\n<h6_caption>\n")
+    article_content = article_content.gsub(/<\/h6_caption>/,"\n\n</h6_caption>")
 
-article_content = article_content.gsub(/<p_1_body_r>/,"\n<p_1_body_r>\n")
-article_content = article_content.gsub(/<\/p_1_body_r>/,"\n\n</p_1_body_r>")
+    article_content = article_content.gsub(/<p_1_body_r>/,"\n<p_1_body_r>\n")
+    article_content = article_content.gsub(/<\/p_1_body_r>/,"\n\n</p_1_body_r>")
 
-article_content = article_content.gsub(/<p_2_body_gothic>/,"\n<p_2_body_gothic>\n")
-article_content = article_content.gsub(/<\/p_2_body_gothic>/,"\n\n</p_2_body_gothic>")
+    article_content = article_content.gsub(/<p_2_body_gothic>/,"\n<p_2_body_gothic>\n")
+    article_content = article_content.gsub(/<\/p_2_body_gothic>/,"\n\n</p_2_body_gothic>")
 
-article_content = article_content.gsub(/<p_3_body_italic>/,"\n<p_3_body_italic>\n")
-article_content = article_content.gsub(/<\/p_3_body_italic>/,"\n\n</p_3_body_italic>")
+    article_content = article_content.gsub(/<p_3_body_italic>/,"\n<p_3_body_italic>\n")
+    article_content = article_content.gsub(/<\/p_3_body_italic>/,"\n\n</p_3_body_italic>")
 
-article_content = article_content.gsub(/<p_4_body_quotation>/,"\n<p_4_body_quotation>\n")
-article_content = article_content.gsub(/<\/p_4_body_quotation>/,"\n\n</p_4_body_quotation>")
+    article_content = article_content.gsub(/<p_4_body_quotation>/,"\n<p_4_body_quotation>\n")
+    article_content = article_content.gsub(/<\/p_4_body_quotation>/,"\n\n</p_4_body_quotation>")
 
 
-puts_message "Here=============>" + article_content + "<======================"
+    puts_message "Here=============>" + article_content + "<======================"
 
 
     
@@ -390,16 +394,16 @@ puts_message "Here=============>" + article_content + "<======================"
       if File.exist?(write_2_file)
         FileUtils.rm_rf write_2_file
         
-puts_message "contents.xml 삭제 성공!"
+        puts_message "contents.xml 삭제 성공!"
       else
-puts_message "contents.xml 지울 파일이 없다네 !"        
+        puts_message "contents.xml 지울 파일이 없다네 !"        
       end
       
     rescue
       puts_message "contents.xml 삭제 실패! 먼지모를 에러 발생!!!"      
     end
     
-puts_message "저장할 contents.xml 파일 경로: " + write_2_file
+    puts_message "저장할 contents.xml 파일 경로: " + write_2_file
 
     begin
       File.open(write_2_file,'w') { |f| f.write xml_file }
@@ -565,6 +569,8 @@ end
 
   def update_article_from_m
     puts_message "카푸치노로부터 원고함 데이타 업데이트 시작!"
+    
+    
     level_id = params[:level_id]
     
     @mytemp = Mytemplate.first(:level_id => level_id.to_i)
@@ -588,44 +594,46 @@ end
     
     book_article = Book_article.get(level_id.to_i)
         
-    article_content = data
-    article_content = article_content.gsub("\n<p_body>\n","<p_body>")
-    article_content = article_content.gsub("\n\n</p_body>","</p_body>")
-    
-    article_content = article_content.gsub("\n<h1_title>\n","<h1_title>")
-    article_content = article_content.gsub("\n\n</h1_title>","</h1_title>")
-    
-    # article_content = article_content.gsub(/<h2_ch_title>/,"\n<h2_ch_title>\n")
-    # article_content = article_content.gsub(/<\/h2_ch_title>/,"\n\n</h2_ch_title>")
+    article_content = data.gsub("\n", '')
+    puts_message "data: " + article_content
+    # article_content = article_content.gsub(/<p_body>/,"\n<p_body>\n")
+    #     article_content = article_content.gsub(/<\/p_body>/,"\n\n</p_body>")
     # 
-    # article_content = article_content.gsub(/<h3_ch_m_title>/,"\n<h3_ch_m_title>\n")
-    # article_content = article_content.gsub(/<\/h3_ch_m_title>/,"\n\n</h3_ch_m_title>")
+    #     article_content = article_content.gsub(/<h1_title>/,"\n<h1_title>\n")
+    #     article_content = article_content.gsub(/<\/h1_title>/,"\n\n</h1_title>")
     # 
-    # article_content = article_content.gsub(/<h4_ch_s_title>/,"\n<h4_ch_s_title>\n")
-    # article_content = article_content.gsub(/<\/h4_ch_s_title>/,"\n\n</h4_ch_s_title>")
+    #     article_content = article_content.gsub(/<h2_ch_title>/,"\n<h2_ch_title>\n")
+    #     article_content = article_content.gsub(/<\/h2_ch_title>/,"\n\n</h2_ch_title>")
     # 
-    # article_content = article_content.gsub(/<h5_lead>/,"\n<h5_lead>\n")
-    # article_content = article_content.gsub(/<\/h5_lead>/,"\n\n</h5_lead>")
+    #     article_content = article_content.gsub(/<h3_ch_m_title>/,"\n<h3_ch_m_title>\n")
+    #     article_content = article_content.gsub(/<\/h3_ch_m_title>/,"\n\n</h3_ch_m_title>")
     # 
-    # article_content = article_content.gsub(/<h6_caption>/,"\n<h6_caption>\n")
-    # article_content = article_content.gsub(/<\/h6_caption>/,"\n\n</h6_caption>")
+    #     article_content = article_content.gsub(/<h4_ch_s_title>/,"\n<h4_ch_s_title>\n")
+    #     article_content = article_content.gsub(/<\/h4_ch_s_title>/,"\n\n</h4_ch_s_title>")
     # 
-    # article_content = article_content.gsub(/<p_1_body_r>/,"\n<p_1_body_r>\n")
-    # article_content = article_content.gsub(/<\/p_1_body_r>/,"\n\n</p_1_body_r>")
+    #     article_content = article_content.gsub(/<h5_lead>/,"\n<h5_lead>\n")
+    #     article_content = article_content.gsub(/<\/h5_lead>/,"\n\n</h5_lead>")
     # 
-    # article_content = article_content.gsub(/<p_2_body_gothic>/,"\n<p_2_body_gothic>\n")
-    # article_content = article_content.gsub(/<\/p_2_body_gothic>/,"\n\n</p_2_body_gothic>")
+    #     article_content = article_content.gsub(/<h6_caption>/,"\n<h6_caption>\n")
+    #     article_content = article_content.gsub(/<\/h6_caption>/,"\n\n</h6_caption>")
     # 
-    # article_content = article_content.gsub(/<p_3_body_italic>/,"\n<p_3_body_italic>\n")
-    # article_content = article_content.gsub(/<\/p_3_body_italic>/,"\n\n</p_3_body_italic>")
+    #     article_content = article_content.gsub(/<p_1_body_r>/,"\n<p_1_body_r>\n")
+    #     article_content = article_content.gsub(/<\/p_1_body_r>/,"\n\n</p_1_body_r>")
     # 
-    # article_content = article_content.gsub(/<p_4_body_quotation>/,"\n<p_4_body_quotation>\n")
-    # article_content = article_content.gsub(/<\/p_4_body_quotation>/,"\n\n</p_4_body_quotation>")
+    #     article_content = article_content.gsub(/<p_2_body_gothic>/,"\n<p_2_body_gothic>\n")
+    #     article_content = article_content.gsub(/<\/p_2_body_gothic>/,"\n\n</p_2_body_gothic>")
+    # 
+    #     article_content = article_content.gsub(/<p_3_body_italic>/,"\n<p_3_body_italic>\n")
+    #     article_content = article_content.gsub(/<\/p_3_body_italic>/,"\n\n</p_3_body_italic>")
+    # 
+    #     article_content = article_content.gsub(/<p_4_body_quotation>/,"\n<p_4_body_quotation>\n")
+    #     article_content = article_content.gsub(/<\/p_4_body_quotation>/,"\n\n</p_4_body_quotation>")
     
     book_article.content = article_content
     puts_message "카푸치노를 위한 원고 데이타 준비 완료!"
     
     content_m = article_content
+    # content_m = data
     content_m = content_m.gsub(/<h1_title>/,'<p class="h1_title">').gsub(/<\/h1_title>/,'</p>')
     content_m = content_m.gsub(/<h2_ch_title>/,'<p class="h2_ch_title">').gsub(/<\/h2_ch_title>/,'</p>')
     content_m = content_m.gsub(/<h3_ch_m_title>/,'<p class="h3_ch_m_title">').gsub(/<\/h3_ch_m_title>/,'</p>')
@@ -643,10 +651,11 @@ end
     
     book_article.save
     
-    puts_message "content  ==>" + book_article.content
-    puts_message "content_m ==>" + content_m
-    
     puts_message "작업을 완료하고 jQuery에게 리턴값 전달!"
+    
+    puts_message "content: " + book_article.content
+    puts_message "content_m: " + book_article.content_m
+    
     @update_text = book_article.content_m
      
     render :text => @update_text

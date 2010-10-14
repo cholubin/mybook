@@ -1197,8 +1197,10 @@ var textarea_str = "";
 		textarea_str += newnode[j].context.outerHTML;
 	}
 	
-	
+
 	jQuery(this._element).val(textarea_str);	
+	
+
 
 };
 

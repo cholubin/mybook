@@ -108,62 +108,68 @@ $(document).ready(function(){
 			type:'post', 
 			url:'/bookarticles/update_article_from_m',
 			success:function(request){
-				var html_str = "<textarea class='wymeditor' id='"+level_id+"_textarea"+"' name='content' style='width:750px; height: 100px; font-size:12px;' >"+request+"</textarea>"
-				$('#'+level_id+'_textarea').html(html_str);
+				$('#'+level_id+'_textarea').attr("innerText",request);
+				var temp = $('#' + level_id + '_sub iframe').attr("contentDocument").body;
 				
-				$('#'+level_id+'_sub .wym_box:first').remove();
-				
-				$('#'+level_id+ '_textarea' +'.wymeditor').wymeditor({
-					
-					html: 		request,
-			        lang: 'kr',
-			        stylesheet: '/css/wymeditor/styles.css',
+				$(temp).attr("innerHTML", request);
 
-					postInit: function(wym) {
-
-			           $(wym._box).find(wym._options.containersSelector)
-			              .removeClass('wym_dropdown')
-			              .addClass('wym_panel')
-						  .css('float', 'right')
-						  .css('width', '60px')
-			              .find('h2 > span')
-			              .remove();
-
-						// $(wym.).wym_area_bottom.css('display', 'none')
-			           $(wym._box).find(wym._options.classesSelector)
-			              .remove();
-
-			            //adjust the editor's height
-			            $(wym._box).find(wym._options.iframeSelector)
-			                .css('height', '350px')
-							.css('width', '660px');
-			        },
-
-			        toolsItems: [
-			        {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'}, 
-			        {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'},
-			        {'name': 'Paste', 'title': 'Paste_From_Word',
-			            'css': 'wym_tools_paste'},
-			        {'name': 'Undo', 'title': 'Undo', 'css': 'wym_tools_undo'},
-			        {'name': 'Redo', 'title': 'Redo', 'css': 'wym_tools_redo'}
-			    	]
-					,
-
-					containersItems: [
-				    {'name': 'h1_title', 'title': '큰제목', 'css': ''},
-				    {'name': 'h2_ch_title', 'title': '꼭지제목', 'css': ''},
-					{'name': 'h3_ch_m_title', 'title': '꼭지중제목', 'css': ''},
-					{'name': 'h4_ch_s_title', 'title': '꼭지소제목', 'css': ''},
-					{'name': 'h5_lead', 'title': '리드문', 'css': ''},
-					{'name': 'h6_caption', 'title': '사진캡션', 'css': ''},
-					{'name': 'p_body', 'title': '본문', 'css': ''},
-					{'name': 'p_1_body_r', 'title': '우측맞춤', 'css': ''},
-					{'name': 'p_2_body_gothic', 'title': '본문고딕', 'css': ''},
-					{'name': 'p_3_body_italic', 'title': '본문이태릭', 'css': ''},
-					{'name': 'p_4_body_quotation', 'title': '인용문', 'css': ''},
-					]
-
-			    });
+				// alert($('#'+level_id+'_textarea').attr("innerText"));
+				// var html_str = "<textarea class='wymeditor' id='"+level_id+"_textarea"+"' name='content' style='width:750px; height: 100px; font-size:12px;' >"+request+"</textarea>"
+				// $('#'+level_id+'_textarea').html(html_str);
+				// 				
+				// 				// $('#'+level_id+'_sub .wym_box:first').remove();
+				// 				
+				// 				$('#'+level_id+ '_textarea' +'.wymeditor').wymeditor({
+				// 					
+				// 					html: 		request,
+				// 			        lang: 'kr',
+				// 			        stylesheet: '/css/wymeditor/styles.css',
+				// 
+				// 					postInit: function(wym) {
+				// 
+				// 			           $(wym._box).find(wym._options.containersSelector)
+				// 			              .removeClass('wym_dropdown')
+				// 			              .addClass('wym_panel')
+				// 						  .css('float', 'right')
+				// 						  .css('width', '60px')
+				// 			              .find('h2 > span')
+				// 			              .remove();
+				// 
+				// 						// $(wym.).wym_area_bottom.css('display', 'none')
+				// 			           $(wym._box).find(wym._options.classesSelector)
+				// 			              .remove();
+				// 
+				// 			            //adjust the editor's height
+				// 			            $(wym._box).find(wym._options.iframeSelector)
+				// 			                .css('height', '350px')
+				// 							.css('width', '660px');
+				// 			        },
+				// 
+				// 			        toolsItems: [
+				// 			        {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'}, 
+				// 			        {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'},
+				// 			        {'name': 'Paste', 'title': 'Paste_From_Word',
+				// 			            'css': 'wym_tools_paste'},
+				// 			        {'name': 'Undo', 'title': 'Undo', 'css': 'wym_tools_undo'},
+				// 			        {'name': 'Redo', 'title': 'Redo', 'css': 'wym_tools_redo'}
+				// 			    	]
+				// 					,
+				// 
+				// 					containersItems: [
+				// 				    {'name': 'h1_title', 'title': '큰제목', 'css': ''},
+				// 				    {'name': 'h2_ch_title', 'title': '꼭지제목', 'css': ''},
+				// 					{'name': 'h3_ch_m_title', 'title': '꼭지중제목', 'css': ''},
+				// 					{'name': 'h4_ch_s_title', 'title': '꼭지소제목', 'css': ''},
+				// 					{'name': 'h5_lead', 'title': '리드문', 'css': ''},
+				// 					{'name': 'h6_caption', 'title': '사진캡션', 'css': ''},
+				// 					{'name': 'p_body', 'title': '본문', 'css': ''},
+				// 					{'name': 'p_1_body_r', 'title': '우측맞춤', 'css': ''},
+				// 					{'name': 'p_2_body_gothic', 'title': '본문고딕', 'css': ''},
+				// 					{'name': 'p_3_body_italic', 'title': '본문이태릭', 'css': ''},
+				// 					{'name': 'p_4_body_quotation', 'title': '인용문', 'css': ''},
+				// 					]
+				// 
+				// 			    });
 			}
 		});				
 		
