@@ -59,6 +59,7 @@ class BookarticlesController < ApplicationController
     <html>
     <title>Web Top Print Shop</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" media="screen" href="style_list.css" />
     <body>
     #{@article.content_m}
     </body></html>
@@ -544,15 +545,87 @@ def epub_make
       nav mynav
     end
     epub.save(book_article_dir + book_id + '.epub')
+    
 
+    loop do
+      break if  File.exists?(book_article_dir + book_id + '.epub') 
+    end
+
+    style_list = ""
+    style_list += "\n" + 
+    ".h1_title {font-family: AppleMyungjo; font-weight: bold; margin-top:0pt;padding-top:10pt;font-size:20pt; color:#613438;background-image:url(lbl-h1.png);}" + "\n" +
+    ".h2_ch_title {font-family: AppleGothic; font-weight: bold; margin-top:0pt;padding-top:10pt;font-size:18pt; color:#1a1a1a;background-image:url(lbl-h2.png);}" + "\n" +
+    ".h3_ch_m_title {font-family: AppleMyungjo; font-weight: bold; margin-top:0pt;padding-top:10pt;font-size:16pt; color:#030743;background-image:url(lbl-h3.png);}" + "\n" +
+    ".h4_ch_s_title {font-family: AppleGothic; margin-top:0pt;padding-top:10pt;font-size:14pt; color:#954b43;background-image:url(lbl-h4.png);}" + "\n" +
+    ".h5_lead {font-family: AppleGothic; margin-top:0pt;padding-top:10pt;font-size:12pt; color:#5c4b18;background-image:url(lbl-h5.png);}" + "\n" +
+    ".h6_caption {font-family: AppleGothic; margin-top:0pt;padding-top:10pt;font-size:8pt; color:#1a1a1a;background-image:url(lbl-h6.png);}" + "\n" +
+    ".p_body {font-family: AppleMyungjo; margin-top:0pt;padding-top:10pt;font-size:10pt; color:#1a1a1a;background-image:url(lbl-p.png);}" + "\n" +
+    ".p {font-family: AppleMyungjo; margin-top:0pt;padding-top:10pt;font-size:30pt; color:#1a1a1a;background-image:url(lbl-p.png);}" + "\n" +
+    ".p_1_body_r {font-family: AppleMyungjo; text-align:right; margin-top:0pt;padding-top:10pt;font-size:10pt; color:#1a1a1a;background-image:url(lbl-p1.png);}" + "\n" +
+    ".p_2_body_gothic {font-family: AppleGothic; margin-top:0pt;padding-top:10pt;font-size:10pt; color:#1a1a1a;background-image:url(lbl-p2.png);}" + "\n" +
+    ".p_3_body_italic {font-family: AppleMyungjo; font-style:italic; margin-top:0pt;padding-top:10pt;font-size:10pt; color:#1a1a1a;background-image:url(lbl-p3.png);}" + "\n" +
+    ".p_4_body_quotation {font-family: AppleMyungjo; margin-top:0pt;padding-top:10pt;padding-left:30pt; font-size:9pt; color:#1a1a1a;background-image:url(lbl-p4.png);}" + "\n"
+    
+          
+    Zip::ZipFile.open(book_article_dir + book_id + '.epub', Zip::ZipFile::CREATE) {
+           |zipfile|
+            zipfile.get_output_stream("style_list.css") { |f| 
+              f.puts style_list
+            }
+        } 
+       
+        
+              
   else
     @error_message = "먼저 EPUB파일 생성을 위한 파일들을 생성하셔야 합니다.(텍스트 저장)"
   end
   puts_message "epub_make End!"
   
   @book_id = book_id
-  render :partial => "epub_make", :object => @error_message, :object => @book_id
   
+  file_path = book_article_dir + book_id + '.epub'
+  render :partial => "epub_make", :object => @error_message, :object => @book_id
+  # send_file file_path, :type => 'application/text', :disposition => 'attachment', :filename => "style.text"
+  
+end
+
+def unzip(file, destination, original_filename, modified_filename)  
+   
+   begin
+
+     osx_tmp_path = TEMP_PATH + "__MACOSX"
+     
+     if original_filename != modified_filename
+       destination_temp = destination + "temp/"
+       renaming_needed = true
+     end
+     
+
+     Zip::ZipFile.open(file) { |zip_file|
+       zip_file.each{ |f| 
+
+         if renaming_needed
+            f_path = File.join(destination_temp, f.name)
+         else
+            f_path = File.join(destination+"/epub/", f.name)
+         end
+         
+         FileUtils.mkdir_p(File.dirname(f_path))
+         zip_file.extract(f, f_path) unless File.exist?(f_path)
+       }
+     }
+
+     if  renaming_needed && File.exist?(destination_temp + original_filename)
+       
+      	File.rename destination_temp + original_filename, destination  + modified_filename
+        FileUtils.rm_rf destination_temp
+      else
+        FileUtils.rm_rf osx_tmp_path
+     end
+             
+   rescue
+    puts "An error occurred during unzip process"
+   end     
 end
 
   def update_master_temp
@@ -569,7 +642,22 @@ end
 
   def replace_editor_by_taged_text
     
-    content_m = params[:content].gsub("<xml>",'').gsub("<body>",'').gsub("</xml>",'').gsub("</body>",'')
+    #태그가 없으면 기본적으로 <p_body> 태그 삽입 
+    #기본태그 외의 사용자 태그는 가장 근접한? 또는 <p_body> 태그로 교체한다.
+    text = "<img src='fefef'><h1_title></h1_title><p_body> <p_body> <p3body>"
+    text.gsub(/<img [^<>]*>/){ |letter| 
+      puts letter
+      puts "<== 요넘은 매칭이 된다네요!"
+      text = text.gsub(letter,"test")
+    }
+    
+    puts_message text
+    
+    content_m = params[:content]
+    
+    # (/<title>(.*)<\/title>/);
+    
+    content_m = content_m.gsub("<xml>",'').gsub("<body>",'').gsub("</xml>",'').gsub("</body>",'')
     content_m = content_m.gsub(/<h1_title>/,'<p class="h1_title">').gsub(/<\/h1_title>/,'</p>')
     content_m = content_m.gsub(/<h2_ch_title>/,'<p class="h2_ch_title">').gsub(/<\/h2_ch_title>/,'</p>')
     content_m = content_m.gsub(/<h3_ch_m_title>/,'<p class="h3_ch_m_title">').gsub(/<\/h3_ch_m_title>/,'</p>')

@@ -97,8 +97,10 @@ $(document).ready(function(){
 				type:'post', 
 				url:'/bookarticles/replace_editor_by_taged_text',
 				success:function(request){
-					var temp = $('#' + id + '_sub iframe').attr("contentDocument").body;
-					$(temp).attr("innerHTML", request);
+					if (request != ""){
+						var temp = $('#' + id + '_sub iframe').attr("contentDocument").body;
+						$(temp).attr("innerHTML", request);
+					}
 				}
 			});
 			
