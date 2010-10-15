@@ -532,6 +532,9 @@ def epub_make
       end
     end
 
+    if File.exists?(book_article_dir + book_id + '.epub')
+      FileUtils.rm_rf (book_article_dir + book_id + '.epub')
+    end
   
     epub = EeePub.make do
       title       book_title
