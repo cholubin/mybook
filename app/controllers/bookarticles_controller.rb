@@ -28,6 +28,8 @@ class BookarticlesController < ApplicationController
     
     params[:content] = params[:content].gsub(/&nbsp;/,'').gsub(/<br>/,'')
     @article.content = params[:content].gsub("\n",'')
+    content_for_html = @article.content
+    
     content_m = params[:content].gsub(/<br>/,'')
     content_m = content_m.gsub(/<h1_title>/,'<p class="h1_title">').gsub(/<\/h1_title>/,'</p>')
     content_m = content_m.gsub(/<h2_ch_title>/,'<p class="h2_ch_title">').gsub(/<\/h2_ch_title>/,'</p>')
@@ -42,6 +44,19 @@ class BookarticlesController < ApplicationController
     content_m = content_m.gsub(/<p_4_body_quotation>/,'<p class="p_4_body_quotation">').gsub(/<\/p_4_body_quotation>/,'</p>')
     
     @article.content_m = content_m
+    
+    content_for_html = content_for_html.gsub(/h1_title/,"h1")
+    content_for_html = content_for_html.gsub(/h2_ch_title/,"h2")
+    content_for_html = content_for_html.gsub(/h3_ch_m_title/,"h3")
+    content_for_html = content_for_html.gsub(/h4_ch_s_title/,"h4")
+    content_for_html = content_for_html.gsub(/h5_lead/,"h5")
+    content_for_html = content_for_html.gsub(/h6_caption/,"h6")
+    content_for_html = content_for_html.gsub(/p_body/,"p")
+    content_for_html = content_for_html.gsub(/p_1_body_r/,"p")
+    content_for_html = content_for_html.gsub(/p_2_body_gothic/,"p")
+    content_for_html = content_for_html.gsub(/p_3_body_italic/,"p")
+    content_for_html = content_for_html.gsub(/p_4_body_quotation/,"p")
+    
     
     book_id = @article.book_basic_id.to_s
 
@@ -61,10 +76,14 @@ class BookarticlesController < ApplicationController
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type="text/css" media="screen" href="style_list.css" />
     <body>
-    #{@article.content_m}
+    #{content_for_html}
     </body></html>
     EOF
 
+    if File.exists?("#{RAILS_ROOT}" + "/public/user_files/#{current_user.userid}/book_article/#{book_id}/#{book_id}." + "#{params[:id]}.html")
+      FileUtils.rm_rf "#{RAILS_ROOT}" + "/public/user_files/#{current_user.userid}/book_article/#{book_id}/#{book_id}." + "#{params[:id]}.html"
+    end
+    
     write_2_file = "#{RAILS_ROOT}" + "/public/user_files/#{current_user.userid}/book_article/#{book_id}/#{book_id}." + "#{params[:id]}.html"
     File.open(write_2_file,'w') { |f| f.write html_file }
     
@@ -647,18 +666,33 @@ end
     
     #태그가 없으면 기본적으로 <p_body> 태그 삽입 
     #기본태그 외의 사용자 태그는 가장 근접한? 또는 <p_body> 태그로 교체한다.
-    text = "<img src='fefef'><h1_title></h1_title><p_body> <p_body> <p3body>"
-    text.gsub(/<img [^<>]*>/){ |letter| 
-      puts letter
-      puts "<== 요넘은 매칭이 된다네요!"
-      text = text.gsub(letter,"test")
+    style_array = ["h1_title", "h2_ch_title", "h3_ch_m_title", "h4_ch_s_title", "h5_lead", "h6_caption", "p_body", "p_1_body_r", "p_2_body_gothic", "p_3_body_italic", "p_4_body_quotation"]
+    
+    text = params[:content]
+    text.gsub(/<*[^<>]*>/){ |letter| 
+      com_str = letter.gsub(/</,'').gsub(/>/,'').gsub(/\//,'')
+      is_ourstyle = true
+      style_array.each do |s|
+        if com_str == s
+          is_ourstyle = true
+        else
+          is_ourstyle = false
+        end
+        puts_message s + "----" + com_str
+        break if is_ourstyle == false
+      end
+      
+      if is_ourstyle == false 
+        puts_message "여길 들어와야 한다니까?"
+        text = text.gsub(com_str,'p_body')
+      end
     }
     
-    puts_message text
+    puts_message "text" + text
     
-    content_m = params[:content]
+    content_m = text
     
-    # (/<title>(.*)<\/title>/);
+    style_array = ["h1_title", "h2_ch_title", "h3_ch_m_title", "h4_ch_s_title", "h5_lead", "h6_caption", "p_body", "p_1_body_r", "p_2_body_gothic", "p_3_body_italic", "p_4_body_quotation"]
     
     content_m = content_m.gsub("<xml>",'').gsub("<body>",'').gsub("</xml>",'').gsub("</body>",'')
     content_m = content_m.gsub(/<h1_title>/,'<p class="h1_title">').gsub(/<\/h1_title>/,'</p>')
