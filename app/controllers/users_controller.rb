@@ -137,7 +137,8 @@ class UsersController < ApplicationController
           @user.email = params[:user][:email]
           
           if @user.save
-            render 'users/modificaton_finished'  
+            flash[:notice] = "정상적으로 변경되었습니다."
+            render 'user'
           else
             flash[:notice] = "오류가 발생했습니다. 다시 시도해주시기 바랍니다."
             render 'user'
@@ -148,7 +149,8 @@ class UsersController < ApplicationController
           @user.email = params[:user][:email]
 
           if @user.save
-            render 'users/modification_finished' 
+            flash[:notice] = "정상적으로 변경되었습니다."
+            render 'user'
           else
             flash[:notice] = "오류가 발생했습니다. 다시 시도해주시기 바랍니다."
             render 'user'
@@ -156,7 +158,8 @@ class UsersController < ApplicationController
         end
       
       else
-       render :text => "비밀번호 오류"
+        flash[:notice] = "비밀번호를 확인해주시기 바랍니다."
+        render 'user'
       end
       
       
