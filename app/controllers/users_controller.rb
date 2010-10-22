@@ -120,9 +120,55 @@ class UsersController < ApplicationController
 
   end
 
-  # PUT /users/1
-  # PUT /users/1.xml
   def update
+    @user = User.get(params[:id])
+
+    if signed_in? && @user.id == current_user.id
+      @menu = "home"
+      @board = "user"
+      @section = "edit"
+    
+
+      if @user.has_password?( params[:current_password])
+        
+        if params[:new_password] != ""
+
+          @user.update_password(params[:new_password])
+          @user.email = params[:email]
+          
+          if @user.save
+            render :text => "수정완료"  
+          else
+            flash[:notice] = "오류가 발생했습니다. 다시 시도해주시기 바랍니다."
+            render 'user'
+          end
+
+
+        else  #메일만 수정하는 경우       
+          @user.email = params[:email]
+
+          if @user.save
+            render 'users/modificaton_finished' 
+          else
+            flash[:notice] = "오류가 발생했습니다. 다시 시도해주시기 바랍니다."
+            render 'user'
+          end 
+        end
+      
+      else
+       render :text => "비밀번호 오류"
+      end
+      
+      
+      
+    else
+      redirect_to '/'
+    end
+      
+
+  end
+  
+  def update_old
     @user = User.get(params[:id])
 
     if signed_in? && @user.id == current_user.id
