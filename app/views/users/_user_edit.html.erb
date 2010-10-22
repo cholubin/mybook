@@ -19,6 +19,7 @@
 								<tr>
 								<td class="register_td" width="160"><img src="/images/mypage/check_empty.gif">아이디</td>
 								<td class="register_td" width="570">&nbsp;<%= current_user.userid %></td>
+								<input type="hidden" name="user[id]" value="<%= current_user.userid %>">
 								</tr>
 								<tr>
 								<td class="register_td" width="160"><img src="/images/mypage/check_empty.gif">이름</td>
