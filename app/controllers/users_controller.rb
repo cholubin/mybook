@@ -121,7 +121,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = User.get(params[:id].to_i)
+    @user = User.get(params[:user][:id].to_i)
 
     if signed_in? && @user.id == current_user.id
       @menu = "home"
@@ -129,12 +129,12 @@ class UsersController < ApplicationController
       @section = "edit"
     
 
-      if @user.has_password?( params[:current_password])
+      if @user.has_password?( params[:user][:current_password])
         
-        if params[:new_password] != ""
+        if params[:user][:new_password] != ""
 
-          @user.update_password(params[:new_password])
-          @user.email = params[:email]
+          @user.update_password(params[:user][:new_password])
+          @user.email = params[:user][:email]
           
           if @user.save
             render :text => "수정완료"  
@@ -145,7 +145,7 @@ class UsersController < ApplicationController
 
 
         else  #메일만 수정하는 경우       
-          @user.email = params[:email]
+          @user.email = params[:user][:email]
 
           if @user.save
             render 'users/modificaton_finished' 
