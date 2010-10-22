@@ -76,7 +76,7 @@ class BookarticlesController < ApplicationController
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type="text/css" media="screen" href="style_list.css" />
     <body>
-    #{content_for_html}
+    #{content_m}
     </body></html>
     EOF
 
