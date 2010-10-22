@@ -280,7 +280,7 @@ $(document).ready(function(){
 <% if File.exists?(RAILS_ROOT + "/public/user_files/#{current_user.userid}/book_article/#{book_id}/#{book_id}.epub")
 down_link = HOSTING_URL + "user_files/#{current_user.userid}/book_article/#{book_id}/#{book_id}.epub"
 %> 
-&nbsp;<a href="<%= down_link %>"><font color="white">epub 다운</font></a>
+&nbsp;<a href="/bookarticles/epub_down?book_id=<%= book_id %>"><font color="white">epub 다운</font></a>
 <% end %>
 </div>
 

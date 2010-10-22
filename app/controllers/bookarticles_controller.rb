@@ -512,6 +512,17 @@ class BookarticlesController < ApplicationController
     end
   end
 
+def epub_down
+  book_id = params[:book_id]
+  @epub_path = "#{RAILS_ROOT}" + "/public/user_files/#{current_user.userid}/book_article/#{book_id}/#{book_id}.epub"
+  
+  
+  # render :file => @epub_path, :type => "application/zip"
+  
+  # render :file => @epub_path, :type => "application/zip", :stream => false, :filename => "my.epub"
+  send_file @epub_path, :type=>"application/epub"
+end
+
 def epub_make
   
   
