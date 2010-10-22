@@ -88,6 +88,10 @@ class User
     
   end
   
+  def update_password(submitted_password)
+    self.update(:encrypted_password => encrypt(submitted_password))
+  end
+  
   def has_password?(submitted_password)
       encrypted_password == encrypt(submitted_password)      
   end

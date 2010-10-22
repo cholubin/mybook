@@ -137,7 +137,7 @@ class UsersController < ApplicationController
           @user.email = params[:user][:email]
           
           if @user.save
-            render :text => "수정완료"  
+            render 'users/modificaton_finished'  
           else
             flash[:notice] = "오류가 발생했습니다. 다시 시도해주시기 바랍니다."
             render 'user'
@@ -148,7 +148,7 @@ class UsersController < ApplicationController
           @user.email = params[:user][:email]
 
           if @user.save
-            render 'users/modificaton_finished' 
+            render 'users/modification_finished' 
           else
             flash[:notice] = "오류가 발생했습니다. 다시 시도해주시기 바랍니다."
             render 'user'
