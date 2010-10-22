@@ -121,7 +121,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = User.get(params[:id])
+    @user = User.get(params[:id].to_i)
 
     if signed_in? && @user.id == current_user.id
       @menu = "home"
