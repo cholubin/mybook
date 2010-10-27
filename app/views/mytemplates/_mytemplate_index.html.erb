@@ -108,7 +108,7 @@ function hide_progress() {
 					if !my.thumb_url.nil? 
 						temp_image_path = my.thumb_url  
 					else
-						temp_image_path = my.path.gsub("/Users/cholubin/development/mybook/public","") + "/web/doc_thumb.jpg"  
+						temp_image_path = my.path.gsub("#{RAILS_ROOT}/public","") + "/web/doc_thumb.jpg"  
 					end
 					puts_message temp_image_path
 						doc_name = my.id.to_s%>
@@ -127,7 +127,7 @@ function hide_progress() {
 				</a></td></tr>
 				<tr>
 				<td class="templatelist">
-					<img src="/images/template/edit_instant_s.jpg" border="0" title="즉시편집" style="cursor:hand;" onClick="popup('<%= doc_name %>', '<%= my.path.gsub("/Users/#{current_user.userid}/development/mybook/public/user_files/#{current_user.userid}","") %>');">
+					<img src="/images/template/edit_instant_s.jpg" border="0" title="즉시편집" style="cursor:hand;" onClick="popup('<%= doc_name %>', '<%= my.path.gsub("#{RAILS_ROOT}/public/user_files/#{current_user.userid}","") %>');">
 					<%#= image_tag("/images/template/edit_instant_s.jpg", :border=>0, :title => "즉시편집", :onClick => "pop('/mlayout?doc_name='+doc_name)")%>
 		
 					<%= link_to image_tag("/images/template/delete_s.jpg", :border=>0, :title => "삭제"), mytemplate_path(my.id), :confirm => '정말 삭제하시겠습니까?',  :method => :delete %>		
@@ -186,7 +186,6 @@ end%>
  function popup(doc_name, path) {
 	// var url = "/MClientBox/index.html?spread_list=YES&user_path=/user_files/<%= current_user.userid %>&doc_path=/article_templates/"+ doc_name+".mlayoutP"
 	var url = "/MClientBox/index.html?spread_list=YES&user_path=/user_files/<%= current_user.userid %>&doc_path="+path;
-	alert(url);
 	width = screen.width;
 	height = screen.height;
 	
