@@ -5,6 +5,54 @@ class MytemplatesController < ApplicationController
     
   # GET /mytemplates
   # GET /mytemplates.xml
+
+  def make_contents_xml
+    puts_message params[:temp_id]
+    
+    temp_id = params[:temp_id].to_i
+    @temp = Mytemplate.get(temp_id)
+    temp = @temp
+    erase_job_done_file_temp(@temp)
+    path = temp.path
+    njob = path + "/do_job.mJob"
+    mjob_file= <<-EOF
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+    <plist version="1.0">
+    <dict>
+    	<key>Action</key>
+    	<string>MakeContentsXML</string>
+    	<key>DocPath</key>
+    	<string>#{path}</string>   
+     <key>ID</key>
+    	<string>#{temp.id}</string>     	
+    </dict>
+    </plist>
+    </xml>
+    EOF
+    
+
+     mjob = path + "/do_job.mJob" 
+     
+     File.open(mjob,'w') { |f| f.write mjob_file }    
+
+     if File.exists?(mjob)
+        system "open #{mjob}"
+      end 
+          
+    puts_message "make_contens_xml finished"
+    
+    render :nothing => true
+  end
+  
+  def erase_job_done_file_temp(temp)        
+     job_done = temp.path + "/web/done.txt" 
+     if File.exists?(job_done) then
+       FileUtils.remove_entry(job_done)
+     end
+     puts_message "erase_job_done_file"
+   end
+   
   def index
 
     #basic_photo 폴더링크가 없으면 생성한다.
@@ -33,7 +81,8 @@ class MytemplatesController < ApplicationController
     @categories = Category.all(:order => :priority)        
 
     if cate == "all" and folder == "all"
-      @mytemplates = Mytemplate.all(:gubun.not => "hidden", :user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                   
+      # @mytemplates = Mytemplate.all(:gubun.not => "hidden", :user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                   
+      @mytemplates = Mytemplate.all(:user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                   
     elsif cate == "all" and folder != "all"
       @mytemplates = Mytemplate.all(:folder => Tempfolder.get(folder).name, :user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                                   
     elsif cate != "all" and folder == "all"

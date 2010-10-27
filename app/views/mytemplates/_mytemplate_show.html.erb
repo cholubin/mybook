@@ -1,10 +1,14 @@
 <% 	if @mytemplate.preview_url
 		temp_image_path = @mytemplate.preview_url  
 	else
-		temp_image_path = @mytemplate.thumb_url  		
+		temp_image_path = @mytemplate.path.gsub("/Users/cholubin/development/mybook/public","") + "/web/doc_preview.jpg"  
 	end 
 %>
-<p5><a href="#"><%= Category.get(@mytemplate.category.to_i).name %></a>
+<p5><a href="#">
+	<% if !@mytemplate.category.nil? %>
+		<%= Category.get(@mytemplate.category.to_i).name %>
+	<%end %>
+	</a>
 	<% if @mytemplate.subcategory != nil %>
 	<a class="on" href="#">&nbsp;&nbsp;>&nbsp;<%= Subcategory.get(@mytemplate.subcategory.to_i).name %></a>  
 	<% end %>
@@ -35,7 +39,10 @@
 
 						<tr>
 							<td width="70" class="table_t5">가격</td>
-							<td width="180" class="table_t5_bold"><%= Temp.first(:id => @mytemplate.temp_id).price if Temp.first(:id => @mytemplate.temp_id).price != nil %></td>
+							<td width="180" class="table_t5_bold">
+							<%if !@mytemplate.temp_id.nil? %>
+							<%= Temp.first(:id => @mytemplate.temp_id).price if Temp.first(:id => @mytemplate.temp_id).price != nil %></td>
+							<%end %>
 						</tr>
 
 						<tr>
@@ -44,12 +51,18 @@
 
 						<tr>
 							<td width="70" class="table_t5">사이즈</td>
-							<td width="180" class="table_t5"><%= Temp.first(:id => @mytemplate.temp_id).size if Temp.first(:id => @mytemplate.temp_id).size != nil %></td>
+							<td width="180" class="table_t5">
+							<%if @mytemplate.temp_id != nil %>
+							<%= Temp.first(:id => @mytemplate.temp_id).size if Temp.first(:id => @mytemplate.temp_id).size != nil %></td>
+							<%end %>
 						</tr>
 
 						<tr>
 							<td width="70" class="table_t5">태그</td>
-							<td width="180" class="table_t5"><%= Temp.first(:id => @mytemplate.temp_id).tags if Temp.first(:id => @mytemplate.temp_id).tags != nil %></td>
+							<td width="180" class="table_t5">
+							<%if @mytemplate.temp_id != nil %>
+							<%= Temp.first(:id => @mytemplate.temp_id).tags if Temp.first(:id => @mytemplate.temp_id).tags != nil %></td>
+							<%end %>
 						</tr>
 						<tr>
 							<td colspan="2" width="250" class="table_t5_underline"></td>
