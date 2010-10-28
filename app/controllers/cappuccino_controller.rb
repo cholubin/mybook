@@ -78,6 +78,8 @@ class CappuccinoController < ApplicationController
       <string>#{mytemplate.id}</string>      
       <key>UserInfo</key>
       <string>#{userinfo}</string>
+      <key>Multi</key>
+      <string>Yes</string>
     </dict>
     </plist>
       
@@ -132,6 +134,8 @@ class CappuccinoController < ApplicationController
       <string>#{mytemplate.id}</string>      
       <key>UserInfo</key>
       <string>#{userinfo}</string>
+      <key>Multi</key>
+      <string>Yes</string>
     </dict>
     </plist>
       
