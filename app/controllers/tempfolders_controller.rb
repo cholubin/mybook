@@ -7,8 +7,8 @@ class TempfoldersController < ApplicationController
 
 
     if Tempfolder.all(:name => params[:folder_name]).count < 1
-      @tempfolder.name = params[:folder_name]      
       @tempfolder = Tempfolder.new()    
+      @tempfolder.name = params[:folder_name]      
       @tempfolder.user_id = current_user.id
 
       @tempfolder.save
