@@ -88,7 +88,7 @@ function hide_progress() {
 			</tr>
 			<tr height="40">
 				<td width="80"><p2>썸네일</p2></td>
-				<td width="200"><%= image_tag @mytemplate.thumb_url %></td>
+				<td width="200"><%= image_tag @mytemplate.thumb_url if @mytemplate.thumb_url != nil %></td>
 			</tr>			
 
 			<tr>
