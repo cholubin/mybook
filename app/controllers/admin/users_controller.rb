@@ -125,4 +125,23 @@ class Admin::UsersController < ApplicationController
     redirect_to(admin_users_url)  
   end
 
+  def password_init
+    if params[:user_id] != nil and params[:user_id] != ""
+      
+      user = User.get(params[:user_id].to_i)
+      if user != nil
+          user.update_password("1234")
+          user.save
+          
+          render :text => "success"
+      else
+        render :text => "fail"
+      end
+      
+    else
+      render :text => "fail"
+    end
+    
+  end
+  
 end
