@@ -82,13 +82,13 @@ class MytemplatesController < ApplicationController
 
     if cate == "all" and folder == "all"
       # @mytemplates = Mytemplate.all(:gubun.not => "hidden", :user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                   
-      @mytemplates = Mytemplate.all(:user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                   
+      @mytemplates = Mytemplate.all(:user_id => current_user.id, :order => [:updated_at.desc]).search(params[:search], params[:page])                   
     elsif cate == "all" and folder != "all"
-      @mytemplates = Mytemplate.all(:folder => Tempfolder.get(folder).name, :user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                                   
+      @mytemplates = Mytemplate.all(:folder => Tempfolder.get(folder).name, :user_id => current_user.id, :order => [:updated_at.desc]).search(params[:search], params[:page])                                   
     elsif cate != "all" and folder == "all"
-      @mytemplates = Mytemplate.all(:category => Category.get(cate.to_i).name, :user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                                   
+      @mytemplates = Mytemplate.all(:category => Category.get(cate.to_i).name, :user_id => current_user.id, :order => [:updated_at.desc]).search(params[:search], params[:page])                                   
     elsif cate != "all" and folder != "all"
-      @mytemplates = Mytemplate.all(:folder => Tempfolder.get(folder).name, :category => Category.get(cate.to_i).name, :user_id => current_user.id, :order => [:created_at.desc]).search(params[:search], params[:page])                           
+      @mytemplates = Mytemplate.all(:folder => Tempfolder.get(folder).name, :category => Category.get(cate.to_i).name, :user_id => current_user.id, :order => [:updated_at.desc]).search(params[:search], params[:page])                           
     end
     
     @tempfolders = Tempfolder.all(:user_id => current_user.id)

@@ -196,7 +196,6 @@ class BookarticlesController < ApplicationController
     
     if Mytemplate.all(:name => dest_filename, :gubun => "hidden").count < 1
       begin
-        puts_message "Here????"
         booktemplate = Mytemplate.new()  
         booktemplate.gubun = "hidden"
         booktemplate.path = dest_path + dest_filename
@@ -210,7 +209,6 @@ class BookarticlesController < ApplicationController
         puts_message "errrrrrrrrrrrrrrrorrrrrrrrr"
       end
     else
-      puts_message "or Here????"      
       booktemplate = Mytemplate.first(:name => dest_filename, :gubun => "hidden")
       booktemplate.path = dest_path + dest_filename
       booktemplate.name = dest_filename
