@@ -170,7 +170,14 @@ class BookarticlesController < ApplicationController
       src_filename = master_template_id + ".mlayoutP"
 
       dest_path = book_article_dir
-      dest_filename = book_id + "." + book_level_id + ".mlayoutP"
+      dest_filename = book_id + "." + book_level_id +  ".mlayoutP"
+      
+      
+      i = 1
+      while  Mytemplate.all(:name => dest_filename, :gubun => "hidden").count > 0
+        dest_filename = book_id + "." + book_level_id + "_" + i.to_s + ".mlayoutP"
+        i += 1
+      end
       
     #본문외의 것들인 경우 
     else
@@ -180,6 +187,14 @@ class BookarticlesController < ApplicationController
 
       dest_path = book_article_dir      
       dest_filename = book_id + "." + book_level_id + "." + template_name + ".mlayoutP"      
+      
+      
+      i = 1
+      while  Mytemplate.all(:name => dest_filename, :gubun => "hidden").count > 0
+        dest_filename = book_id + "." + book_level_id + "." + template_name + "_" + i.to_s + ".mlayoutP"
+        i += 1
+      end
+
     end
     
     puts_message dest_path + dest_filename
@@ -194,7 +209,7 @@ class BookarticlesController < ApplicationController
     
     #복사된 템플릿을 Mjob 처리해준다.
     
-    if Mytemplate.all(:name => dest_filename, :gubun => "hidden").count < 1
+    # if Mytemplate.all(:name => dest_filename, :gubun => "hidden").count < 1
       begin
         booktemplate = Mytemplate.new()  
         booktemplate.gubun = "hidden"
@@ -208,15 +223,15 @@ class BookarticlesController < ApplicationController
       rescue
         puts_message "errrrrrrrrrrrrrrrorrrrrrrrr"
       end
-    else
-      booktemplate = Mytemplate.first(:name => dest_filename, :gubun => "hidden")
-      booktemplate.path = dest_path + dest_filename
-      booktemplate.name = dest_filename
-      booktemplate.master_id = master_template_id
-      booktemplate.user_id = current_user.id      
-      booktemplate.level_id = book_level_id      
-      booktemplate.save
-    end
+    # else
+    #   booktemplate = Mytemplate.first(:name => dest_filename, :gubun => "hidden")
+    #   booktemplate.path = dest_path + dest_filename
+    #   booktemplate.name = dest_filename
+    #   booktemplate.master_id = master_template_id
+    #   booktemplate.user_id = current_user.id      
+    #   booktemplate.level_id = book_level_id      
+    #   booktemplate.save
+    # end
     make_contens_xml(booktemplate)
     
     contents_xml_path =  dest_path + dest_filename + "/web/contents.xml"
@@ -360,8 +375,11 @@ class BookarticlesController < ApplicationController
       article_content = Book_article.get(level_id.to_i).content
     end
     
+    if article_content == nil 
+      article_content = ""
+    end
 
-    puts_message "현재 작업중인 텍스트박스 컨텐츠: " + article_content
+    puts_message "현재 작업중인 텍스트박스 컨텐츠: " + # article_content
 
     article_content = article_content.gsub(/<p_body>/,"\n<p_body>\n")
     article_content = article_content.gsub(/<\/p_body>/,"\n\n</p_body>")
