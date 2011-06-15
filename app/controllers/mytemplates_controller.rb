@@ -174,9 +174,14 @@ class MytemplatesController < ApplicationController
   def erase_job_done_file(mytemplate)         
     puts_message "erase_job_done_file start"
     
-    path = mytemplate.path
+    if mytemplate != nil
+      path = mytemplate.path
+    else
+      path = ""
+    end
   
     job_done = path + "/web/done.txt" 
+    
     if File.exists?(job_done)
       FileUtils.remove_entry_secure(job_done)
       puts_message "job done file erased!"              
