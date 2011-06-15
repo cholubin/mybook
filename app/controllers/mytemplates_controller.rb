@@ -174,11 +174,7 @@ class MytemplatesController < ApplicationController
   def erase_job_done_file(mytemplate)         
     puts_message "erase_job_done_file start"
     
-    if mytemplate != nil
-      path = mytemplate.path
-    else
-      path = ""
-    end
+    path = mytemplate.path
   
     job_done = path + "/web/done.txt" 
     
